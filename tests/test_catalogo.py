@@ -73,6 +73,34 @@ def test_mercados_para_jogo_over_under_com_rotulo_em_portugues():
     assert ("Over/Under 2.5", "Under") in pares
 
 
+def test_mercados_para_jogo_escanteios_total():
+    resultado = _mercados_para_jogo("ou_9.5_corners", {"Mais de 9.5": 1.7, "Menos de 9.5": 2.07})
+    pares = {(m, s) for m, s, _ in resultado}
+    assert ("Escanteios Over/Under 9.5", "Over") in pares
+    assert ("Escanteios Over/Under 9.5", "Under") in pares
+
+
+def test_mercados_para_jogo_escanteios_por_time_nao_colide_com_total():
+    """Regressão: escanteios por time (ou_X_corners_team1/team2) caíam no
+    MESMO nome de mercado que o total ('Escanteios Over/Under X'), que não
+    bate com as chaves que o modelo calcula pra por-time ('Escanteios time
+    da casa/visitante Over/Under X') — as odds por time nunca casavam."""
+    casa = _mercados_para_jogo("ou_4.5_corners_team1", {"Mais de 4.5": 1.9, "Menos de 4.5": 1.85})
+    fora = _mercados_para_jogo("ou_4.5_corners_team2", {"Mais de 4.5": 2.0, "Menos de 4.5": 1.75})
+    assert ("Escanteios time da casa Over/Under 4.5", "Over") in {(m, s) for m, s, _ in casa}
+    assert ("Escanteios time visitante Over/Under 4.5", "Over") in {(m, s) for m, s, _ in fora}
+    # não pode ter virado o nome genérico do total
+    assert not any(m == "Escanteios Over/Under 4.5" for m, _, _ in casa + fora)
+
+
+def test_mercados_para_jogo_cartoes_por_time_sem_modelo_e_descartado():
+    """markets.py só tem cartões TOTAL (sem por-time) — se algum dia vier
+    'ou_X_cards_team1', não pode virar um 'Cartões Over/Under X' genérico
+    (colidiria com o total de verdade)."""
+    resultado = _mercados_para_jogo("ou_3.5_cards_team1", {"Mais de 3.5": 1.95, "Menos de 3.5": 1.80})
+    assert resultado == []
+
+
 def test_combinar_modelo_e_odds_h2h_com_rotulo_abreviado_da_betano():
     probs = {"1X2": {"Casa": 0.5, "Empate": 0.25, "Fora": 0.25}}
     odds = {"casa_coletado": "Juventude-RS", "fora_coletado": "Avaí",

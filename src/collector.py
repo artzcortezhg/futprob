@@ -486,7 +486,13 @@ _BOOKMAKERS = {
 }
 
 
-async def _coletar_casa(browser: Browser, nome: str, config: dict) -> list[EventOdds]:
+async def _coletar_casa(browser: Browser, nome: str, config: dict) -> tuple[list[EventOdds], list[Any]]:
+    """Retorna (eventos_parseados, payloads_json_brutos) — os brutos são
+    devolvidos pra quem chamar poder guardar tudo que foi capturado, mesmo
+    o que o mapeador atual ainda não sabe traduzir (ver salvar_bruto_coleta:
+    dado coletado nunca mais se perde por dicionário de mercado incompleto,
+    uma correção futura no mapeador pode reprocessar sem precisar coletar
+    de novo)."""
     capturado: list[Any] = []
     context: BrowserContext = await browser.new_context(
         user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -603,14 +609,18 @@ async def _coletar_casa(browser: Browser, nome: str, config: dict) -> list[Event
     agora = datetime.utcnow()
     resultados = [ev for ev in resultados if not ev.commence_time or ev.commence_time > agora]
 
-    return resultados
+    return resultados, capturado
 
 
-async def coletar(casas: list[str] | None = None, timeout_total_s: int = 120) -> dict[str, list[EventOdds]]:
+async def coletar(casas: list[str] | None = None, timeout_total_s: int = 120,
+                   ) -> tuple[dict[str, list[EventOdds]], dict[str, list[Any]]]:
     """Uma foto de coleta (pré-jogo, só futebol, só os mercados do futprob).
-    Retorna {casa_de_apostas: [EventOdds, ...]}. Nunca roda em loop."""
+    Retorna (eventos_por_casa, payloads_brutos_por_casa) — o segundo é pra
+    persistir com salvar_bruto_coleta e nunca perder dado já coletado.
+    Nunca roda em loop contínuo."""
     casas = casas or list(_BOOKMAKERS.keys())
     resultado: dict[str, list[EventOdds]] = {}
+    bruto: dict[str, list[Any]] = {}
 
     async with async_playwright() as pw:
         try:
@@ -623,13 +633,15 @@ async def coletar(casas: list[str] | None = None, timeout_total_s: int = 120) ->
             tarefas = {nome: _coletar_casa(browser, nome, _BOOKMAKERS[nome]) for nome in casas if nome in _BOOKMAKERS}
             feitas = await asyncio.wait_for(asyncio.gather(*tarefas.values(), return_exceptions=True), timeout=timeout_total_s)
             for nome, res in zip(tarefas.keys(), feitas):
-                resultado[nome] = [] if isinstance(res, Exception) else res
                 if isinstance(res, Exception):
                     logger.warning(f"[{nome}] erro: {res}")
+                    resultado[nome], bruto[nome] = [], []
+                else:
+                    resultado[nome], bruto[nome] = res
         finally:
             await browser.close()
 
-    return resultado
+    return resultado, bruto
 
 
 # ── Persistência (snapshot no SQLite) ────────────────────────────────────────
@@ -679,6 +691,45 @@ def salvar_snapshot(resultado: dict[str, list[EventOdds]], tipo_foto: str, camin
     return len(linhas)
 
 
+SQL_CRIAR_TABELA_BRUTO = """
+CREATE TABLE IF NOT EXISTS coletas_brutas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    coletado_em TEXT NOT NULL,
+    tipo_foto TEXT NOT NULL,
+    casa_apostas TEXT NOT NULL,
+    sequencia INTEGER NOT NULL,
+    payload_json TEXT NOT NULL
+);
+"""
+
+
+def salvar_bruto_coleta(bruto: dict[str, list[Any]], tipo_foto: str, caminho_db: Path = CAMINHO_DB_PADRAO) -> int:
+    """Guarda CADA payload JSON bruto capturado na coleta, com data — pra
+    que uma correção futura no mapeador (_infer_market_key, _mercados_para_
+    jogo etc.) possa reprocessar tudo que já foi coletado sem precisar de
+    uma nova coleta ao vivo. Nunca apaga coletas brutas anteriores."""
+    caminho_db.parent.mkdir(parents=True, exist_ok=True)
+    coletado_em = datetime.now().isoformat(timespec="seconds")
+    linhas = []
+    for casa, payloads in bruto.items():
+        for i, payload in enumerate(payloads):
+            try:
+                payload_json = json.dumps(payload, ensure_ascii=False)
+            except Exception:
+                continue
+            linhas.append((coletado_em, tipo_foto, casa, i, payload_json))
+
+    with sqlite3.connect(caminho_db) as conn:
+        conn.executescript(SQL_CRIAR_TABELA_BRUTO)
+        conn.executemany(
+            "INSERT INTO coletas_brutas (coletado_em, tipo_foto, casa_apostas, sequencia, payload_json) "
+            "VALUES (?,?,?,?,?)",
+            linhas,
+        )
+        conn.commit()
+    return len(linhas)
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Coleta de odds pré-jogo (Betano/Superbet)")
@@ -688,7 +739,7 @@ def main():
 
     from painel_db import registrar_coleta
 
-    resultado = asyncio.run(coletar(args.casas))
+    resultado, bruto = asyncio.run(coletar(args.casas))
     n_jogos = sum(len(evs) for evs in resultado.values())
     n_mercados = sum(len(mkt.outcomes) for evs in resultado.values() for ev in evs for mkt in ev.markets)
 
@@ -699,13 +750,15 @@ def main():
             print(f"  {ev.home_team} x {ev.away_team} ({ev.commence_time}): {mercados}")
 
     n_linhas = salvar_snapshot(resultado, args.tipo)
+    n_brutos = salvar_bruto_coleta(bruto, args.tipo)
     sucesso = n_jogos > 0
     registrar_coleta(
         CAMINHO_DB_PADRAO, "betano", sucesso=sucesso, tipo=args.tipo,
         mensagem="ok" if sucesso else "nenhum jogo capturado",
         n_jogos_capturados=n_jogos, n_mercados_capturados=n_mercados,
     )
-    print(f"\n{n_linhas} linhas de odds salvas em {CAMINHO_DB_PADRAO} (tipo={args.tipo}).")
+    print(f"\n{n_linhas} linhas de odds salvas em {CAMINHO_DB_PADRAO} (tipo={args.tipo}); "
+          f"{n_brutos} payloads brutos guardados em coletas_brutas.")
 
 
 if __name__ == "__main__":

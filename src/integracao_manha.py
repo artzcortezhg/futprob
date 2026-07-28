@@ -36,7 +36,7 @@ CAMINHO_DB = RAIZ / "db" / "previsoes.sqlite"
 
 load_dotenv(RAIZ / ".env")
 
-from collector import coletar, salvar_snapshot  # noqa: E402
+from collector import coletar, salvar_snapshot, salvar_bruto_coleta  # noqa: E402
 from painel_db import inserir_registro, registrar_coleta, carregar_estado_bot  # noqa: E402
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, probs_modelo_de_linhas  # noqa: E402
@@ -53,7 +53,7 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
     apostarias automáticas. Retorna um resumo (nunca lança exceção — coleta
     que falha vira um resumo com sucesso=False)."""
     try:
-        resultado_coleta = await coletar()
+        resultado_coleta, bruto_coleta = await coletar()
     except Exception as exc:
         logger.exception("falha na coleta da manhã")
         registrar_coleta(CAMINHO_DB, "betano", sucesso=False, tipo="manha", mensagem=str(exc))
@@ -63,6 +63,7 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
     n_jogos = len(eventos)
     n_mercados = sum(len(m.outcomes) for ev in eventos for m in ev.markets)
     salvar_snapshot(resultado_coleta, "manha", CAMINHO_DB)
+    salvar_bruto_coleta(bruto_coleta, "manha", CAMINHO_DB)
     registrar_coleta(CAMINHO_DB, "betano", sucesso=n_jogos > 0, tipo="manha",
                       mensagem="ok" if n_jogos > 0 else "nenhum jogo capturado",
                       n_jogos_capturados=n_jogos, n_mercados_capturados=n_mercados)

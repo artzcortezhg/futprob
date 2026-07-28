@@ -78,14 +78,35 @@ def _selecao_h2h(nome_odd: str, casa_coletado: str, fora_coletado: str) -> str |
     return None
 
 
+def _nome_mercado_over_under(stat: str, qualificador: str) -> str | None:
+    """Nome do mercado futprob (deve bater EXATAMENTE com markets.py) pra
+    cada combinação stat+qualificador do coletor. None = sem modelo
+    equivalente (ex.: cartões por time — markets.py só tem cartões total)."""
+    if stat == "goals" and not qualificador:
+        return "Over/Under"
+    if stat == "corners":
+        if not qualificador:
+            return "Escanteios Over/Under"
+        if qualificador == "team1":
+            return "Escanteios time da casa Over/Under"
+        if qualificador == "team2":
+            return "Escanteios time visitante Over/Under"
+        return None
+    if stat == "cards" and not qualificador:
+        return "Cartões Over/Under"
+    return None  # cartões por time, 1º/2º tempo etc. — sem modelo equivalente
+
+
 def _mercados_para_jogo(mercado_key: str, outcomes: dict[str, float]) -> list[tuple[str, str, float]]:
     """Converte {nome_outcome_betano: odd} de um market_key coletado em
     [(mercado_futprob, selecao_futprob, odd), ...]."""
     resultado = []
     if mercado_key.startswith("ou_"):
         partes = mercado_key.split("_")
-        linha, stat = partes[1], partes[2]
-        nome_mercado = {"goals": "Over/Under", "corners": "Escanteios Over/Under", "cards": "Cartões Over/Under"}.get(stat)
+        linha = partes[1]
+        stat = partes[2] if len(partes) > 2 else ""
+        qualificador = partes[3] if len(partes) > 3 else ""
+        nome_mercado = _nome_mercado_over_under(stat, qualificador)
         if nome_mercado is None:
             return []
         for nome_odd, odd in outcomes.items():

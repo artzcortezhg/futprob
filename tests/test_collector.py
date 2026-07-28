@@ -9,8 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from collector import (
     _infer_market_key, _mercado_permitido, _parse_betano,
-    salvar_snapshot, EventOdds, MarketOdds, OutcomeOdd,
+    salvar_snapshot, salvar_bruto_coleta, EventOdds, MarketOdds, OutcomeOdd,
 )
+import sqlite3
 
 
 def test_infer_market_key_h2h():
@@ -132,7 +133,37 @@ def test_salvar_snapshot_grava_linhas(tmp_path):
     n = salvar_snapshot(resultado, "manha", caminho_db)
     assert n == 2
 
-    import sqlite3
     with sqlite3.connect(caminho_db) as conn:
         total = conn.execute("SELECT COUNT(*) FROM odds_coletadas").fetchone()[0]
+    assert total == 2
+
+
+def test_salvar_bruto_coleta_guarda_cada_payload(tmp_path):
+    """Regressão: os JSONs brutos capturados não eram guardados em lugar
+    nenhum — uma correção futura no mapeador exigia recoletar ao vivo pra
+    testar. Agora cada payload vira uma linha, com data, e nada se perde."""
+    caminho_db = tmp_path / "teste.sqlite"
+    bruto = {
+        "betano": [{"data": {"event": {"sportId": 10}}}, {"outra": "resposta"}],
+    }
+    n = salvar_bruto_coleta(bruto, "manha", caminho_db)
+    assert n == 2
+
+    with sqlite3.connect(caminho_db) as conn:
+        linhas = conn.execute(
+            "SELECT tipo_foto, casa_apostas, sequencia, payload_json FROM coletas_brutas ORDER BY sequencia"
+        ).fetchall()
+    assert len(linhas) == 2
+    assert linhas[0][0] == "manha"
+    assert linhas[0][1] == "betano"
+    assert linhas[0][2] == 0
+    assert "sportId" in linhas[0][3]
+
+
+def test_salvar_bruto_coleta_nunca_apaga_coletas_anteriores(tmp_path):
+    caminho_db = tmp_path / "teste.sqlite"
+    salvar_bruto_coleta({"betano": [{"a": 1}]}, "manha", caminho_db)
+    salvar_bruto_coleta({"betano": [{"b": 2}]}, "prejogo", caminho_db)
+    with sqlite3.connect(caminho_db) as conn:
+        total = conn.execute("SELECT COUNT(*) FROM coletas_brutas").fetchone()[0]
     assert total == 2

@@ -72,6 +72,16 @@ from saude_sistema import calcular_status_sistema  # noqa: E402
 
 app = FastAPI(title="futprob — painel")
 
+
+@app.middleware("http")
+async def _sem_cache(request, call_next):
+    """Nunca deixa o navegador cachear página/API — sem isso, um refresh
+    normal podia mostrar dados antigos mesmo depois de uma correção no
+    backend, parecendo (sem ser) que a correção não tinha pego."""
+    resposta = await call_next(request)
+    resposta.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    return resposta
+
 _cache_catalogo: dict[str, tuple[float, list[dict]]] = {}
 
 

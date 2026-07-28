@@ -117,6 +117,16 @@ def formatar_tabela(linhas_mercados: list[tuple[str, str, float]]) -> str:
     return tabulate(linhas_fmt, headers=["Mercado", "Seleção", "Probabilidade"], tablefmt="simple")
 
 
+def probs_modelo_de_linhas(linhas_mercados: list[tuple[str, str, float]]) -> dict:
+    """Converte a lista (mercado, selecao, prob) num dict aninhado
+    {mercado: {selecao: prob}}, pra cache/lookup rápido (usado pelo bot e
+    pela integração da coleta da manhã)."""
+    resultado: dict[str, dict[str, float]] = {}
+    for mercado, selecao, prob in linhas_mercados:
+        resultado.setdefault(mercado, {})[selecao] = prob
+    return resultado
+
+
 def prever(
     liga: str,
     time_casa: str,

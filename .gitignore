@@ -28,3 +28,9 @@ Thumbs.db
 # Dados brutos baixados (recriados via src/ingest.py) e banco de previsões
 data/raw/
 db/previsoes.sqlite
+
+# Credenciais e segredos (token do bot, chave da OddsPapi etc.) - nunca no git
+.env
+
+# Logs de execução (bot/painel rodando em background, ver scripts/iniciar_futprob.bat)
+logs/

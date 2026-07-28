@@ -55,7 +55,12 @@ LIGAS_EXTRA = {
 
 CABECALHOS = {"User-Agent": "Mozilla/5.0 (compatible; futprob/1.0)"}
 
-# Colunas que queremos manter na base final (quando existirem no CSV bruto)
+# Colunas que queremos manter na base final (quando existirem no CSV bruto).
+# PSH/PSD/PSA = odds da Pinnacle coletadas antes do fechamento ("pré-jogo",
+# usadas como insumo real de EV); PSCH/PSCD/PSCA = odds de FECHAMENTO
+# (usadas só para validação/CLV, nunca como insumo de decisão). As extra
+# leagues (BRA/USA) só têm as de fechamento na fonte — PSH/PSD/PSA ficam NaN
+# para elas (ver carregar_e_normalizar_extra).
 COLUNAS_DESEJADAS = [
     "Div", "Date", "HomeTeam", "AwayTeam",
     "FTHG", "FTAG", "FTR",
@@ -63,6 +68,7 @@ COLUNAS_DESEJADAS = [
     "HF", "AF",
     "HY", "AY", "HR", "AR",
     "Referee",
+    "PSH", "PSD", "PSA",
     "PSCH", "PSCD", "PSCA",
 ]
 
@@ -206,7 +212,7 @@ def carregar_e_normalizar(caminho_csv: Path, codigo_liga: str) -> pd.DataFrame:
     # tipagem numérica das colunas de estatísticas/odds
     colunas_numericas = [
         "FTHG", "FTAG", "HC", "AC", "HF", "AF",
-        "HY", "AY", "HR", "AR", "PSCH", "PSCD", "PSCA",
+        "HY", "AY", "HR", "AR", "PSH", "PSD", "PSA", "PSCH", "PSCD", "PSCA",
     ]
     for col in colunas_numericas:
         df[col] = pd.to_numeric(df[col], errors="coerce")

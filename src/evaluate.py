@@ -94,7 +94,10 @@ def avaliar_walkforward(
 
         matriz = matriz_placares(modelo_atual, casa, fora, max_gols=max_gols)
         probs_mod = mercado_1x2(matriz)
+        # fechamento (PSC*): SÓ para validação/CLV, nunca insumo de decisão
         p_casa_odds, p_empate_odds, p_fora_odds = remover_margem_odds(jogo["PSCH"], jogo["PSCD"], jogo["PSCA"])
+        # pré-jogo (PS*, sem C): insumo real de EV/mistura modelo+mercado
+        p_casa_prejogo, p_empate_prejogo, p_fora_prejogo = remover_margem_odds(jogo["PSH"], jogo["PSD"], jogo["PSA"])
 
         registros.append({
             "Date": data_jogo,
@@ -108,6 +111,11 @@ def avaliar_walkforward(
             "prob_casa_odds": p_casa_odds,
             "prob_empate_odds": p_empate_odds,
             "prob_fora_odds": p_fora_odds,
+            "prob_casa_prejogo": p_casa_prejogo,
+            "prob_empate_prejogo": p_empate_prejogo,
+            "prob_fora_prejogo": p_fora_prejogo,
+            "PSH": jogo["PSH"], "PSD": jogo["PSD"], "PSA": jogo["PSA"],
+            "PSCH": jogo["PSCH"], "PSCD": jogo["PSCD"], "PSCA": jogo["PSCA"],
             "data_corte_modelo": modelo_atual.data_corte,
         })
 

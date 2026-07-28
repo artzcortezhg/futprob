@@ -39,6 +39,7 @@ import re
 import sqlite3
 import sys
 from datetime import date, datetime, timedelta, timezone
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -51,21 +52,28 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s: %(message)s")
-logger = logging.getLogger("futprob.bot")
-
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_DB = RAIZ / "db" / "previsoes.sqlite"
 CAMINHO_PARTIDAS = RAIZ / "data" / "processed" / "partidas.csv"
 FUSO_BR = ZoneInfo("America/Sao_Paulo")
 
-HORARIO_MATUTINA = "09:00"
-HORARIO_FECHAMENTO = "23:30"
-MINUTOS_ANTES_PREJOGO = 60
-CUTOFF_CATCHUP_MATUTINA = 20  # depois dessa hora local não vale mais a pena rodar a matutina atrasada
+CAMINHO_LOG = RAIZ / "logs" / "bot.log"
+CAMINHO_LOG.parent.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s: %(message)s",
+    handlers=[
+        RotatingFileHandler(CAMINHO_LOG, maxBytes=5_000_000, backupCount=3, encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
+logger = logging.getLogger("futprob.bot")
 
 load_dotenv(RAIZ / ".env")
 
+from saude_sistema import (  # noqa: E402
+    HORARIO_MATUTINA, HORARIO_FECHAMENTO, MINUTOS_ANTES_PREJOGO, CUTOFF_CATCHUP_MATUTINA,
+    HEARTBEAT_INTERVALO_MIN, calcular_status_sistema,
+)
 from painel_db import (  # noqa: E402
     inserir_registro, fechar_registro, registrar_coleta,
     salvar_estado_bot, carregar_estado_bot, salvar_mensagem_jogo, carregar_mensagem_jogo,
@@ -75,90 +83,12 @@ from predict import prever, formatar_tabela, probs_modelo_de_linhas  # noqa: E40
 from resolucao_times import (  # noqa: E402
     normalizar_texto, carregar_times_por_liga, candidatos_time, resolver_time, resolver_time_ambiguo,
 )
-from integracao_manha import processar_foto_manha_async, _mercados_para_jogo  # noqa: E402
-
-
-# ── Resolução de jogo/odds a partir da coleta (nomes já resolvidos) ─────────
-
-def buscar_proxima_partida(liga: str, time_interno: str, times_por_liga: dict[str, list[str]],
-                            caminho_db: Path = CAMINHO_DB) -> tuple[str, str, str] | None:
-    """Acha, na coleta mais recente, o próximo jogo do time já RESOLVIDO
-    pro nome interno do futprob — retorna sempre os nomes internos (nunca a
-    grafia crua da Betano), filtrado pela liga certa. Esse é o ponto que
-    tinha o bug: antes devolvia o nome cru coletado, que quebrava o modelo."""
-    with sqlite3.connect(caminho_db) as conn:
-        try:
-            df = pd.read_sql_query(
-                "SELECT DISTINCT time_casa_coletado, time_fora_coletado, commence_time FROM odds_coletadas "
-                "ORDER BY coletado_em DESC",
-                conn,
-            )
-        except Exception:
-            return None
-    if df.empty:
-        return None
-
-    for _, row in df.iterrows():
-        casa_resolvido = resolver_time(row["time_casa_coletado"], times_por_liga)
-        fora_resolvido = resolver_time(row["time_fora_coletado"], times_por_liga)
-        if not casa_resolvido or not fora_resolvido:
-            continue
-        if casa_resolvido[0] != liga or fora_resolvido[0] != liga:
-            continue
-        if casa_resolvido[1] == time_interno or fora_resolvido[1] == time_interno:
-            return (casa_resolvido[1], fora_resolvido[1], row["commence_time"])
-    return None
-
-
-def buscar_odds_coletadas_para_fixture(time_casa: str, time_fora: str, times_por_liga: dict[str, list[str]],
-                                        caminho_db: Path = CAMINHO_DB) -> dict | None:
-    """Procura, na coleta mais recente, as odds já capturadas pra esse
-    confronto específico (nomes internos). Retorna None se ainda não há
-    coleta pra esse jogo; senão {"casa_coletado":..., "fora_coletado":...,
-    "mercados": {mercado_key: {outcome: odd}}}."""
-    with sqlite3.connect(caminho_db) as conn:
-        try:
-            df = pd.read_sql_query(
-                "SELECT * FROM odds_coletadas WHERE coletado_em = (SELECT MAX(coletado_em) FROM odds_coletadas)",
-                conn,
-            )
-        except Exception:
-            return None
-    if df.empty:
-        return None
-
-    pares = df[["time_casa_coletado", "time_fora_coletado"]].drop_duplicates()
-    for _, par in pares.iterrows():
-        casa_resolvido = resolver_time(par["time_casa_coletado"], times_por_liga)
-        fora_resolvido = resolver_time(par["time_fora_coletado"], times_por_liga)
-        if casa_resolvido and fora_resolvido and casa_resolvido[1] == time_casa and fora_resolvido[1] == time_fora:
-            linhas = df[(df["time_casa_coletado"] == par["time_casa_coletado"]) & (df["time_fora_coletado"] == par["time_fora_coletado"])]
-            mercados: dict[str, dict[str, float]] = {}
-            for _, linha in linhas.iterrows():
-                mercados.setdefault(linha["mercado"], {})[linha["selecao"]] = linha["odd"]
-            return {"casa_coletado": par["time_casa_coletado"], "fora_coletado": par["time_fora_coletado"], "mercados": mercados}
-    return None
-
-
-def combinar_modelo_e_odds(probs_modelo: dict, odds: dict, time_casa: str, time_fora: str) -> list[dict]:
-    """Cruza as probabilidades do modelo com as odds já coletadas pra esse
-    jogo específico, retornando os candidatos (mercado/selecao/prob/odd/ev)
-    prontos pros guarda-corpos."""
-    candidatos = []
-    for mercado_key, outcomes in odds["mercados"].items():
-        if mercado_key == "h2h":
-            mapa_nome = {odds["casa_coletado"]: "Casa", "Empate": "Empate", odds["fora_coletado"]: "Fora"}
-            for nome_odd, odd in outcomes.items():
-                selecao = mapa_nome.get(nome_odd)
-                prob = probs_modelo.get("1X2", {}).get(selecao) if selecao else None
-                if prob is not None:
-                    candidatos.append({"mercado": "1X2", "selecao": selecao, "prob_modelo": prob, "odd": odd, "ev": prob * odd - 1.0})
-        else:
-            for mercado, selecao, odd in _mercados_para_jogo(mercado_key, outcomes):
-                prob = probs_modelo.get(mercado, {}).get(selecao)
-                if prob is not None:
-                    candidatos.append({"mercado": mercado, "selecao": selecao, "prob_modelo": prob, "odd": odd, "ev": prob * odd - 1.0})
-    return candidatos
+from integracao_manha import processar_foto_manha_async  # noqa: E402
+from catalogo import (  # noqa: E402
+    _mercados_para_jogo, buscar_proxima_partida, buscar_odds_coletadas_para_fixture,
+    combinar_modelo_e_odds, descobrir_jogos_do_dia, familia_mercado, hoje_br,
+    card_completo, maiores_probabilidades, GRUPOS_CARD,
+)
 
 
 # ── Mercados/odds coladas manualmente (fallback) ────────────────────────────
@@ -238,23 +168,6 @@ def montar_candidatos(odds_parseadas: dict[tuple[str, str], float], probs_modelo
     return candidatos, sem_prob
 
 
-def familia_mercado(mercado: str) -> str:
-    m = mercado.lower()
-    if m.startswith("1x2"):
-        return "1X2"
-    if m.startswith("dupla chance"):
-        return "Dupla chance"
-    if m.startswith("ambas marcam"):
-        return "Ambas marcam"
-    if m.startswith("escanteios"):
-        return "Escanteios"
-    if m.startswith(("cartões", "cartoes")):
-        return "Cartões"
-    if m.startswith("over/under"):
-        return "Over/Under gols"
-    return "Outros"
-
-
 def calcular_report(registros_fechados: list[dict]) -> dict:
     fechados_com_clv = [r for r in registros_fechados if r.get("clv") is not None]
     if not fechados_com_clv:
@@ -314,7 +227,8 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "/jogo <time> — mercados da próxima partida (com odd/EV se já coletado)\n"
         "/clv — fecha registros abertos com a odd de fechamento (1X2)\n"
         "/report — acumulado de CLV/ROI\n"
-        "/desfazer — remove o último registro (mantém no histórico, só marca como desfeito)"
+        "/desfazer — remove o último registro (mantém no histórico, só marca como desfeito)\n"
+        "/status — bot, agendador, painel e última coleta estão ok?"
     )
 
 
@@ -344,6 +258,7 @@ async def _enviar_jogo(update_message, liga: str, time_casa: str, time_fora: str
                     CAMINHO_DB, liga, time_casa, time_fora, item["mercado"], item["selecao"],
                     prob_modelo=item["prob_modelo"], odd_registrada=item["odd"], ev=item["ev"],
                     casa_apostas="betano", data_jogo=data_jogo, origem="bot",
+                    apostaria=item["apostaria"],
                 )
 
     if len(texto) > 4000:
@@ -414,6 +329,7 @@ async def responder_odds_coladas(update: Update, context: ContextTypes.DEFAULT_T
             CAMINHO_DB, jogo["liga"], jogo["time_casa"], jogo["time_fora"], item["mercado"], item["selecao"],
             prob_modelo=item["prob_modelo"], odd_registrada=item["odd"], ev=item["ev"],
             data_jogo=jogo["data_jogo"], origem="bot_manual",
+            apostaria=item["apostaria"],
         )
         if item["apostaria"]:
             logger.info(f"apostaria (manual) registrada: id={rid} {jogo['time_casa']} x {jogo['time_fora']} {item['mercado']}/{item['selecao']}")
@@ -501,40 +417,52 @@ async def cmd_desfazer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     )
 
 
+async def _checar_painel() -> tuple[bool, str]:
+    """Ping rápido (2s de timeout) no painel web — nunca lança exceção."""
+    host = os.environ.get("DASHBOARD_HOST", "127.0.0.1")
+    port = os.environ.get("DASHBOARD_PORT", "8000")
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            r = await client.get(f"http://{host}:{port}/api/status-coleta")
+        return (r.status_code == 200, f"http://{host}:{port}")
+    except Exception as exc:
+        return (False, f"não respondeu em http://{host}:{port} ({exc.__class__.__name__}) — veja logs/painel.log")
+
+
+async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Responde na hora se bot, agendador, painel e última coleta estão ok —
+    Bloco de estabilização (o sistema se vigia sozinho)."""
+    status = calcular_status_sistema(CAMINHO_DB)
+    n_jobs = len(context.job_queue.jobs())
+    painel_ok, painel_detalhe = await _checar_painel()
+
+    linhas = ["📊 Status do futprob"]
+    linhas.append("Bot: ok (respondendo agora)")
+    linhas.append(f"Agendador: {'ok' if n_jobs else '⚠️ nenhuma rotina agendada — reinicie o bot'} ({n_jobs} job(s) internos)")
+    linhas.append(f"Painel: {'ok — ' + painel_detalhe if painel_ok else '⚠️ ' + painel_detalhe}")
+
+    uc = status["ultima_coleta"]
+    if uc:
+        resultado = "sucesso" if uc["sucesso"] else f"FALHA: {uc['mensagem'] or '?'}"
+        linhas.append(f"Última coleta: {uc['tipo'] or uc['fonte']} em {uc['executado_em']} — {resultado}")
+    else:
+        linhas.append("Última coleta: nenhuma ainda")
+
+    linhas.append(f"Próxima rotina: {status['proxima_rotina']}")
+    linhas.append(f"Registros abertos: {status['n_registros_abertos']}")
+    if not status["chat_id_configurado"]:
+        linhas.append("⚠️ chat_id não configurado — mande /start")
+    await update.message.reply_text("\n".join(linhas))
+
+
+async def _heartbeat(context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Grava sinal de vida periódico — é isso que o painel e o /status usam
+    pra saber que o bot está rodando (não travado, não morto)."""
+    salvar_estado_bot(CAMINHO_DB, "heartbeat_bot", datetime.now(FUSO_BR).isoformat())
+
+
 # ── Rotinas automáticas (scheduler interno) ─────────────────────────────────
-
-def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], caminho_db: Path = CAMINHO_DB) -> list[dict]:
-    """A partir da coleta mais recente, resolve e filtra os jogos cujo
-    commence_time cai no `dia` informado (horário de Brasília)."""
-    with sqlite3.connect(caminho_db) as conn:
-        try:
-            df = pd.read_sql_query(
-                "SELECT DISTINCT time_casa_coletado, time_fora_coletado, commence_time FROM odds_coletadas "
-                "WHERE coletado_em = (SELECT MAX(coletado_em) FROM odds_coletadas)",
-                conn,
-            )
-        except Exception:
-            return []
-    jogos = []
-    for _, row in df.iterrows():
-        try:
-            dt = pd.Timestamp(row["commence_time"])
-            if dt.tzinfo is None:
-                dt = dt.tz_localize("UTC")
-            dt_br = dt.tz_convert(FUSO_BR)
-        except Exception:
-            continue
-        if dt_br.date() != dia:
-            continue
-        casa_resolvido = resolver_time(row["time_casa_coletado"], times_por_liga)
-        fora_resolvido = resolver_time(row["time_fora_coletado"], times_por_liga)
-        if casa_resolvido and fora_resolvido and casa_resolvido[0] == fora_resolvido[0]:
-            jogos.append({
-                "liga": casa_resolvido[0], "casa": casa_resolvido[1], "fora": fora_resolvido[1],
-                "commence_time": dt.isoformat(),
-            })
-    return jogos
-
 
 async def rotina_matutina(context: ContextTypes.DEFAULT_TYPE) -> None:
     """9h: coleta (foto 1), EV, registra apostarias, notifica catálogo, e
@@ -562,7 +490,7 @@ async def rotina_matutina(context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if chat_id:
         if not jogos_hoje:
-            await context.bot.send_message(chat_id, f"Coleta da manhã ok — nenhum jogo das 5 ligas hoje ({hoje.isoformat()}).")
+            linhas = [f"Coleta da manhã ok — nenhum jogo das 5 ligas hoje ({hoje.isoformat()})."]
         else:
             linhas = [f"📋 Catálogo de hoje ({hoje.isoformat()}) — {len(jogos_hoje)} jogo(s) — automático, sem ação manual"]
             for j in jogos_hoje:
@@ -573,7 +501,13 @@ async def rotina_matutina(context: ContextTypes.DEFAULT_TYPE) -> None:
                     linhas.append(f"  {a['time_casa']} x {a['time_fora']} — {a['mercado']}/{a['selecao']} odd {a['odd']:.2f} EV {a['ev']*100:+.1f}%")
             else:
                 linhas.append("\nNenhuma apostaria automática hoje.")
-            await context.bot.send_message(chat_id, "\n".join(linhas))
+
+        # mensagem diária de saúde (item 6b) — vai junto do catálogo, ou
+        # sozinha em dia sem jogos, uma vez por dia (mesma guarda da matutina)
+        status = calcular_status_sistema(CAMINHO_DB)
+        linhas.append(f"\n🩺 Sistema ok — última coleta {resumo['n_jogos_capturados']} jogo(s) capturados agora | "
+                       f"próxima rotina: {status['proxima_rotina']} | {status['n_registros_abertos']} registro(s) aberto(s)")
+        await context.bot.send_message(chat_id, "\n".join(linhas))
 
     if jogos_hoje:
         _agendar_prejogo(context, jogos_hoje)
@@ -666,6 +600,7 @@ def main():
     app.add_handler(CommandHandler("clv", cmd_clv))
     app.add_handler(CommandHandler("report", cmd_report))
     app.add_handler(CommandHandler("desfazer", cmd_desfazer))
+    app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder_odds_coladas))
     app.add_error_handler(tratar_erro)
 
@@ -673,6 +608,7 @@ def main():
     hora_f, min_f = map(int, HORARIO_FECHAMENTO.split(":"))
     app.job_queue.run_daily(rotina_matutina, time=datetime.now(FUSO_BR).replace(hour=hora_m, minute=min_m, second=0, microsecond=0).timetz())
     app.job_queue.run_daily(rotina_fechamento, time=datetime.now(FUSO_BR).replace(hour=hora_f, minute=min_f, second=0, microsecond=0).timetz())
+    app.job_queue.run_repeating(_heartbeat, interval=HEARTBEAT_INTERVALO_MIN * 60, first=10)
 
     _catch_up_rotinas(app)
 

@@ -39,6 +39,41 @@ def test_inserir_e_fechar_registro(tmp_path):
     assert row == ("fechado", 0.02, "ganhou")
 
 
+def test_inserir_registro_grava_flag_apostaria(tmp_path):
+    caminho = tmp_path / "teste.sqlite"
+    rid_apostaria = inserir_registro(
+        caminho, "Premier League", "Arsenal", "Liverpool", "1X2", "Casa",
+        prob_modelo=0.5, odd_registrada=2.1, ev=0.1, origem="auto_manha", apostaria=True,
+    )
+    rid_so_estudo = inserir_registro(
+        caminho, "Premier League", "Arsenal", "Liverpool", "1X2", "Empate",
+        prob_modelo=0.3, odd_registrada=3.0, ev=-0.05, origem="auto_manha", apostaria=False,
+    )
+    with sqlite3.connect(caminho) as conn:
+        flags = dict(conn.execute("SELECT id, apostaria FROM registros").fetchall())
+    assert flags[rid_apostaria] == 1
+    assert flags[rid_so_estudo] == 0
+
+
+def test_migracao_adiciona_coluna_apostaria_em_banco_antigo(tmp_path):
+    caminho = tmp_path / "antigo.sqlite"
+    with sqlite3.connect(caminho) as conn:
+        conn.execute("""
+            CREATE TABLE registros (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, criado_em TEXT NOT NULL, liga TEXT NOT NULL,
+                data_jogo TEXT, time_casa TEXT NOT NULL, time_fora TEXT NOT NULL, mercado TEXT NOT NULL,
+                selecao TEXT NOT NULL, casa_apostas TEXT, prob_modelo REAL, odd_registrada REAL, ev REAL,
+                odd_fechamento REAL, clv REAL, status TEXT NOT NULL DEFAULT 'aberto', resultado TEXT,
+                origem TEXT NOT NULL DEFAULT 'manual'
+            )
+        """)
+        conn.commit()
+    inicializar_db_painel(caminho)  # deve migrar sem apagar a tabela
+    with sqlite3.connect(caminho) as conn:
+        colunas = {linha[1] for linha in conn.execute("PRAGMA table_info(registros)")}
+    assert "apostaria" in colunas
+
+
 def test_marcar_resultado_manual_nao_apaga_nada(tmp_path):
     caminho = tmp_path / "teste.sqlite"
     rid = inserir_registro(caminho, "La Liga", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05)

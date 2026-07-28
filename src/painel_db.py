@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS registros (
     clv REAL,
     status TEXT NOT NULL DEFAULT 'aberto',
     resultado TEXT,
-    origem TEXT NOT NULL DEFAULT 'manual'
+    origem TEXT NOT NULL DEFAULT 'manual',
+    apostaria INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS coletas (
@@ -82,6 +83,10 @@ def inicializar_db_painel(caminho_db: Path = CAMINHO_DB_PADRAO) -> None:
     caminho_db.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(caminho_db) as conn:
         conn.executescript(SQL_CRIAR_TABELAS_PAINEL)
+        # migração: bancos criados antes da coluna 'apostaria' existir
+        colunas = {linha[1] for linha in conn.execute("PRAGMA table_info(registros)")}
+        if "apostaria" not in colunas:
+            conn.execute("ALTER TABLE registros ADD COLUMN apostaria INTEGER NOT NULL DEFAULT 0")
         conn.commit()
 
 
@@ -91,18 +96,23 @@ def inserir_registro(
     prob_modelo: float, odd_registrada: float, ev: float,
     casa_apostas: str | None = None, data_jogo: str | None = None,
     origem: str = "manual",
+    apostaria: bool = False,
 ) -> int:
-    """Grava um novo registro (aposta de papel) no momento em que é gerado."""
+    """Grava um novo registro (aposta de papel) no momento em que é gerado.
+    `apostaria=True` marca que esse registro em particular passou dos
+    guarda-corpos de EV (src/guardrails.py) — usado pela seção 'Apostarias
+    de hoje' do painel pra distinguir de registros que só existem para
+    estudo (todo candidato do ranking é registrado, não só a apostaria)."""
     inicializar_db_painel(caminho_db)
     criado_em = datetime.now().isoformat(timespec="seconds")
     with sqlite3.connect(caminho_db) as conn:
         cursor = conn.execute(
             """INSERT INTO registros
                (criado_em, liga, data_jogo, time_casa, time_fora, mercado, selecao,
-                casa_apostas, prob_modelo, odd_registrada, ev, status, origem)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', ?)""",
+                casa_apostas, prob_modelo, odd_registrada, ev, status, origem, apostaria)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', ?, ?)""",
             (criado_em, liga, data_jogo, time_casa, time_fora, mercado, selecao,
-             casa_apostas, prob_modelo, odd_registrada, ev, origem),
+             casa_apostas, prob_modelo, odd_registrada, ev, origem, int(apostaria)),
         )
         conn.commit()
         return cursor.lastrowid

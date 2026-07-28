@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import sys
+from datetime import timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -40,44 +41,7 @@ from painel_db import inserir_registro, registrar_coleta, carregar_estado_bot  #
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, probs_modelo_de_linhas  # noqa: E402
 from resolucao_times import carregar_times_por_liga, resolver_time  # noqa: E402
-
-# mapeia o market_key do coletor (Betano) para (mercado, selecao) do futprob
-_MARKET_KEY_PARA_FUTPROB = {
-    "h2h": [("1X2", "Casa", 0), ("1X2", "Empate", 1), ("1X2", "Fora", 2)],
-    "btts": [("Ambas marcam", "Sim", "sim"), ("Ambas marcam", "Não", "nao")],
-    "double_chance": [
-        ("Dupla chance", "1X (casa ou empate)", "1x"),
-        ("Dupla chance", "12 (casa ou fora)", "12"),
-        ("Dupla chance", "X2 (empate ou fora)", "x2"),
-    ],
-}
-
-
-def _mercados_para_jogo(mercado_key: str, outcomes: dict[str, float]) -> list[tuple[str, str, float]]:
-    """Converte {nome_outcome_betano: odd} de um market_key coletado em
-    [(mercado_futprob, selecao_futprob, odd), ...]."""
-    resultado = []
-    if mercado_key.startswith("ou_"):
-        partes = mercado_key.split("_")
-        linha, stat = partes[1], partes[2]
-        nome_mercado = {"goals": "Over/Under", "corners": "Escanteios Over/Under", "cards": "Cartões Over/Under"}.get(stat)
-        if nome_mercado is None:
-            return []
-        for nome_odd, odd in outcomes.items():
-            selecao = "Over" if nome_odd.lower() in ("over", "acima") else "Under" if nome_odd.lower() in ("under", "abaixo") else None
-            if selecao:
-                resultado.append((f"{nome_mercado} {linha}", selecao, odd))
-        return resultado
-
-    if mercado_key == "btts":
-        for nome_odd, odd in outcomes.items():
-            if nome_odd.lower() in ("sim", "yes", "1"):
-                resultado.append(("Ambas marcam", "Sim", odd))
-            elif nome_odd.lower() in ("não", "nao", "no", "0"):
-                resultado.append(("Ambas marcam", "Não", odd))
-        return resultado
-
-    return []  # h2h e double_chance exigem nome do time (casa/fora), tratados à parte
+from catalogo import _mercados_para_jogo, FUSO_BR  # noqa: E402
 
 
 async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
@@ -143,12 +107,17 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
         if not candidatos:
             continue
 
+        data_jogo = None
+        if ev.commence_time:
+            dt = ev.commence_time if ev.commence_time.tzinfo else ev.commence_time.replace(tzinfo=timezone.utc)
+            data_jogo = dt.astimezone(FUSO_BR).date().isoformat()
         ranking = aplicar_guardrails(candidatos, limiar_ev_apostaria=limiar_ev)
         for item in ranking:
             rid = inserir_registro(
                 CAMINHO_DB, liga, time_casa, time_fora, item["mercado"], item["selecao"],
                 prob_modelo=item["prob_modelo"], odd_registrada=item["odd"], ev=item["ev"],
-                casa_apostas="betano", origem="auto_manha",
+                casa_apostas="betano", data_jogo=data_jogo, origem="auto_manha",
+                apostaria=item["apostaria"],
             )
             if item["apostaria"]:
                 apostarias.append({

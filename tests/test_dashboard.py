@@ -30,7 +30,50 @@ def test_jogos_do_dia_vazio(cliente):
     client, _ = cliente
     resposta = client.get("/api/jogos-do-dia")
     assert resposta.status_code == 200
-    assert resposta.json() == {"jogos": []}
+    dados = resposta.json()
+    assert dados["dia"] == "hoje"
+    assert dados["jogos"] == []
+
+
+def test_jogos_do_dia_amanha_vazio(cliente):
+    client, _ = cliente
+    resposta = client.get("/api/jogos-do-dia?dia=amanha")
+    assert resposta.json() == {"dia": "amanha", "jogos": []}
+
+
+def test_maiores_probabilidades_vazio_sem_jogos_reais(cliente):
+    client, _ = cliente
+    dados = client.get("/api/maiores-probabilidades").json()
+    assert "EV" in dados["aviso"] or "ev" in dados["aviso"].lower()
+    assert dados["top"] == []
+
+
+def test_apostarias_hoje_vazio_tem_mensagem_explicativa(cliente):
+    client, _ = cliente
+    dados = client.get("/api/apostarias-hoje").json()
+    assert dados["apostarias"] == []
+    assert "sistema funcionando" in dados["mensagem_vazio"]
+
+
+def test_apostarias_hoje_so_traz_registros_com_flag_apostaria(cliente):
+    client, caminho_db = cliente
+    from datetime import date
+    hoje = date.today().isoformat()
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.1,
+                      data_jogo=hoje, origem="auto_manha", apostaria=True)
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Empate", 0.3, 3.0, -0.05,
+                      data_jogo=hoje, origem="auto_manha", apostaria=False)
+    dados = client.get("/api/apostarias-hoje").json()
+    assert len(dados["apostarias"]) == 1
+    assert dados["apostarias"][0]["selecao"] == "Casa"
+    assert "sem edge no backtest" in dados["apostarias"][0]["etiqueta"]
+
+
+def test_status_sistema_responde(cliente):
+    client, _ = cliente
+    dados = client.get("/api/status-sistema").json()
+    assert dados["bot_ok"] is False  # sem heartbeat gravado no banco de teste
+    assert "proxima_rotina" in dados
 
 
 def test_registros_vazio(cliente):
@@ -71,6 +114,40 @@ def test_marcar_resultado_nao_apaga_outros_registros(cliente):
     client.post(f"/api/registros/{rid1}/resultado?resultado=ganhou")
     dados = client.get("/api/registros").json()["registros"]
     assert len(dados) == 2  # nenhum registro sumiu
+
+
+def test_registros_preenche_data_a_partir_de_criado_em_quando_nulo(cliente):
+    client, caminho_db = cliente
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05)  # sem data_jogo
+    dados = client.get("/api/registros").json()["registros"]
+    assert dados[0]["data_jogo"] is not None  # preenchido com a data de criado_em
+
+
+def test_registros_filtra_por_liga(cliente):
+    client, caminho_db = cliente
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05)
+    inserir_registro(caminho_db, "La Liga", "C", "D", "1X2", "Fora", 0.4, 2.5, 0.05)
+    dados = client.get("/api/registros?liga=La Liga").json()["registros"]
+    assert len(dados) == 1
+    assert dados[0]["liga"] == "La Liga"
+
+
+def test_registros_filtra_por_familia(cliente):
+    client, caminho_db = cliente
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05)
+    inserir_registro(caminho_db, "Premier League", "A", "B", "Ambas marcam", "Sim", 0.5, 1.9, 0.05)
+    dados = client.get("/api/registros?familia=Ambas marcam").json()["registros"]
+    assert len(dados) == 1
+    assert dados[0]["mercado"] == "Ambas marcam"
+
+
+def test_registros_elimina_duplicatas_exatas(cliente):
+    client, caminho_db = cliente
+    for _ in range(2):
+        inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05,
+                          data_jogo="2026-08-01", origem="auto_manha")
+    dados = client.get("/api/registros").json()["registros"]
+    assert len(dados) == 1  # mesma liga/times/mercado/selecao/data/status -> um só na listagem
 
 
 def test_clv_serie_vazio(cliente):

@@ -1,17 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Painel web do futprob (FastAPI). Só leitura, exceto marcar manualmente o
-resultado de um jogo já ocorrido — nenhuma ação do painel apaga ou corrompe
-dados. Lê exclusivamente de db/previsoes.sqlite.
+Painel web do futprob (FastAPI) — reforma final:
+
+1. "Maiores probabilidades do dia" — top 10 desfechos mais prováveis entre
+   todos os jogos/mercados reais de hoje, com odd/EV quando já coletados.
+2. "Apostarias de hoje" — só registros que passaram os guarda-corpos de EV
+   (coluna `apostaria` em `registros`), sem número mínimo/máximo.
+3. Cada jogo real de hoje vira um card com todas as famílias de mercado
+   (1X2+dupla chance / over-under gols / ambas marcam / escanteios /
+   cartões e faltas), avisando explicitamente quando não há modelo pra uma
+   família nessa liga — nunca some em silêncio.
+4. Registros (histórico): coluna Data sempre preenchida, sem duplicatas na
+   listagem, filtráveis por liga/família de mercado.
+5. Status do sistema (bot/agendador/painel/coleta) — ver src/saude_sistema.py.
+
+Só leitura, exceto marcar manualmente o resultado de um jogo já ocorrido —
+nenhuma ação do painel apaga ou corrompe dados. "Jogos do dia" vem SEMPRE da
+coleta mais recente da Betano (nunca de previsões avulsas salvas em algum
+momento passado no banco — ver src/catalogo.py e o bug de fase anterior em
+que o painel mostrava exemplos de teste como se fossem jogos reais).
 
 Host/porta configuráveis via .env (padrão: localhost, sem exposição
 externa). Rodar com: python src/dashboard.py
 """
 from __future__ import annotations
 
+import logging
 import os
 import sqlite3
 import sys
+import time
+from datetime import timedelta
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 import numpy as np
@@ -27,13 +47,32 @@ RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_DB = RAIZ / "db" / "previsoes.sqlite"
 LIGAS_PADRAO = ["Premier League", "La Liga", "Championship", "brasileirao", "mls"]
 LIMITE_USOS_ODDSPAPI = 250
+CACHE_TTL_SEGUNDOS = 120  # card completo recalcula o modelo do zero (~5s/jogo) — evita refazer a cada refresh
+
+CAMINHO_LOG = RAIZ / "logs" / "painel.log"
+CAMINHO_LOG.parent.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s: %(message)s",
+    handlers=[
+        RotatingFileHandler(CAMINHO_LOG, maxBytes=5_000_000, backupCount=3, encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
+logger = logging.getLogger("futprob.dashboard")
 
 load_dotenv(RAIZ / ".env")
 
 from painel_db import inicializar_db_painel, marcar_resultado_manual  # noqa: E402
 from predict import inicializar_db as inicializar_db_previsoes  # noqa: E402
+from resolucao_times import carregar_times_por_liga  # noqa: E402
+from catalogo import (  # noqa: E402
+    descobrir_jogos_do_dia, card_completo, maiores_probabilidades, hoje_br, familia_mercado, GRUPOS_CARD,
+)
+from saude_sistema import calcular_status_sistema  # noqa: E402
 
 app = FastAPI(title="futprob — painel")
+
+_cache_catalogo: dict[str, tuple[float, list[dict]]] = {}
 
 
 def _sem_nan(registros: list[dict]) -> list[dict]:
@@ -52,62 +91,97 @@ def _conectar() -> sqlite3.Connection:
     return conn
 
 
+def _cards_hoje(forcar: bool = False) -> list[dict]:
+    """Cards completos dos jogos reais de hoje (fonte: coleta mais recente
+    da Betano, nunca previsões avulsas do banco — ver catalogo.py). Cache
+    curto porque cada card recalcula o modelo do zero."""
+    agora = time.time()
+    if not forcar and "hoje" in _cache_catalogo:
+        ts, cards = _cache_catalogo["hoje"]
+        if agora - ts < CACHE_TTL_SEGUNDOS:
+            return cards
+
+    times_por_liga = carregar_times_por_liga()
+    dia = hoje_br()
+    jogos = descobrir_jogos_do_dia(dia, times_por_liga, CAMINHO_DB)
+    cards = []
+    for j in jogos:
+        try:
+            cards.append(card_completo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB))
+        except Exception:
+            logger.exception(f"falha ao montar card de {j['casa']} x {j['fora']} — pulando esse jogo, sem quebrar o resto")
+    _cache_catalogo["hoje"] = (agora, cards)
+    return cards
+
+
 @app.get("/api/jogos-do-dia")
-def jogos_do_dia():
-    """Últimas previsões geradas (predict.py) por confronto, com o EV de
-    cada mercado quando houver odds coletadas casando com o mesmo
-    liga+times+data em `registros` (fica vazio até o coletor do Bloco 4
-    estar rodando de verdade)."""
+def jogos_do_dia(dia: str = "hoje", forcar: bool = False):
+    """dia='hoje' -> cards completos (todas as famílias de mercado, com
+    aviso explícito onde não há modelo). dia='amanha' -> listagem simples
+    (liga/times/horário), sem card — normalmente ainda não há odds
+    coletadas pra jogos de amanhã."""
+    if dia == "amanha":
+        times_por_liga = carregar_times_por_liga()
+        jogos = descobrir_jogos_do_dia(hoje_br() + timedelta(days=1), times_por_liga, CAMINHO_DB)
+        return {"dia": "amanha", "jogos": jogos}
+    cards = _cards_hoje(forcar=forcar)
+    return {"dia": "hoje", "jogos": cards, "grupos_ordem": GRUPOS_CARD}
+
+
+@app.get("/api/maiores-probabilidades")
+def maiores_probabilidades_do_dia():
+    cards = _cards_hoje()
+    top = maiores_probabilidades(cards, top_n=10)
+    return {
+        "aviso": "probabilidade alta não significa boa aposta — o EV é quem diz isso",
+        "top": _sem_nan(top),
+    }
+
+
+@app.get("/api/apostarias-hoje")
+def apostarias_hoje():
+    """Só registros que passaram os guarda-corpos de EV (apostaria=1) —
+    sem número mínimo nem máximo. Vazio é um resultado válido."""
+    hoje = hoje_br().isoformat()
     with _conectar() as conn:
-        previsoes = pd.read_sql_query(
-            """SELECT p.id, p.criado_em, p.liga, p.time_casa, p.time_fora, p.data_corte_modelo, p.alpha_xg
-               FROM previsoes p
-               WHERE p.id IN (
-                   SELECT MAX(id) FROM previsoes GROUP BY liga, time_casa, time_fora
-               )
-               ORDER BY p.criado_em DESC LIMIT 30""",
-            conn,
+        df = pd.read_sql_query(
+            "SELECT * FROM registros WHERE apostaria=1 AND "
+            "(data_jogo=? OR (data_jogo IS NULL AND substr(criado_em,1,10)=?)) "
+            "ORDER BY criado_em DESC",
+            conn, params=(hoje, hoje),
         )
-        if previsoes.empty:
-            return {"jogos": []}
-
-        mercados = pd.read_sql_query(
-            "SELECT previsao_id, mercado, selecao, probabilidade FROM previsoes_mercados "
-            f"WHERE previsao_id IN ({','.join(map(str, previsoes['id']))})",
-            conn,
+    registros_hoje = _sem_nan(df.to_dict("records"))
+    familias_gols = {"1X2", "Dupla chance", "Over/Under gols", "Ambas marcam"}
+    for r in registros_hoje:
+        r["etiqueta"] = (
+            "família sem edge no backtest histórico — registro para estudo"
+            if familia_mercado(r["mercado"]) in familias_gols else None
         )
-        registros = pd.read_sql_query(
-            "SELECT liga, data_jogo, time_casa, time_fora, mercado, selecao, ev, status "
-            "FROM registros WHERE status='aberto'",
-            conn,
-        )
-
-    jogos = []
-    for _, p in previsoes.iterrows():
-        m = mercados[mercados["previsao_id"] == p["id"]]
-        ev_do_jogo = registros[
-            (registros["liga"] == p["liga"]) & (registros["time_casa"] == p["time_casa"]) & (registros["time_fora"] == p["time_fora"])
-        ]
-        jogos.append({
-            "liga": p["liga"], "time_casa": p["time_casa"], "time_fora": p["time_fora"],
-            "criado_em": p["criado_em"], "alpha_xg": p["alpha_xg"],
-            "mercados_1x2": _sem_nan(m[m["mercado"] == "1X2"][["selecao", "probabilidade"]].to_dict("records")),
-            "evs": _sem_nan(ev_do_jogo[["mercado", "selecao", "ev"]].to_dict("records")),
-            "apostaria": bool((ev_do_jogo["ev"] > 0.05).any()) if not ev_do_jogo.empty else False,
-        })
-    return {"jogos": jogos}
+    mensagem_vazio = "nenhuma divergência hoje — isso é o sistema funcionando, não um defeito" if not registros_hoje else None
+    return {"apostarias": registros_hoje, "mensagem_vazio": mensagem_vazio}
 
 
 @app.get("/api/registros")
-def registros(status: str | None = None):
+def registros(status: str | None = None, liga: str | None = None, familia: str | None = None):
     with _conectar() as conn:
-        query = "SELECT * FROM registros"
-        params = []
+        query = """SELECT * FROM registros WHERE id IN (
+            SELECT MAX(id) FROM registros
+            GROUP BY liga, time_casa, time_fora, mercado, selecao, COALESCE(data_jogo, ''), status
+        )"""
+        params: list = []
         if status in ("aberto", "fechado"):
-            query += " WHERE status=?"
+            query += " AND status=?"
             params.append(status)
-        query += " ORDER BY criado_em DESC LIMIT 500"
+        if liga:
+            query += " AND liga=?"
+            params.append(liga)
+        query += " ORDER BY COALESCE(data_jogo, substr(criado_em,1,10)) DESC, criado_em DESC LIMIT 500"
         df = pd.read_sql_query(query, conn, params=params)
+
+    if not df.empty:
+        df["data_jogo"] = df["data_jogo"].fillna(df["criado_em"].str.slice(0, 10))
+        if familia:
+            df = df[df["mercado"].apply(familia_mercado) == familia]
     return {"registros": _sem_nan(df.to_dict("records"))}
 
 
@@ -164,6 +238,13 @@ def status_coleta():
     }
 
 
+@app.get("/api/status-sistema")
+def status_sistema():
+    """Bloco de estabilização: bot (heartbeat), agendador/próxima rotina,
+    última coleta e registros abertos — o painel se olhando no espelho."""
+    return calcular_status_sistema(CAMINHO_DB)
+
+
 @app.post("/api/registros/{registro_id}/resultado")
 def marcar_resultado(registro_id: int, resultado: str):
     """Única escrita manual permitida no painel: marcar o resultado
@@ -186,27 +267,66 @@ PAGINA_HTML = """<!doctype html>
   @media (prefers-color-scheme: light) { body { background: #f6f8fa; color: #1f2328; } }
   h1 { font-size: 1.3rem; margin-bottom: 0.2rem; }
   h2 { font-size: 1rem; margin-top: 2rem; border-bottom: 1px solid #444; padding-bottom: 0.3rem; }
+  h4 { font-size: 0.85rem; margin: 0.8rem 0 0.2rem; opacity: 0.9; }
   table { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin-top: 0.5rem; }
   th, td { text-align: left; padding: 0.35rem 0.6rem; border-bottom: 1px solid #333; }
   .badge { padding: 0.1rem 0.5rem; border-radius: 0.3rem; font-size: 0.75rem; }
   .apostaria { background: #2ea043; color: white; }
   .positivo { color: #3fb950; }
   .negativo { color: #f85149; }
-  button { background: #238636; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.4rem; cursor: pointer; }
-  #status-linha { font-size: 0.8rem; opacity: 0.8; margin-top: 0.3rem; }
+  button, select { background: #238636; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.4rem; cursor: pointer; }
+  select { background: #21262d; }
+  #status-linha, #status-sistema { font-size: 0.8rem; opacity: 0.85; margin-top: 0.3rem; }
   svg { background: #161b22; border-radius: 0.4rem; }
   .card { background: #161b22; border-radius: 0.5rem; padding: 1rem; margin-top: 0.5rem; }
+  .aviso-fixo { font-size: 0.8rem; background: #3d2a00; border: 1px solid #806000; border-radius: 0.4rem; padding: 0.5rem 0.8rem; }
+  @media (prefers-color-scheme: light) { .aviso-fixo { background: #fff3cd; border-color: #e0c060; } }
+  .jogo-card { background: #161b22; border-radius: 0.5rem; padding: 0.6rem 1rem; margin-top: 0.5rem; }
+  .jogo-card summary { cursor: pointer; font-weight: 600; }
+  .card-conteudo { margin-top: 0.5rem; }
+  .etiqueta-sem-edge { display: block; font-size: 0.75rem; opacity: 0.75; }
+  .filtros { margin: 0.5rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 <h1>futprob — painel</h1>
 <div id="status-linha">carregando status…</div>
-<button onclick="atualizarTudo()">Atualizar</button>
+<div id="status-sistema">carregando status do sistema…</div>
+<button onclick="atualizarTudo(true)">Atualizar</button>
 
-<h2>Jogos do dia (últimas previsões)</h2>
-<div id="jogos" class="card">carregando…</div>
+<h2>Maiores probabilidades do dia</h2>
+<div id="maiores-prob" class="card">carregando…</div>
+
+<h2>Apostarias de hoje</h2>
+<div id="apostarias" class="card">carregando…</div>
+
+<h2>Jogos de hoje</h2>
+<div id="jogos-hoje">carregando…</div>
+
+<h2>Jogos de amanhã</h2>
+<div id="jogos-amanha" class="card">carregando…</div>
 
 <h2>Registros — abertos e fechados</h2>
+<div class="filtros">
+  <select id="filtro-liga" onchange="carregarRegistros()">
+    <option value="">Todas as ligas</option>
+    <option>Premier League</option>
+    <option>La Liga</option>
+    <option>Championship</option>
+    <option value="brasileirao">Brasileirão</option>
+    <option value="mls">MLS</option>
+  </select>
+  <select id="filtro-familia" onchange="carregarRegistros()">
+    <option value="">Todas as famílias</option>
+    <option>1X2</option>
+    <option>Dupla chance</option>
+    <option>Ambas marcam</option>
+    <option>Over/Under gols</option>
+    <option>Escanteios</option>
+    <option>Cartões</option>
+    <option>Faltas</option>
+  </select>
+</div>
 <div id="registros" class="card">carregando…</div>
 
 <h2>Evolução do CLV médio e ROI de papel (com IC 95%)</h2>
@@ -219,6 +339,9 @@ async function buscar(url, opts) {
   return r.json();
 }
 
+function fmtOdd(v) { return v != null ? v.toFixed(2) : '—'; }
+function fmtPct(v) { return v != null ? (v*100).toFixed(1) + '%' : '—'; }
+
 async function carregarStatus() {
   const s = await buscar('/api/status-coleta');
   const uc = s.ultima_coleta;
@@ -229,33 +352,101 @@ async function carregarStatus() {
     `${linhaColeta} · OddsPapi: ${s.oddspapi_gasto}/${s.oddspapi_limite} usos (restam ${s.oddspapi_restante})`;
 }
 
-async function carregarJogos() {
-  const d = await buscar('/api/jogos-do-dia');
-  const el = document.getElementById('jogos');
-  if (!d.jogos.length) { el.innerHTML = '<i>Nenhuma previsão registrada ainda. Rode src/predict.py.</i>'; return; }
-  let html = '<table><tr><th>Liga</th><th>Jogo</th><th>1X2 (modelo)</th><th>EV coletado</th><th></th></tr>';
+async function carregarStatusSistema() {
+  const s = await buscar('/api/status-sistema');
+  const botTxt = s.bot_ok
+    ? `ok (heartbeat há ${s.minutos_desde_heartbeat.toFixed(1)}min)`
+    : '⚠️ sem sinal recente do bot — verifique se está rodando';
+  const chatTxt = s.chat_id_configurado ? '' : ' · ⚠️ chat_id não configurado (mande /start no bot)';
+  document.getElementById('status-sistema').innerHTML =
+    `Bot: ${botTxt} · Próxima rotina: ${s.proxima_rotina} · Registros abertos: ${s.n_registros_abertos}${chatTxt}`;
+}
+
+async function carregarMaioresProbabilidades() {
+  const d = await buscar('/api/maiores-probabilidades');
+  const el = document.getElementById('maiores-prob');
+  let html = `<p class="aviso-fixo">⚠️ ${d.aviso}</p>`;
+  if (!d.top.length) { html += '<i>Nenhum jogo real das 5 ligas hoje.</i>'; el.innerHTML = html; return; }
+  html += '<table><tr><th>Jogo</th><th>Liga</th><th>Mercado</th><th>Seleção</th><th>Prob. modelo</th><th>Odd (Betano)</th><th>EV</th></tr>';
+  for (const item of d.top) {
+    html += `<tr><td>${item.time_casa} x ${item.time_fora}</td><td>${item.liga}</td><td>${item.mercado}</td>`
+      + `<td>${item.selecao}</td><td>${fmtPct(item.prob_modelo)}</td><td>${fmtOdd(item.odd)}</td><td>${fmtPct(item.ev)}</td></tr>`;
+  }
+  el.innerHTML = html + '</table>';
+}
+
+async function carregarApostarias() {
+  const d = await buscar('/api/apostarias-hoje');
+  const el = document.getElementById('apostarias');
+  if (d.mensagem_vazio) { el.innerHTML = `<i>${d.mensagem_vazio}</i>`; return; }
+  let html = '<table><tr><th>Jogo</th><th>Liga</th><th>Mercado/Seleção</th><th>Odd</th><th>EV</th><th>Origem</th></tr>';
+  for (const r of d.apostarias) {
+    const etiqueta = r.etiqueta ? `<span class="etiqueta-sem-edge">⚠️ ${r.etiqueta}</span>` : '';
+    html += `<tr><td>${r.time_casa} x ${r.time_fora}</td><td>${r.liga}</td><td>${r.mercado}/${r.selecao}${etiqueta}</td>`
+      + `<td>${fmtOdd(r.odd_registrada)}</td><td>${fmtPct(r.ev)}</td><td>${r.origem}</td></tr>`;
+  }
+  el.innerHTML = html + '</table>';
+}
+
+function renderizarCard(j, gruposOrdem) {
+  const rotuloOdds = j.tem_odds_coletadas ? '' : ' — odds ainda não coletadas hoje';
+  let html = `<details class="jogo-card"><summary>${j.time_casa} x ${j.time_fora} (${j.liga})${rotuloOdds}</summary><div class="card-conteudo">`;
+  for (const grupo of gruposOrdem) {
+    const linhas = (j.grupos && j.grupos[grupo]) || [];
+    const aviso = j.avisos_grupo && j.avisos_grupo[grupo];
+    html += `<h4>${grupo}</h4>`;
+    if (aviso) {
+      html += `<i>${aviso}</i>`;
+    } else if (!linhas.length) {
+      html += '<i>sem linhas calculadas</i>';
+    } else {
+      html += '<table><tr><th>Mercado</th><th>Seleção</th><th>Prob.</th><th>Odd</th><th>EV</th></tr>';
+      for (const item of linhas) {
+        html += `<tr><td>${item.mercado}</td><td>${item.selecao}</td><td>${fmtPct(item.prob_modelo)}</td>`
+          + `<td>${fmtOdd(item.odd)}</td><td>${fmtPct(item.ev)}</td></tr>`;
+      }
+      html += '</table>';
+    }
+  }
+  return html + '</div></details>';
+}
+
+async function carregarJogosHoje(forcar) {
+  const d = await buscar('/api/jogos-do-dia?dia=hoje' + (forcar ? '&forcar=true' : ''));
+  const el = document.getElementById('jogos-hoje');
+  if (!d.jogos.length) { el.innerHTML = '<i class="card">Nenhum jogo real das 5 ligas hoje.</i>'; return; }
+  el.innerHTML = d.jogos.map(j => renderizarCard(j, d.grupos_ordem)).join('');
+}
+
+async function carregarJogosAmanha() {
+  const d = await buscar('/api/jogos-do-dia?dia=amanha');
+  const el = document.getElementById('jogos-amanha');
+  if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo real confirmado pra amanhã ainda.</i>'; return; }
+  let html = '<table><tr><th>Liga</th><th>Jogo</th><th>Horário</th></tr>';
   for (const j of d.jogos) {
-    const probs = j.mercados_1x2.map(m => `${m.selecao}: ${(m.probabilidade*100).toFixed(1)}%`).join(' / ');
-    const evs = j.evs.length ? j.evs.map(e => `${e.mercado}/${e.selecao}: ${(e.ev*100).toFixed(1)}%`).join('<br>') : '<i>sem odds coletadas</i>';
-    const destaque = j.apostaria ? '<span class="badge apostaria">apostaria</span>' : '';
-    html += `<tr><td>${j.liga}</td><td>${j.time_casa} x ${j.time_fora}</td><td>${probs}</td><td>${evs}</td><td>${destaque}</td></tr>`;
+    html += `<tr><td>${j.liga}</td><td>${j.casa} x ${j.fora}</td><td>${j.commence_time}</td></tr>`;
   }
   el.innerHTML = html + '</table>';
 }
 
 async function carregarRegistros() {
-  const d = await buscar('/api/registros');
+  const liga = document.getElementById('filtro-liga').value;
+  const familia = document.getElementById('filtro-familia').value;
+  const params = new URLSearchParams();
+  if (liga) params.set('liga', liga);
+  if (familia) params.set('familia', familia);
+  const d = await buscar('/api/registros?' + params.toString());
   const el = document.getElementById('registros');
   if (!d.registros.length) { el.innerHTML = '<i>Nenhum registro ainda.</i>'; return; }
   let html = '<table><tr><th>Data</th><th>Liga</th><th>Jogo</th><th>Mercado/Seleção</th><th>Odd</th><th>EV</th><th>Status</th><th>CLV</th><th>Resultado</th><th></th></tr>';
   for (const r of d.registros) {
     const clvClasse = r.clv > 0 ? 'positivo' : (r.clv < 0 ? 'negativo' : '');
-    const clvTxt = r.clv != null ? (r.clv*100).toFixed(1) + '%' : '-';
+    const clvTxt = r.clv != null ? fmtPct(r.clv) : '-';
     const acao = (r.status === 'aberto')
       ? `<button onclick="marcarResultado(${r.id}, 'ganhou')">ganhou</button> <button onclick="marcarResultado(${r.id}, 'perdeu')">perdeu</button>`
       : '';
     html += `<tr><td>${r.data_jogo||'-'}</td><td>${r.liga}</td><td>${r.time_casa} x ${r.time_fora}</td>`
-      + `<td>${r.mercado}/${r.selecao}</td><td>${r.odd_registrada?.toFixed(2)}</td><td>${(r.ev*100).toFixed(1)}%</td>`
+      + `<td>${r.mercado}/${r.selecao}</td><td>${fmtOdd(r.odd_registrada)}</td><td>${fmtPct(r.ev)}</td>`
       + `<td>${r.status}</td><td class="${clvClasse}">${clvTxt}</td><td>${r.resultado||'-'}</td><td>${acao}</td></tr>`;
   }
   el.innerHTML = html + '</table>';
@@ -300,10 +491,13 @@ async function carregarGrafico() {
   el.innerHTML = svg + '<div style="font-size:0.75rem;opacity:0.7;margin-top:0.3rem">Faixa sombreada = intervalo de confiança de 95%. Enquanto a faixa cruzar o zero, a diferença de CLV/ROI não é estatisticamente distinguível de ruído.</div>';
 }
 
-async function atualizarTudo() {
-  await Promise.all([carregarStatus(), carregarJogos(), carregarRegistros(), carregarGrafico()]);
+async function atualizarTudo(forcar) {
+  await Promise.all([
+    carregarStatus(), carregarStatusSistema(), carregarMaioresProbabilidades(), carregarApostarias(),
+    carregarJogosHoje(forcar), carregarJogosAmanha(), carregarRegistros(), carregarGrafico(),
+  ]);
 }
-atualizarTudo();
+atualizarTudo(false);
 </script>
 </body>
 </html>
@@ -319,7 +513,7 @@ def main():
     import uvicorn
     host = os.environ.get("DASHBOARD_HOST", "127.0.0.1")
     port = int(os.environ.get("DASHBOARD_PORT", "8000"))
-    print(f"Painel disponível em http://{host}:{port}")
+    logger.info(f"Painel disponível em http://{host}:{port}")
     uvicorn.run(app, host=host, port=port)
 
 

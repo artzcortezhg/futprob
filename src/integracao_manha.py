@@ -40,8 +40,8 @@ from collector import coletar, salvar_snapshot  # noqa: E402
 from painel_db import inserir_registro, registrar_coleta, carregar_estado_bot  # noqa: E402
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, probs_modelo_de_linhas  # noqa: E402
-from resolucao_times import carregar_times_por_liga, resolver_time  # noqa: E402
-from catalogo import _mercados_para_jogo, FUSO_BR  # noqa: E402
+from resolucao_times import carregar_times_por_liga  # noqa: E402
+from catalogo import _mercados_para_jogo, FUSO_BR, resolver_fixture_para_liga  # noqa: E402
 
 
 async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
@@ -74,12 +74,10 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
     apostarias = []
 
     for ev in eventos:
-        casa_resolvido = resolver_time(ev.home_team, times_por_liga)
-        fora_resolvido = resolver_time(ev.away_team, times_por_liga)
-        if not casa_resolvido or not fora_resolvido or casa_resolvido[0] != fora_resolvido[0]:
-            continue  # jogo de liga que o futprob não modela
-        liga, time_casa = casa_resolvido
-        _, time_fora = fora_resolvido
+        resolvido = resolver_fixture_para_liga(ev.home_team, ev.away_team, times_por_liga)
+        if resolvido is None:
+            continue  # campeonato sem modelo (ver regra de pertencimento em catalogo.py)
+        liga, time_casa, time_fora = resolvido
 
         try:
             resultado_pred = prever(liga, time_casa, time_fora, gravar=False)

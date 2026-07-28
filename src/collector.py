@@ -138,7 +138,16 @@ _H2H_EXACT_NAMES = frozenset([
     "1x2", "full time result", "match result", "moneyline", "match winner",
 ])
 # NOVO em relação ao original: dupla chance e ambas marcam
-_DUPLA_CHANCE_WORDS = frozenset(["dupla chance", "double chance", "empate anula", "draw no bet"])
+# "empate anula a aposta"/"draw no bet" é um mercado DIFERENTE (2 seleções,
+# casa-ou-reembolso / fora-ou-reembolso) de "dupla chance" (3 seleções,
+# 1X/12/X2) — batia na mesma categoria antes e todo double_chance capturado
+# na prática era Draw No Bet (2 seleções nomeadas com o nome do time), o
+# que cruzava errado com o modelo de "Dupla chance" (soma de 1X2). Por isso
+# viram chaves separadas; draw_no_bet não tem modelo no futprob e é
+# descartado em _mercado_permitido — melhor não coletar do que coletar
+# errado.
+_DUPLA_CHANCE_WORDS = frozenset(["dupla chance", "double chance"])
+_EMPATE_ANULA_WORDS = frozenset(["empate anula", "draw no bet"])
 _BTTS_WORDS = frozenset(["ambas equipes marcam", "ambas marcam", "both teams to score", "btts"])
 
 
@@ -151,6 +160,8 @@ def _infer_market_key(market_name: str, outcome_names: list[str], home_name: str
 
     if any(kw in combined for kw in _DUPLA_CHANCE_WORDS):
         return "double_chance"
+    if any(kw in combined for kw in _EMPATE_ANULA_WORDS):
+        return "draw_no_bet"
     if any(kw in combined for kw in _BTTS_WORDS):
         return "btts"
 

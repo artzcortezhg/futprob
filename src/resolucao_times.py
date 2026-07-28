@@ -33,6 +33,18 @@ def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO) ->
     return resultado
 
 
+def score_nomes(a: str, b: str) -> float:
+    """Similaridade entre dois nomes de time (sem acento, com bônus de
+    substring parcial) — usado tanto pra casar contra o roster do modelo
+    (candidatos_time) quanto pra casar contra nomes CRUS coletados (busca
+    de fixture real, ver src/catalogo.py)."""
+    a_norm, b_norm = normalizar_texto(a), normalizar_texto(b)
+    score = difflib.SequenceMatcher(None, a_norm, b_norm).ratio()
+    if a_norm and b_norm and (a_norm in b_norm or b_norm in a_norm):
+        score += 0.25
+    return score
+
+
 def candidatos_time(nome: str, times_por_liga: dict[str, list[str]], top_n: int = 5) -> list[tuple[str, str, float]]:
     """Retorna até top_n (liga, time, score) ordenados por score desc,
     usando busca aproximada sem acento e por substring parcial."""
@@ -42,11 +54,7 @@ def candidatos_time(nome: str, times_por_liga: dict[str, list[str]], top_n: int 
     candidatos = []
     for liga, times in times_por_liga.items():
         for t in times:
-            t_norm = normalizar_texto(t)
-            score = difflib.SequenceMatcher(None, alvo, t_norm).ratio()
-            if alvo in t_norm or t_norm in alvo:
-                score += 0.25
-            candidatos.append((liga, t, score))
+            candidatos.append((liga, t, score_nomes(nome, t)))
     candidatos.sort(key=lambda c: -c[2])
     return candidatos[:top_n]
 

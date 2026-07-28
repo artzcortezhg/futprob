@@ -14,13 +14,13 @@ Premier League fora de temporada) como se fossem "jogos de hoje".
 from __future__ import annotations
 
 import sqlite3
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
 
-from resolucao_times import resolver_time
+from resolucao_times import resolver_time, score_nomes
 from predict import prever, probs_modelo_de_linhas, LIGAS_SEM_ESTATISTICAS_EXTRAS
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -43,6 +43,41 @@ _MARKET_KEY_PARA_FUTPROB = {
 }
 
 
+# rótulos reais observados na Betano pra over/under: em português
+# ("Mais de 2.5"/"Menos de 2.5"), não "Over"/"Under" — mantemos os rótulos
+# em inglês também por robustez (outra fonte/locale eventual)
+_OVER_LABELS = ("over", "acima", "mais de")
+_UNDER_LABELS = ("under", "abaixo", "menos de")
+
+# a Betano identifica a seleção do 1X2 por "1"/"X"/"2" (visto ao vivo), não
+# pelo nome do time — mas aceitamos nome de time/"Empate" também por
+# robustez, caso outra fonte/formato apareça
+_H2H_ABREV = {"1": "Casa", "x": "Empate", "2": "Fora"}
+
+
+def _selecao_over_under(nome_odd: str) -> str | None:
+    n = nome_odd.strip().lower()
+    if any(rotulo in n for rotulo in _OVER_LABELS):
+        return "Over"
+    if any(rotulo in n for rotulo in _UNDER_LABELS):
+        return "Under"
+    return None
+
+
+def _selecao_h2h(nome_odd: str, casa_coletado: str, fora_coletado: str) -> str | None:
+    bruto = nome_odd.strip()
+    chave = bruto.lower()
+    if chave in _H2H_ABREV:
+        return _H2H_ABREV[chave]
+    if bruto == casa_coletado:
+        return "Casa"
+    if bruto == fora_coletado:
+        return "Fora"
+    if chave in ("empate", "draw"):
+        return "Empate"
+    return None
+
+
 def _mercados_para_jogo(mercado_key: str, outcomes: dict[str, float]) -> list[tuple[str, str, float]]:
     """Converte {nome_outcome_betano: odd} de um market_key coletado em
     [(mercado_futprob, selecao_futprob, odd), ...]."""
@@ -54,7 +89,7 @@ def _mercados_para_jogo(mercado_key: str, outcomes: dict[str, float]) -> list[tu
         if nome_mercado is None:
             return []
         for nome_odd, odd in outcomes.items():
-            selecao = "Over" if nome_odd.lower() in ("over", "acima") else "Under" if nome_odd.lower() in ("under", "abaixo") else None
+            selecao = _selecao_over_under(nome_odd)
             if selecao:
                 resultado.append((f"{nome_mercado} {linha}", selecao, odd))
         return resultado
@@ -125,6 +160,28 @@ def _snapshot_mais_recente(caminho_db: Path) -> pd.DataFrame:
             return pd.DataFrame(columns=["time_casa_coletado", "time_fora_coletado", "commence_time"])
 
 
+def resolver_fixture_para_liga(casa_cru: str, fora_cru: str,
+                                times_por_liga: dict[str, list[str]]) -> tuple[str, str, str] | None:
+    """REGRA DE PERTENCIMENTO: um confronto só casa com o modelo de uma
+    liga se OS DOIS times existirem na lista fechada de times daquela liga
+    (vinda dos dados de treino) — nunca um jogo com só um lado resolvido,
+    nem os dois resolvidos em ligas diferentes. Retorna (liga, casa_interno,
+    fora_interno) ou None ("campeonato sem modelo — sem previsão").
+
+    Isso sozinho não basta pra evitar contaminação entre divisões: um time
+    que já jogou a Série A em alguma temporada do histórico (ex.: Ponte
+    Preta) continua "existindo" no roster mesmo jogando a Série B agora.
+    A defesa real contra isso é o adversário: se o adversário REAL de hoje
+    (ex.: Athletic Club) não está em NENHUMA lista fechada, a regra rejeita
+    o confronto inteiro — é assim que se evita gerar previsão pra um jogo
+    de outra divisão."""
+    casa_resolvido = resolver_time(casa_cru, times_por_liga)
+    fora_resolvido = resolver_time(fora_cru, times_por_liga)
+    if not casa_resolvido or not fora_resolvido or casa_resolvido[0] != fora_resolvido[0]:
+        return None
+    return (casa_resolvido[0], casa_resolvido[1], fora_resolvido[1])
+
+
 def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], caminho_db: Path = CAMINHO_DB_PADRAO) -> list[dict]:
     """A partir da coleta mais recente, resolve e filtra os jogos cujo
     commence_time cai no `dia` informado (horário de Brasília). Nomes
@@ -141,43 +198,82 @@ def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], cami
             continue
         if dt_br.date() != dia:
             continue
-        casa_resolvido = resolver_time(row["time_casa_coletado"], times_por_liga)
-        fora_resolvido = resolver_time(row["time_fora_coletado"], times_por_liga)
-        if casa_resolvido and fora_resolvido and casa_resolvido[0] == fora_resolvido[0]:
-            jogos.append({
-                "liga": casa_resolvido[0], "casa": casa_resolvido[1], "fora": fora_resolvido[1],
-                "commence_time": dt.isoformat(),
-            })
+        resolvido = resolver_fixture_para_liga(row["time_casa_coletado"], row["time_fora_coletado"], times_por_liga)
+        if resolvido:
+            liga, casa, fora = resolvido
+            jogos.append({"liga": liga, "casa": casa, "fora": fora, "commence_time": dt.isoformat()})
     return jogos
 
 
-def buscar_proxima_partida(liga: str, time_interno: str, times_por_liga: dict[str, list[str]],
-                            caminho_db: Path = CAMINHO_DB_PADRAO) -> tuple[str, str, str] | None:
-    """Acha, na coleta mais recente, o próximo jogo do time já RESOLVIDO
-    pro nome interno do futprob — retorna sempre os nomes internos (nunca a
-    grafia crua da Betano), filtrado pela liga certa."""
+def buscar_fixture_real(nome_busca: str, caminho_db: Path = CAMINHO_DB_PADRAO,
+                         limiar: float = 0.55, margem_ambiguidade: float = 0.08) -> dict:
+    """Busca o time pelo NOME CRU coletado (não pelo roster do modelo) nas
+    fixtures REAIS mais próximas (hoje -> futuro) da coleta MAIS RECENTE —
+    nunca em coletas antigas. É essa ordem que importa: antes achava o time
+    no roster do modelo e só DEPOIS procurava um jogo dele em qualquer
+    coleta histórica, o que podia devolver um confronto ANTIGO e stale
+    (ex.: 'Ponte Preta' bateu no roster da Série A e a busca antiga achou
+    uma coleta velha com 'Ponte Preta x Ceará', quando o jogo real de hoje
+    é 'Ponte Preta x Athletic Club' na Série B). Agora a busca sempre acha
+    o jogo real primeiro; resolver pro modelo (resolver_fixture_para_liga)
+    só acontece depois, e só decide SE dá pra prever, nunca QUAL é o jogo.
+
+    Retorna:
+      {"status": "ok", "casa_coletado":.., "fora_coletado":.., "commence_time":..}
+      {"status": "ambiguo", "opcoes": [{"casa":.., "fora":.., "commence_time":..}, ...]}
+      {"status": "nao_encontrado"}
+    """
     with sqlite3.connect(caminho_db) as conn:
         try:
             df = pd.read_sql_query(
                 "SELECT DISTINCT time_casa_coletado, time_fora_coletado, commence_time FROM odds_coletadas "
-                "ORDER BY coletado_em DESC",
+                "WHERE coletado_em = (SELECT MAX(coletado_em) FROM odds_coletadas)",
                 conn,
             )
         except Exception:
-            return None
+            return {"status": "nao_encontrado"}
     if df.empty:
-        return None
+        return {"status": "nao_encontrado"}
 
+    agora = datetime.now(timezone.utc)
+    candidatos = []
     for _, row in df.iterrows():
-        casa_resolvido = resolver_time(row["time_casa_coletado"], times_por_liga)
-        fora_resolvido = resolver_time(row["time_fora_coletado"], times_por_liga)
-        if not casa_resolvido or not fora_resolvido:
+        try:
+            dt = pd.Timestamp(row["commence_time"])
+            if dt.tzinfo is None:
+                dt = dt.tz_localize("UTC")
+        except Exception:
             continue
-        if casa_resolvido[0] != liga or fora_resolvido[0] != liga:
-            continue
-        if casa_resolvido[1] == time_interno or fora_resolvido[1] == time_interno:
-            return (casa_resolvido[1], fora_resolvido[1], row["commence_time"])
-    return None
+        if dt.to_pydatetime() < agora:
+            continue  # só pré-jogo: fixture já começada/passada não conta
+        melhor_score = max(score_nomes(nome_busca, row["time_casa_coletado"]), score_nomes(nome_busca, row["time_fora_coletado"]))
+        if melhor_score >= limiar:
+            candidatos.append((melhor_score, dt, row))
+
+    if not candidatos:
+        return {"status": "nao_encontrado"}
+
+    candidatos.sort(key=lambda c: (-c[0], c[1]))
+    melhor_score = candidatos[0][0]
+    proximos = [c for c in candidatos if melhor_score - c[0] <= margem_ambiguidade]
+
+    vistos: set[tuple[str, str]] = set()
+    unicos = []
+    for c in proximos:
+        chave = (c[2]["time_casa_coletado"], c[2]["time_fora_coletado"])
+        if chave not in vistos:
+            vistos.add(chave)
+            unicos.append(c)
+
+    if len(unicos) > 1:
+        return {"status": "ambiguo", "opcoes": [
+            {"casa": c[2]["time_casa_coletado"], "fora": c[2]["time_fora_coletado"], "commence_time": c[1].isoformat()}
+            for c in unicos
+        ]}
+
+    _, dt, row = unicos[0]
+    return {"status": "ok", "casa_coletado": row["time_casa_coletado"], "fora_coletado": row["time_fora_coletado"],
+            "commence_time": dt.isoformat()}
 
 
 def buscar_odds_coletadas_para_fixture(time_casa: str, time_fora: str, times_por_liga: dict[str, list[str]],
@@ -217,9 +313,8 @@ def combinar_modelo_e_odds(probs_modelo: dict, odds: dict, time_casa: str, time_
     candidatos = []
     for mercado_key, outcomes in odds["mercados"].items():
         if mercado_key == "h2h":
-            mapa_nome = {odds["casa_coletado"]: "Casa", "Empate": "Empate", odds["fora_coletado"]: "Fora"}
             for nome_odd, odd in outcomes.items():
-                selecao = mapa_nome.get(nome_odd)
+                selecao = _selecao_h2h(nome_odd, odds["casa_coletado"], odds["fora_coletado"])
                 prob = probs_modelo.get("1X2", {}).get(selecao) if selecao else None
                 if prob is not None:
                     candidatos.append({"mercado": "1X2", "selecao": selecao, "prob_modelo": prob, "odd": odd, "ev": prob * odd - 1.0})

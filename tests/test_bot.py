@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from bot import (
     parsear_odds_coladas, resolver_time, resolver_time_ambiguo, normalizar_texto,
     candidatos_time, montar_candidatos, probs_modelo_de_linhas, familia_mercado,
-    calcular_report, buscar_proxima_partida, buscar_odds_coletadas_para_fixture,
+    calcular_report, buscar_fixture_real, resolver_fixture_para_liga, buscar_odds_coletadas_para_fixture,
     combinar_modelo_e_odds, descobrir_jogos_do_dia,
 )
 
@@ -190,38 +190,77 @@ def _criar_odds_coletadas(caminho, linhas):
         conn.commit()
 
 
-def test_buscar_proxima_partida_sem_tabela_retorna_none(tmp_path):
+def _futuro(horas: float = 24) -> str:
+    from datetime import datetime, timedelta, timezone
+    return (datetime.now(timezone.utc) + timedelta(hours=horas)).isoformat()
+
+
+def test_buscar_fixture_real_sem_tabela_retorna_nao_encontrado(tmp_path):
     caminho = tmp_path / "vazio.sqlite"
     with sqlite3.connect(caminho) as conn:
         conn.execute("CREATE TABLE dummy (x INTEGER)")
         conn.commit()
-    times = {"Premier League": ["Arsenal"]}
-    assert buscar_proxima_partida("Premier League", "Arsenal", times, caminho) is None
+    assert buscar_fixture_real("Arsenal", caminho) == {"status": "nao_encontrado"}
 
 
-def test_buscar_proxima_partida_retorna_nomes_internos_nao_os_crus(tmp_path):
-    """Regressão do bug real: antes devolvia 'Flamengo' (nome cru da
-    Betano), que não existe no modelo (só 'Flamengo RJ' existe) e quebrava
-    o /jogo silenciosamente."""
+def test_buscar_fixture_real_acha_pelo_nome_cru_coletado(tmp_path):
+    """Busca pelo nome CRU coletado, não pelo roster — encontra o jogo
+    real mesmo antes de qualquer resolução pro modelo."""
     caminho = tmp_path / "odds.sqlite"
     _criar_odds_coletadas(caminho, [
-        ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", "2026-07-29T22:30:00", "h2h", "1", 2.1),
+        ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", _futuro(), "h2h", "1", 2.1),
     ])
+    resultado = buscar_fixture_real("Flamengo", caminho)
+    assert resultado["status"] == "ok"
+    assert resultado["casa_coletado"] == "Flamengo"
+    assert resultado["fora_coletado"] == "Palmeiras"
+
+
+def test_buscar_fixture_real_ignora_jogo_ja_comecado(tmp_path):
+    caminho = tmp_path / "odds.sqlite"
+    from datetime import datetime, timedelta, timezone
+    passado = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+    _criar_odds_coletadas(caminho, [
+        ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", passado, "h2h", "1", 2.1),
+    ])
+    assert buscar_fixture_real("Flamengo", caminho) == {"status": "nao_encontrado"}
+
+
+def test_buscar_fixture_real_nao_cai_pra_confronto_antigo_stale(tmp_path):
+    """Regressão do bug real: 'Ponte Preta' bate no roster da Série A, e a
+    busca ANTIGA (buscar_proxima_partida) procurava por qualquer coleta
+    histórica em que 'Ponte Preta' aparecesse resolvido pro modelo,
+    achando um confronto velho/stale ('Ponte Preta x Ceará') em vez do
+    jogo real de hoje (Ponte Preta x Athletic Club, Série B, sem modelo).
+    A busca nova encontra sempre o jogo REAL mais próximo pelo nome cru —
+    aqui simulado com só o confronto real (sem coleta antiga nenhuma pra
+    cair como fallback)."""
+    caminho = tmp_path / "odds.sqlite"
+    _criar_odds_coletadas(caminho, [
+        ("2026-07-28T18:41:00", "manha", "betano", "Ponte Preta", "Athletic Club MG", _futuro(), "h2h", "1", 2.0),
+    ])
+    resultado = buscar_fixture_real("ponte preta", caminho)
+    assert resultado["status"] == "ok"
+    assert resultado["casa_coletado"] == "Ponte Preta"
+    assert resultado["fora_coletado"] == "Athletic Club MG"  # o adversário REAL, não "Ceará"
+
+
+def test_resolver_fixture_para_liga_ok_quando_os_dois_times_existem_na_mesma_liga():
     times = {"brasileirao": ["Flamengo RJ", "Palmeiras"]}
-    resultado = buscar_proxima_partida("brasileirao", "Flamengo RJ", times, caminho)
-    assert resultado is not None
-    assert resultado[0] == "Flamengo RJ"  # nome INTERNO, não "Flamengo"
-    assert resultado[1] == "Palmeiras"
+    assert resolver_fixture_para_liga("Flamengo", "Palmeiras", times) == ("brasileirao", "Flamengo RJ", "Palmeiras")
 
 
-def test_buscar_proxima_partida_respeita_a_liga(tmp_path):
-    """Não deve casar um time de outra liga só por nome parecido."""
-    caminho = tmp_path / "odds.sqlite"
-    _criar_odds_coletadas(caminho, [
-        ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", "2026-07-29T22:30:00", "h2h", "1", 2.1),
-    ])
-    times = {"brasileirao": ["Flamengo RJ", "Palmeiras"], "mls": ["Inter Miami"]}
-    assert buscar_proxima_partida("mls", "Inter Miami", times, caminho) is None
+def test_resolver_fixture_para_liga_none_quando_adversario_sem_modelo():
+    """A regra de pertencimento: mesmo o time da casa existindo no roster,
+    se o adversário real (ex.: de outra divisão) não existir em NENHUMA
+    liga modelada, o confronto inteiro não vira previsão."""
+    times = {"brasileirao": ["Ponte Preta", "Ceara"]}
+    assert resolver_fixture_para_liga("Ponte Preta", "Athletic Club MG", times) is None
+
+
+def test_resolver_fixture_para_liga_none_quando_ligas_diferentes():
+    times = {"brasileirao": ["Flamengo RJ"], "mls": ["Inter Miami"]}
+    assert resolver_fixture_para_liga("Flamengo", "Inter Miami", times) is None
 
 
 def test_buscar_odds_coletadas_para_fixture_encontra_e_agrupa(tmp_path):

@@ -85,7 +85,7 @@ from resolucao_times import (  # noqa: E402
 )
 from integracao_manha import processar_foto_manha_async  # noqa: E402
 from catalogo import (  # noqa: E402
-    _mercados_para_jogo, buscar_proxima_partida, buscar_odds_coletadas_para_fixture,
+    _mercados_para_jogo, buscar_fixture_real, resolver_fixture_para_liga, buscar_odds_coletadas_para_fixture,
     combinar_modelo_e_odds, descobrir_jogos_do_dia, familia_mercado, hoje_br,
     card_completo, maiores_probabilidades, GRUPOS_CARD,
 )
@@ -232,7 +232,8 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-async def _enviar_jogo(update_message, liga: str, time_casa: str, time_fora: str, data_jogo: str | None = None) -> None:
+async def _enviar_jogo(update_message, liga: str, time_casa: str, time_fora: str,
+                        data_jogo: str | None = None, horario_fmt: str | None = None) -> None:
     """Roda o modelo, cruza com odds já coletadas (se houver) e manda a
     tabela combinada. Cacheia as probabilidades pra reply manual (fallback)."""
     times_por_liga = carregar_times_por_liga()
@@ -243,7 +244,8 @@ async def _enviar_jogo(update_message, liga: str, time_casa: str, time_fora: str
     probs = probs_modelo_de_linhas(resultado["linhas_mercados"])
     odds = buscar_odds_coletadas_para_fixture(time_casa, time_fora, times_por_liga)
 
-    cabecalho = f"{time_casa} x {time_fora} — {liga}\n"
+    sufixo_horario = f" — {horario_fmt}" if horario_fmt else ""
+    cabecalho = f"{time_casa} x {time_fora} — {liga}{sufixo_horario}\n"
     if odds is None:
         texto = cabecalho + "(odds ainda não coletadas hoje pra esse jogo)\n\n" + formatar_tabela(resultado["linhas_mercados"])
     else:
@@ -267,33 +269,65 @@ async def _enviar_jogo(update_message, liga: str, time_casa: str, time_fora: str
     salvar_mensagem_jogo(CAMINHO_DB, enviada.message_id, liga, time_casa, time_fora, data_jogo, json.dumps(probs))
 
 
+def _formatar_horario_br(commence_time_iso: str) -> str:
+    try:
+        dt = pd.Timestamp(commence_time_iso)
+        if dt.tzinfo is None:
+            dt = dt.tz_localize("UTC")
+        return dt.tz_convert(FUSO_BR).strftime("%d/%m %H:%M")
+    except Exception:
+        return commence_time_iso
+
+
 async def cmd_jogo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Busca SEMPRE nas fixtures REAIS mais próximas (hoje -> futuro) da
+    coleta mais recente — nunca no roster do modelo primeiro (esse era o
+    bug: achar o time no roster da Série A e só depois procurar um jogo
+    dele em qualquer coleta antiga podia devolver um confronto stale de
+    outra época). Só depois de achar o jogo real é que tenta resolver pro
+    modelo; se um dos lados (ou os dois) não tiver modelo, informa isso
+    explicitamente em vez de inventar ou esconder o confronto."""
     if not context.args:
         await update.message.reply_text("Uso: /jogo <nome do time>")
         return
     nome = " ".join(context.args)
-    times_por_liga = carregar_times_por_liga()
-    resolvido = resolver_time_ambiguo(nome, times_por_liga)
+    busca = buscar_fixture_real(nome, CAMINHO_DB)
 
-    if resolvido["status"] == "nao_encontrado":
-        await update.message.reply_text(f"Não achei nenhum time parecido com '{nome}' nas 5 ligas do futprob.")
-        return
-    if resolvido["status"] == "ambiguo":
-        opcoes = "\n".join(f"  - {t} ({liga})" for liga, t in resolvido["opcoes"])
-        await update.message.reply_text(f"'{nome}' bateu com mais de um time — qual desses?\n{opcoes}\n\nMande /jogo com o nome mais específico.")
-        return
-
-    liga, time_interno = resolvido["liga"], resolvido["time"]
-    proxima = buscar_proxima_partida(liga, time_interno, times_por_liga)
-    if proxima is None:
+    if busca["status"] == "nao_encontrado":
         await update.message.reply_text(
-            f"Achei o time '{time_interno}' ({liga}), mas não tenho nenhuma partida futura coletada pra ele ainda "
-            "(a coleta automática roda às 9h — se já passou e não apareceu, pode ser que não haja jogo hoje)."
+            f"Não achei nenhuma partida futura coletada pra um time parecido com '{nome}' "
+            "(a coleta automática roda às 9h — se já passou e não apareceu, pode ser que não haja jogo hoje pra esse time)."
+        )
+        return
+    if busca["status"] == "ambiguo":
+        opcoes = "\n".join(
+            f"  - {o['casa']} x {o['fora']} ({_formatar_horario_br(o['commence_time'])})" for o in busca["opcoes"]
+        )
+        await update.message.reply_text(
+            f"'{nome}' bateu com mais de uma partida — qual dessas?\n{opcoes}\n\n"
+            "Mande /jogo com o nome mais específico (ex.: um dos dois times)."
         )
         return
 
-    casa, fora, data_jogo = proxima
-    await _enviar_jogo(update.message, liga, casa, fora, data_jogo)
+    casa_cru, fora_cru, commence_time = busca["casa_coletado"], busca["fora_coletado"], busca["commence_time"]
+    horario_fmt = _formatar_horario_br(commence_time)
+    times_por_liga = carregar_times_por_liga()
+    resolvido = resolver_fixture_para_liga(casa_cru, fora_cru, times_por_liga)
+
+    if resolvido is None:
+        await update.message.reply_text(
+            f"{casa_cru} x {fora_cru} — {horario_fmt}\n"
+            "⚠️ campeonato sem modelo — sem previsão (um dos dois times, ou os dois, não está na base de "
+            "times modelados das 5 ligas do futprob)."
+        )
+        return
+
+    liga, time_casa, time_fora = resolvido
+    dt = pd.Timestamp(commence_time)
+    if dt.tzinfo is None:
+        dt = dt.tz_localize("UTC")
+    data_jogo = dt.tz_convert(FUSO_BR).date().isoformat()
+    await _enviar_jogo(update.message, liga, time_casa, time_fora, data_jogo, horario_fmt)
 
 
 async def responder_odds_coladas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

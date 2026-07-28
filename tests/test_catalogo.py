@@ -12,7 +12,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import predict
-from catalogo import _grupo_exibicao, maiores_probabilidades, card_completo, GRUPOS_CARD
+from catalogo import (
+    _grupo_exibicao, maiores_probabilidades, card_completo, GRUPOS_CARD,
+    _mercados_para_jogo, combinar_modelo_e_odds, _selecao_h2h, _selecao_over_under,
+)
 
 
 def test_grupo_exibicao_agrupa_1x2_e_dupla_chance_juntos():
@@ -34,6 +37,49 @@ def test_grupo_exibicao_escanteios_e_gols_separados():
 def test_grupo_exibicao_placar_exato_fica_fora_do_card():
     assert _grupo_exibicao("Placar exato") is None
     assert _grupo_exibicao("Handicap europeu (+1)") is None
+
+
+def test_selecao_h2h_formato_real_betano_abreviado():
+    """Regressão: a Betano nomeia as seleções do 1X2 como '1'/'X'/'2' (visto
+    ao vivo), não pelo nome do time — o código antigo só reconhecia nome de
+    time/'Empate' e por isso NENHUMA odd de 1X2 batia (Odd '—' no painel)."""
+    assert _selecao_h2h("1", "Juventude-RS", "Avaí") == "Casa"
+    assert _selecao_h2h("X", "Juventude-RS", "Avaí") == "Empate"
+    assert _selecao_h2h("2", "Juventude-RS", "Avaí") == "Fora"
+
+
+def test_selecao_h2h_ainda_aceita_nome_de_time():
+    assert _selecao_h2h("Juventude-RS", "Juventude-RS", "Avaí") == "Casa"
+    assert _selecao_h2h("Empate", "Juventude-RS", "Avaí") == "Empate"
+
+
+def test_selecao_over_under_formato_real_betano_em_portugues():
+    """Regressão: a Betano usa 'Mais de X'/'Menos de X' (visto ao vivo), não
+    'Over'/'Under' — o código antigo não reconhecia isso e nenhuma odd de
+    over/under batia."""
+    assert _selecao_over_under("Mais de 2.5") == "Over"
+    assert _selecao_over_under("Menos de 2.5") == "Under"
+
+
+def test_selecao_over_under_ainda_aceita_ingles():
+    assert _selecao_over_under("Over") == "Over"
+    assert _selecao_over_under("Under") == "Under"
+
+
+def test_mercados_para_jogo_over_under_com_rotulo_em_portugues():
+    resultado = _mercados_para_jogo("ou_2.5_goals", {"Mais de 2.5": 2.42, "Menos de 2.5": 1.53})
+    pares = {(m, s) for m, s, _ in resultado}
+    assert ("Over/Under 2.5", "Over") in pares
+    assert ("Over/Under 2.5", "Under") in pares
+
+
+def test_combinar_modelo_e_odds_h2h_com_rotulo_abreviado_da_betano():
+    probs = {"1X2": {"Casa": 0.5, "Empate": 0.25, "Fora": 0.25}}
+    odds = {"casa_coletado": "Juventude-RS", "fora_coletado": "Avaí",
+            "mercados": {"h2h": {"1": 1.78, "X": 3.4, "2": 6.0}}}
+    candidatos = combinar_modelo_e_odds(probs, odds, "Juventude", "Avai")
+    selecoes = {c["selecao"]: c["odd"] for c in candidatos}
+    assert selecoes == {"Casa": 1.78, "Empate": 3.4, "Fora": 6.0}
 
 
 def test_maiores_probabilidades_ordena_desc_e_respeita_top_n():

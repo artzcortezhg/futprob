@@ -43,6 +43,27 @@ def test_infer_market_key_escanteios_por_time():
     assert chave == "ou_4.5_corners_team1"
 
 
+def test_infer_market_key_empate_anula_nao_e_dupla_chance():
+    """Regressão: 'Empate Anula a Aposta' (Draw No Bet, 2 seleções nomeadas
+    pelo time) é um mercado DIFERENTE de dupla chance (3 seleções 1X/12/X2)
+    — batiam na mesma categoria antes e cruzavam errado com o modelo de
+    'Dupla chance' (visto ao vivo: 100% dos double_chance coletados eram na
+    verdade Draw No Bet, com só 2 seleções nomeadas com o time)."""
+    chave = _infer_market_key("Empate Anula a Aposta", ["Fluminense", "Bahia"])
+    assert chave == "draw_no_bet"
+    assert chave != "double_chance"
+
+
+def test_draw_no_bet_nao_e_mercado_permitido():
+    """draw_no_bet não tem modelo no futprob — melhor descartar do que
+    coletar e cruzar com o modelo errado (Dupla chance)."""
+    assert _mercado_permitido("draw_no_bet") is False
+
+
+def test_dupla_chance_genuina_continua_permitida():
+    assert _mercado_permitido("double_chance") is True
+
+
 def test_mercado_permitido_aceita_apenas_o_que_o_futprob_modela():
     assert _mercado_permitido("h2h")
     assert _mercado_permitido("double_chance")

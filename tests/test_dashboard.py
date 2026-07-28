@@ -69,6 +69,21 @@ def test_apostarias_hoje_so_traz_registros_com_flag_apostaria(cliente):
     assert "sem edge no backtest" in dados["apostarias"][0]["etiqueta"]
 
 
+def test_apostarias_hoje_mostra_registro_de_jogo_amanha_se_registrado_hoje(cliente):
+    """Regressão: a rotina da manhã registra apostarias pros jogos reais
+    mais próximos, que podem ser de AMANHÃ (kickoff tarde da noite, já
+    virou o dia em UTC) — filtrar por data_jogo fazia a seção aparecer
+    vazia mesmo com apostarias recém-registradas."""
+    client, caminho_db = cliente
+    from datetime import date, timedelta
+    amanha = (date.today() + timedelta(days=1)).isoformat()
+    inserir_registro(caminho_db, "brasileirao", "A", "B", "1X2", "Fora", 0.3, 4.7, 0.1,
+                      data_jogo=amanha, origem="auto_manha", apostaria=True)
+    dados = client.get("/api/apostarias-hoje").json()
+    assert len(dados["apostarias"]) == 1
+    assert dados["apostarias"][0]["data_jogo"] == amanha
+
+
 def test_status_sistema_responde(cliente):
     client, _ = cliente
     dados = client.get("/api/status-sistema").json()

@@ -41,7 +41,7 @@ from painel_db import inserir_registro, registrar_coleta, carregar_estado_bot  #
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, probs_modelo_de_linhas  # noqa: E402
 from resolucao_times import carregar_times_por_liga  # noqa: E402
-from catalogo import _mercados_para_jogo, FUSO_BR, resolver_fixture_para_liga  # noqa: E402
+from catalogo import FUSO_BR, resolver_fixture_para_liga, combinar_modelo_e_odds  # noqa: E402
 
 
 async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
@@ -87,21 +87,16 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
             continue
         probs = probs_modelo_de_linhas(resultado_pred["linhas_mercados"])
 
-        candidatos = []
-        for mkt in ev.markets:
-            outcomes = {o.name: o.price for o in mkt.outcomes}
-            if mkt.market_key == "h2h":
-                mapa_nome = {ev.home_team: "Casa", "Empate": "Empate", ev.away_team: "Fora"}
-                for nome_odd, odd in outcomes.items():
-                    selecao = mapa_nome.get(nome_odd)
-                    prob = probs.get("1X2", {}).get(selecao) if selecao else None
-                    if prob is not None:
-                        candidatos.append({"mercado": "1X2", "selecao": selecao, "prob_modelo": prob, "odd": odd, "ev": prob * odd - 1.0})
-            else:
-                for mercado, selecao, odd in _mercados_para_jogo(mkt.market_key, outcomes):
-                    prob = probs.get(mercado, {}).get(selecao)
-                    if prob is not None:
-                        candidatos.append({"mercado": mercado, "selecao": selecao, "prob_modelo": prob, "odd": odd, "ev": prob * odd - 1.0})
+        # MESMA função usada pelo /jogo e pelo card do painel (catalogo.py) —
+        # nunca mais duas cópias do mapeamento odd->mercado divergindo entre
+        # si (era exatamente isso que fazia o 1X2 nunca entrar aqui: essa
+        # função tinha sua PRÓPRIA cópia da lógica de h2h, com o bug antigo,
+        # nunca atualizada quando o mapeamento foi corrigido em catalogo.py)
+        odds_do_evento = {
+            "casa_coletado": ev.home_team, "fora_coletado": ev.away_team,
+            "mercados": {mkt.market_key: {o.name: o.price for o in mkt.outcomes} for mkt in ev.markets},
+        }
+        candidatos = combinar_modelo_e_odds(probs, odds_do_evento, time_casa, time_fora)
 
         if not candidatos:
             continue

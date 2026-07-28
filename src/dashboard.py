@@ -163,14 +163,20 @@ def maiores_probabilidades_do_dia():
 @app.get("/api/apostarias-hoje")
 def apostarias_hoje():
     """Só registros que passaram os guarda-corpos de EV (apostaria=1) —
-    sem número mínimo nem máximo. Vazio é um resultado válido."""
+    sem número mínimo nem máximo. Vazio é um resultado válido.
+
+    Filtra por quando o sistema REGISTROU (criado_em), não pela data do
+    jogo (data_jogo) — a rotina da manhã roda uma vez e registra o que
+    achou de real "hoje -> futuro" na coleta; o jogo em si pode ser amanhã
+    (ex.: kickoff tarde da noite, já virou o dia em UTC). Filtrar por
+    data_jogo fazia a seção aparecer vazia mesmo com apostarias recém
+    registradas, só porque o jogo delas era amanhã."""
     hoje = hoje_br().isoformat()
     with _conectar() as conn:
         df = pd.read_sql_query(
-            "SELECT * FROM registros WHERE apostaria=1 AND "
-            "(data_jogo=? OR (data_jogo IS NULL AND substr(criado_em,1,10)=?)) "
+            "SELECT * FROM registros WHERE apostaria=1 AND substr(criado_em,1,10)=? "
             "ORDER BY criado_em DESC",
-            conn, params=(hoje, hoje),
+            conn, params=(hoje,),
         )
     registros_hoje = _sem_nan(df.to_dict("records"))
     familias_gols = {"1X2", "Dupla chance", "Over/Under gols", "Ambas marcam"}
@@ -186,9 +192,15 @@ def apostarias_hoje():
 @app.get("/api/registros")
 def registros(status: str | None = None, liga: str | None = None, familia: str | None = None):
     with _conectar() as conn:
+        # substr(...,1,10) normaliza data_jogo pra só a parte YYYY-MM-DD antes
+        # de agrupar — registros antigos (antes de uma correção de formato)
+        # podiam ter data_jogo como datetime completo ("2026-07-29T22:30:00")
+        # em vez de só a data, o que fazia duas linhas do MESMO jogo/mercado
+        # parecerem grupos diferentes e escapar do dedup
         query = """SELECT * FROM registros WHERE id IN (
             SELECT MAX(id) FROM registros
-            GROUP BY liga, time_casa, time_fora, mercado, selecao, COALESCE(data_jogo, ''), status
+            GROUP BY liga, time_casa, time_fora, mercado, selecao,
+                     substr(COALESCE(data_jogo, criado_em), 1, 10), status
         )"""
         params: list = []
         if status in ("aberto", "fechado"):
@@ -197,11 +209,11 @@ def registros(status: str | None = None, liga: str | None = None, familia: str |
         if liga:
             query += " AND liga=?"
             params.append(liga)
-        query += " ORDER BY COALESCE(data_jogo, substr(criado_em,1,10)) DESC, criado_em DESC LIMIT 500"
+        query += " ORDER BY substr(COALESCE(data_jogo, criado_em), 1, 10) DESC, criado_em DESC LIMIT 500"
         df = pd.read_sql_query(query, conn, params=params)
 
     if not df.empty:
-        df["data_jogo"] = df["data_jogo"].fillna(df["criado_em"].str.slice(0, 10))
+        df["data_jogo"] = df["data_jogo"].fillna(df["criado_em"]).str.slice(0, 10)
         if familia:
             df = df[df["mercado"].apply(familia_mercado) == familia]
     return {"registros": _sem_nan(df.to_dict("records"))}

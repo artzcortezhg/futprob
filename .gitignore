@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Testes / ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Editores/SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dados brutos baixados (recriados via src/ingest.py) e banco de previsões
+data/raw/
+db/previsoes.sqlite

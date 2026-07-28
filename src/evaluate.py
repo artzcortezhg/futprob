@@ -57,7 +57,7 @@ def avaliar_walkforward(
     refit_dias: int = 30,
     xi: float = XI_PADRAO,
     max_gols: int = MAX_GOLS_PADRAO,
-    fonte: str = "gols",
+    alpha_xg: float = 0.0,
     verboso: bool = True,
 ) -> pd.DataFrame:
     """Executa a validação walk-forward para uma liga e retorna um DataFrame
@@ -81,7 +81,7 @@ def avaliar_walkforward(
         data_jogo = jogo["Date"]
 
         if modelo_atual is None or data_jogo >= proximo_refit:
-            modelo_atual = ajustar_modelo(df, liga, data_corte=data_jogo, xi=xi, fonte=fonte)
+            modelo_atual = ajustar_modelo(df, liga, data_corte=data_jogo, xi=xi, alpha_xg=alpha_xg)
             proximo_refit = data_jogo + pd.Timedelta(days=refit_dias)
             n_refits += 1
             if verboso:
@@ -295,30 +295,30 @@ def main():
     parser.add_argument("--liga", required=True)
     parser.add_argument("--tipo", choices=["gols", "escanteios", "cartoes"], default="gols",
                          help="Qual modelo validar (gols compara com odds; escanteios/cartões só calibração)")
-    parser.add_argument("--dados", default=None, help="Padrão: partidas.csv (ou partidas_xg.csv se --fonte xg)")
+    parser.add_argument("--dados", default=None, help="Padrão: partidas.csv (ou partidas_xg.csv se --alpha-xg > 0)")
     parser.add_argument("--data-inicio", default=None, help="YYYY-MM-DD (padrão: 3 anos antes do último jogo)")
     parser.add_argument("--data-fim", default=None, help="YYYY-MM-DD (padrão: até o último jogo disponível)")
     parser.add_argument("--refit-dias", type=int, default=30)
     parser.add_argument("--xi", type=float, default=XI_PADRAO)
     parser.add_argument("--max-gols", type=int, default=MAX_GOLS_PADRAO)
-    parser.add_argument("--fonte", choices=["gols", "xg"], default="gols", help="Insumo de treino do Dixon-Coles (só --tipo gols)")
+    parser.add_argument("--alpha-xg", type=float, default=0.0, help="Peso do xG no alvo de treino, 0-1 (só --tipo gols)")
     parser.add_argument("--linhas", default=None, help="Linhas de over/under separadas por vírgula (só --tipo escanteios/cartoes)")
     parser.add_argument("--saida", default=None, help="Caminho para salvar as previsões jogo a jogo em CSV")
     args = parser.parse_args()
 
-    caminho_dados = args.dados or str(RAIZ / "data" / "processed" / ("partidas_xg.csv" if args.fonte == "xg" else "partidas.csv"))
+    caminho_dados = args.dados or str(RAIZ / "data" / "processed" / ("partidas_xg.csv" if args.alpha_xg > 0 else "partidas.csv"))
     df = pd.read_csv(caminho_dados, parse_dates=["Date"])
     data_max = df[df["liga"] == args.liga]["Date"].max()
     data_inicio = pd.Timestamp(args.data_inicio) if args.data_inicio else data_max - pd.Timedelta(days=365 * 3)
 
     if args.tipo == "gols":
-        print(f"Validação walk-forward — {args.liga} (fonte={args.fonte})")
+        print(f"Validação walk-forward — {args.liga} (alpha_xg={args.alpha_xg})")
         print(f"Período avaliado: {data_inicio.date()} até {args.data_fim or data_max.date()} | refit a cada {args.refit_dias} dias\n")
 
         df_aval = avaliar_walkforward(
             df, args.liga, data_inicio,
             data_fim_avaliacao=args.data_fim, refit_dias=args.refit_dias, xi=args.xi, max_gols=args.max_gols,
-            fonte=args.fonte,
+            alpha_xg=args.alpha_xg,
         )
 
         if args.saida:

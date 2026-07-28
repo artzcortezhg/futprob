@@ -102,7 +102,7 @@ def prever(
     data_corte: str | None = None,
     xi: float = XI_PADRAO,
     max_gols: int = 10,
-    fonte_gols: str = "gols",
+    alpha_xg: float = 0.0,
     arbitro: str | None = None,
     caminho_db: Path = CAMINHO_DB_PADRAO,
     gravar: bool = True,
@@ -113,16 +113,16 @@ def prever(
         raise ValueError(f"Liga '{liga}' não encontrada na base. Ligas disponíveis: {sorted(df['liga'].unique())}")
 
     data_corte = data_corte or datetime.now().date().isoformat()
-    modelo = ajustar_modelo(df, liga, data_corte, xi=xi, fonte=fonte_gols)
+    modelo = ajustar_modelo(df, liga, data_corte, xi=xi, alpha_xg=alpha_xg)
 
     matriz = matriz_placares(modelo, time_casa, time_fora, max_gols=max_gols)
     mercados = calcular_mercados(matriz)
     linhas_mercados = para_linhas_tabela(mercados)
 
     # escanteios/cartões/faltas sempre a partir dos gols observados (não
-    # dependem da fonte escolhida para o modelo de gols, que só se aplica a
-    # este último). Se --dados já é a base padrão, reaproveita o mesmo df.
-    df_padrao = df if fonte_gols == "gols" else pd.read_csv(CAMINHO_DADOS_PADRAO, parse_dates=["Date"])
+    # dependem de alpha_xg, que só se aplica ao modelo de gols). Se --dados
+    # já é a base padrão, reaproveita o mesmo df.
+    df_padrao = df if alpha_xg == 0.0 else pd.read_csv(CAMINHO_DADOS_PADRAO, parse_dates=["Date"])
 
     modelo_escanteios = ajustar_modelo_escanteios(df_padrao, liga, data_corte, xi=xi)
     matriz_esc = matriz_escanteios(modelo_escanteios, time_casa, time_fora)
@@ -158,8 +158,8 @@ def main():
     parser.add_argument("--dados", default=str(CAMINHO_DADOS_PADRAO))
     parser.add_argument("--xi", type=float, default=XI_PADRAO)
     parser.add_argument("--max-gols", type=int, default=10)
-    parser.add_argument("--fonte-gols", choices=["gols", "xg"], default="gols",
-                         help="Insumo de treino do modelo de gols (Premier League/La Liga apenas para 'xg')")
+    parser.add_argument("--alpha-xg", type=float, default=0.0,
+                         help="Peso do xG no alvo de treino do modelo de gols, 0-1 (Premier League/La Liga apenas)")
     parser.add_argument("--arbitro", default=None, help="Nome do árbitro (para os mercados de cartões/faltas); sem árbitro = média da liga")
     parser.add_argument("--db", default=str(CAMINHO_DB_PADRAO))
     parser.add_argument("--no-gravar", action="store_true", help="Não grava a previsão no SQLite (uso em testes)")
@@ -173,7 +173,7 @@ def main():
         data_corte=args.data_corte,
         xi=args.xi,
         max_gols=args.max_gols,
-        fonte_gols=args.fonte_gols,
+        alpha_xg=args.alpha_xg,
         arbitro=args.arbitro,
         caminho_db=Path(args.db),
         gravar=not args.no_gravar,

@@ -28,6 +28,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+from scipy.special import gammaln
 from scipy.stats import poisson
 
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
@@ -53,7 +54,7 @@ class ModeloDixonColes:
     home_adv: float
     rho: float
     n_jogos_usados: int = 0
-    fonte: str = "gols"  # "gols" (FTHG/FTAG) ou "xg" (xG_casa/xG_fora arredondado)
+    alpha_xg: float = 0.0  # peso do xG no alvo de treino: alvo = alpha_xg*xG + (1-alpha_xg)*gols
 
     def to_dict(self) -> dict:
         return {
@@ -66,13 +67,33 @@ class ModeloDixonColes:
             "home_adv": self.home_adv,
             "rho": self.rho,
             "n_jogos_usados": self.n_jogos_usados,
-            "fonte": self.fonte,
+            "alpha_xg": self.alpha_xg,
         }
 
     @classmethod
     def from_dict(cls, d: dict) -> "ModeloDixonColes":
-        d = {**d, "fonte": d.get("fonte", "gols")}  # compatibilidade com modelos salvos antes deste campo
+        d = dict(d)
+        if "alpha_xg" not in d:
+            # compatibilidade com modelos salvos antes desta correção (campo
+            # antigo "fonte": "gols"/"xg" com arredondamento)
+            d["alpha_xg"] = 1.0 if d.pop("fonte", "gols") == "xg" else 0.0
+        else:
+            d.pop("fonte", None)
         return cls(**d)
+
+
+def _log_poisson_continuo(k: np.ndarray, lam: np.ndarray) -> np.ndarray:
+    """log-densidade de Poisson generalizada para contagens não-inteiras:
+    logpmf(k, lam) = k*log(lam) - lam - lgamma(k+1).
+
+    scipy.stats.poisson.logpmf exige suporte discreto (retorna -inf para k
+    fracionário), o que impede usar xG contínuo como alvo de treino. Esta
+    extensão via log-gama (scipy.special.gammaln) é lisa em k >= 0 e reduz
+    exatamente à log-pmf de Poisson quando k é inteiro (gammaln(n+1) =
+    log(n!)), então usá-la sempre (mesmo com k inteiro) não muda nada em
+    relação à Poisson padrão.
+    """
+    return k * np.log(lam) - lam - gammaln(k + 1)
 
 
 def _correcao_dixon_coles(x: np.ndarray, y: np.ndarray, lam: np.ndarray, mu: np.ndarray, rho: float) -> np.ndarray:
@@ -117,19 +138,28 @@ def _desempacotar_parametros(x: np.ndarray, n_times: int) -> tuple[np.ndarray, n
     return ataque, defesa, home_adv, rho
 
 
-def _neg_log_verossimilhanca(x: np.ndarray, idx_casa, idx_fora, gols_casa, gols_fora, pesos, n_times) -> float:
+def _neg_log_verossimilhanca(
+    x: np.ndarray, idx_casa, idx_fora,
+    alvo_casa, alvo_fora, gols_casa_obs, gols_fora_obs,
+    pesos, n_times,
+) -> float:
+    """alvo_casa/alvo_fora alimentam o termo de Poisson (podem ser gols
+    observados, xG contínuo, ou uma mistura dos dois). gols_casa_obs/
+    gols_fora_obs são sempre os placares observados (inteiros) e alimentam
+    APENAS a correção rho de Dixon-Coles, que corrige a correlação em
+    placares baixos reais — não faz sentido aplicá-la sobre xG."""
     ataque, defesa, home_adv, rho = _desempacotar_parametros(x, n_times)
 
     lam = np.exp(ataque[idx_casa] - defesa[idx_fora] + home_adv)
     mu = np.exp(ataque[idx_fora] - defesa[idx_casa])
 
-    tau = _correcao_dixon_coles(gols_casa, gols_fora, lam, mu, rho)
+    tau = _correcao_dixon_coles(gols_casa_obs, gols_fora_obs, lam, mu, rho)
     tau = np.clip(tau, 1e-10, None)  # evita log(0) em regiões inválidas de rho
 
     log_lik = (
         np.log(tau)
-        + poisson.logpmf(gols_casa, lam)
-        + poisson.logpmf(gols_fora, mu)
+        + _log_poisson_continuo(alvo_casa, lam)
+        + _log_poisson_continuo(alvo_fora, mu)
     )
     return -np.sum(pesos * log_lik)
 
@@ -139,49 +169,57 @@ def ajustar_modelo(
     liga: str,
     data_corte,
     xi: float = XI_PADRAO,
-    fonte: str = "gols",
+    alpha_xg: float = 0.0,
 ) -> ModeloDixonColes:
     """Ajusta um modelo Dixon-Coles para UMA liga usando apenas partidas com
     Date < data_corte. `df` deve conter (ao menos) as colunas: liga, Date,
-    HomeTeam, AwayTeam, FTHG, FTAG (ou xG_casa, xG_fora se fonte='xg').
+    HomeTeam, AwayTeam, FTHG, FTAG (e xG_casa, xG_fora se alpha_xg > 0).
 
-    fonte='gols' (padrão): usa os gols observados (FTHG/FTAG) como variável
-    de treino, como no Dixon-Coles clássico.
-    fonte='xg': usa o xG de cada time (xG_casa/xG_fora) arredondado ao
-    inteiro mais próximo como "pseudo-gols" de treino, no lugar dos gols
-    observados. A verossimilhança de Poisson exige contagens inteiras
-    (scipy.stats.poisson dá densidade 0 para valores fracionários), então o
-    arredondamento é o que permite reaproveitar exatamente a mesma máquina
-    de ajuste (mesma log-verossimilhança ponderada, mesma correção rho de
-    Dixon-Coles) — só o insumo (gols vs. xG) muda, a estrutura do modelo e a
-    previsão de gols continuam as mesmas.
+    alpha_xg em [0, 1] controla o alvo de treino do termo de Poisson:
+        alvo = alpha_xg * xG + (1 - alpha_xg) * gols_observados
+    alpha_xg=0 (padrão): Dixon-Coles clássico, treina só com gols observados.
+    alpha_xg=1: treina inteiramente com xG contínuo (sem arredondar — usa
+    _log_poisson_continuo, a extensão da log-pmf de Poisson via log-gama,
+    que aceita contagens fracionárias).
+    Valores intermediários misturam os dois insumos.
+
+    Independentemente de alpha_xg, a correção rho de Dixon-Coles é sempre
+    avaliada nos placares REALMENTE observados (FTHG/FTAG), nunca no xG —
+    ela corrige a correlação em placares baixos de fato ocorridos.
     """
-    if fonte not in ("gols", "xg"):
-        raise ValueError("fonte deve ser 'gols' ou 'xg'.")
+    if not (0.0 <= alpha_xg <= 1.0):
+        raise ValueError("alpha_xg deve estar entre 0 e 1.")
 
     data_corte = pd.Timestamp(data_corte)
 
     df_liga = df[df["liga"] == liga].copy()
     df_liga = df_liga[df_liga["Date"] < data_corte]
 
-    if fonte == "gols":
-        df_liga = df_liga.dropna(subset=["FTHG", "FTAG", "HomeTeam", "AwayTeam"])
-    else:
+    colunas_necessarias = ["FTHG", "FTAG", "HomeTeam", "AwayTeam"]
+    if alpha_xg > 0:
         if not {"xG_casa", "xG_fora"}.issubset(df_liga.columns):
-            raise ValueError("fonte='xg' exige as colunas xG_casa/xG_fora no DataFrame (ver src/ingest_xg.py).")
-        df_liga = df_liga.dropna(subset=["xG_casa", "xG_fora", "HomeTeam", "AwayTeam"])
+            raise ValueError("alpha_xg > 0 exige as colunas xG_casa/xG_fora no DataFrame (ver src/ingest_xg.py).")
+        colunas_necessarias += ["xG_casa", "xG_fora"]
+    df_liga = df_liga.dropna(subset=colunas_necessarias)
 
     if df_liga.empty:
-        raise ValueError(f"Sem partidas de '{liga}' anteriores a {data_corte.date()} para ajustar o modelo (fonte={fonte}).")
+        raise ValueError(f"Sem partidas de '{liga}' anteriores a {data_corte.date()} para ajustar o modelo (alpha_xg={alpha_xg}).")
 
     times, idx_casa, idx_fora = _preparar_indices(df_liga)
     n_times = len(times)
-    if fonte == "gols":
-        gols_casa = df_liga["FTHG"].to_numpy(dtype=float)
-        gols_fora = df_liga["FTAG"].to_numpy(dtype=float)
+
+    gols_casa_obs = df_liga["FTHG"].to_numpy(dtype=float)
+    gols_fora_obs = df_liga["FTAG"].to_numpy(dtype=float)
+
+    if alpha_xg > 0:
+        xg_casa = df_liga["xG_casa"].to_numpy(dtype=float)
+        xg_fora = df_liga["xG_fora"].to_numpy(dtype=float)
+        alvo_casa = alpha_xg * xg_casa + (1 - alpha_xg) * gols_casa_obs
+        alvo_fora = alpha_xg * xg_fora + (1 - alpha_xg) * gols_fora_obs
     else:
-        gols_casa = df_liga["xG_casa"].round().clip(lower=0).to_numpy(dtype=float)
-        gols_fora = df_liga["xG_fora"].round().clip(lower=0).to_numpy(dtype=float)
+        alvo_casa = gols_casa_obs
+        alvo_fora = gols_fora_obs
+
     pesos = calcular_pesos_temporais(df_liga["Date"], data_corte, xi)
 
     # x0: ataque/defesa livres = 0, home_adv modesto, rho pequeno negativo
@@ -195,7 +233,7 @@ def ajustar_modelo(
     resultado = minimize(
         _neg_log_verossimilhanca,
         x0,
-        args=(idx_casa, idx_fora, gols_casa, gols_fora, pesos, n_times),
+        args=(idx_casa, idx_fora, alvo_casa, alvo_fora, gols_casa_obs, gols_fora_obs, pesos, n_times),
         method="L-BFGS-B",
         bounds=bounds,
         options={"maxiter": 500, "ftol": 1e-10},
@@ -213,7 +251,7 @@ def ajustar_modelo(
         home_adv=float(home_adv),
         rho=float(rho),
         n_jogos_usados=len(df_liga),
-        fonte=fonte,
+        alpha_xg=alpha_xg,
     )
 
 
@@ -250,24 +288,24 @@ def matriz_placares(
     return matriz
 
 
-def _nome_arquivo_modelo(liga: str, fonte: str) -> str:
+def _nome_arquivo_modelo(liga: str, alpha_xg: float) -> str:
     slug = liga.lower().replace(" ", "_")
-    sufixo = "" if fonte == "gols" else f"_{fonte}"
+    sufixo = "" if alpha_xg == 0.0 else f"_xg_a{round(alpha_xg * 100):03d}"
     return f"{slug}{sufixo}.json"
 
 
 def salvar_modelo(modelo: ModeloDixonColes, caminho: Path | None = None) -> Path:
     PASTA_MODELOS.mkdir(parents=True, exist_ok=True)
     if caminho is None:
-        caminho = PASTA_MODELOS / _nome_arquivo_modelo(modelo.liga, modelo.fonte)
+        caminho = PASTA_MODELOS / _nome_arquivo_modelo(modelo.liga, modelo.alpha_xg)
     caminho.write_text(json.dumps(modelo.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
     return caminho
 
 
-def carregar_modelo(liga: str, fonte: str = "gols") -> ModeloDixonColes:
-    caminho = PASTA_MODELOS / _nome_arquivo_modelo(liga, fonte)
+def carregar_modelo(liga: str, alpha_xg: float = 0.0) -> ModeloDixonColes:
+    caminho = PASTA_MODELOS / _nome_arquivo_modelo(liga, alpha_xg)
     if not caminho.exists():
-        raise FileNotFoundError(f"Modelo (fonte={fonte}) não encontrado para a liga '{liga}' em {caminho}.")
+        raise FileNotFoundError(f"Modelo (alpha_xg={alpha_xg}) não encontrado para a liga '{liga}' em {caminho}.")
     d = json.loads(caminho.read_text(encoding="utf-8"))
     return ModeloDixonColes.from_dict(d)
 
@@ -278,20 +316,20 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Ajusta modelos Dixon-Coles por liga")
-    parser.add_argument("--dados", default=None, help="Padrão: partidas.csv (ou partidas_xg.csv se --fonte xg)")
+    parser.add_argument("--dados", default=None, help="Padrão: partidas.csv (ou partidas_xg.csv se --alpha-xg > 0)")
     parser.add_argument("--data-corte", default=None, help="YYYY-MM-DD (padrão: hoje)")
     parser.add_argument("--xi", type=float, default=XI_PADRAO)
-    parser.add_argument("--fonte", choices=["gols", "xg"], default="gols")
+    parser.add_argument("--alpha-xg", type=float, default=0.0, help="Peso do xG no alvo de treino (0=gols, 1=xG puro)")
     args = parser.parse_args()
 
-    caminho_dados = args.dados or str(RAIZ / "data" / "processed" / ("partidas_xg.csv" if args.fonte == "xg" else "partidas.csv"))
+    caminho_dados = args.dados or str(RAIZ / "data" / "processed" / ("partidas_xg.csv" if args.alpha_xg > 0 else "partidas.csv"))
     df = pd.read_csv(caminho_dados, parse_dates=["Date"])
     data_corte = args.data_corte or date.today().isoformat()
 
     for liga in sorted(df["liga"].unique()):
-        modelo = ajustar_modelo(df, liga, data_corte, xi=args.xi, fonte=args.fonte)
+        modelo = ajustar_modelo(df, liga, data_corte, xi=args.xi, alpha_xg=args.alpha_xg)
         caminho = salvar_modelo(modelo)
-        print(f"[{liga}] ajustado (fonte={args.fonte}) com {modelo.n_jogos_usados} jogos | "
+        print(f"[{liga}] ajustado (alpha_xg={args.alpha_xg}) com {modelo.n_jogos_usados} jogos | "
               f"home_adv={modelo.home_adv:.3f} rho={modelo.rho:.3f} -> {caminho}")
 
 

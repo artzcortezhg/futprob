@@ -285,6 +285,12 @@ def _parse_betano(data: Any, bookmaker: str) -> list[EventOdds]:
         for ev_id, ev in raw_eventos.items():
             if not isinstance(ev, dict):
                 continue
+            # a listagem geral embute eventos de VÁRIOS esportes (mesmo numa
+            # página só de futebol) — sportId='FOOT' é o filtro real; sem
+            # isso, jogos de beisebol/basquete etc. vazavam pro futprob
+            sport_id = ev.get("sportId")
+            if sport_id is not None and sport_id != "FOOT":
+                continue
             parts = ev.get("participants", [])
             if not isinstance(parts, list) or len(parts) < 2:
                 continue
@@ -418,7 +424,7 @@ def _parse_betano_odds_bt(data: Any, bookmaker: str) -> EventOdds | None:
 _JS_EXTRAIR_BT12 = """(limit) => {
     const seen = new Set();
     const urls = [];
-    for (const a of document.querySelectorAll('a[href*="/sport/"]')) {
+    for (const a of document.querySelectorAll('a[href*="/sport/futebol/"]')) {
         try {
             const path = new URL(a.href).pathname;
             if (path.includes('/virtuals/')) continue;

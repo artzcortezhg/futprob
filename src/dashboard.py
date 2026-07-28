@@ -66,7 +66,7 @@ from painel_db import inicializar_db_painel, marcar_resultado_manual  # noqa: E4
 from predict import inicializar_db as inicializar_db_previsoes  # noqa: E402
 from resolucao_times import carregar_times_por_liga  # noqa: E402
 from catalogo import (  # noqa: E402
-    descobrir_jogos_do_dia, card_completo, maiores_probabilidades, hoje_br, familia_mercado, GRUPOS_CARD,
+    descobrir_jogos_do_dia_completo, card_completo, maiores_probabilidades, hoje_br, familia_mercado, GRUPOS_CARD,
 )
 from saude_sistema import calcular_status_sistema  # noqa: E402
 
@@ -102,9 +102,13 @@ def _conectar() -> sqlite3.Connection:
 
 
 def _cards_hoje(forcar: bool = False) -> list[dict]:
-    """Cards completos dos jogos reais de hoje (fonte: coleta mais recente
-    da Betano, nunca previsões avulsas do banco — ver catalogo.py). Cache
-    curto porque cada card recalcula o modelo do zero."""
+    """Jogos reais de hoje (fonte: coleta mais recente da Betano, nunca
+    previsões avulsas do banco — ver catalogo.py): card completo pros
+    modelados, e um placeholder explícito 'campeonato sem modelo' pros que
+    não têm — nunca omite um jogo real em silêncio (ex.: um dia em que o
+    único jogo real é de uma divisão sem modelo, tipo Série B, não pode
+    aparecer como "nenhum jogo real hoje"). Cache curto porque cada card
+    recalcula o modelo do zero."""
     agora = time.time()
     if not forcar and "hoje" in _cache_catalogo:
         ts, cards = _cache_catalogo["hoje"]
@@ -113,11 +117,19 @@ def _cards_hoje(forcar: bool = False) -> list[dict]:
 
     times_por_liga = carregar_times_por_liga()
     dia = hoje_br()
-    jogos = descobrir_jogos_do_dia(dia, times_por_liga, CAMINHO_DB)
+    jogos = descobrir_jogos_do_dia_completo(dia, times_por_liga, CAMINHO_DB)
     cards = []
     for j in jogos:
+        if not j["modelado"]:
+            cards.append({
+                "liga": None, "time_casa": j["casa"], "time_fora": j["fora"],
+                "commence_time": j["commence_time"], "modelado": False,
+            })
+            continue
         try:
-            cards.append(card_completo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB))
+            card = card_completo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB)
+            card["modelado"] = True
+            cards.append(card)
         except Exception:
             logger.exception(f"falha ao montar card de {j['casa']} x {j['fora']} — pulando esse jogo, sem quebrar o resto")
     _cache_catalogo["hoje"] = (agora, cards)
@@ -126,13 +138,13 @@ def _cards_hoje(forcar: bool = False) -> list[dict]:
 
 @app.get("/api/jogos-do-dia")
 def jogos_do_dia(dia: str = "hoje", forcar: bool = False):
-    """dia='hoje' -> cards completos (todas as famílias de mercado, com
-    aviso explícito onde não há modelo). dia='amanha' -> listagem simples
-    (liga/times/horário), sem card — normalmente ainda não há odds
-    coletadas pra jogos de amanhã."""
+    """dia='hoje' -> cards completos pros modelados + placeholder 'sem
+    modelo' pros reais sem modelo (nunca omite um jogo real). dia='amanha'
+    -> mesma lista, mas sem card (só liga/times/horário/modelado) —
+    normalmente ainda não há odds coletadas pra jogos de amanhã."""
     if dia == "amanha":
         times_por_liga = carregar_times_por_liga()
-        jogos = descobrir_jogos_do_dia(hoje_br() + timedelta(days=1), times_por_liga, CAMINHO_DB)
+        jogos = descobrir_jogos_do_dia_completo(hoje_br() + timedelta(days=1), times_por_liga, CAMINHO_DB)
         return {"dia": "amanha", "jogos": jogos}
     cards = _cards_hoje(forcar=forcar)
     return {"dia": "hoje", "jogos": cards, "grupos_ordem": GRUPOS_CARD}
@@ -140,7 +152,7 @@ def jogos_do_dia(dia: str = "hoje", forcar: bool = False):
 
 @app.get("/api/maiores-probabilidades")
 def maiores_probabilidades_do_dia():
-    cards = _cards_hoje()
+    cards = [c for c in _cards_hoje() if c.get("modelado")]
     top = maiores_probabilidades(cards, top_n=10)
     return {
         "aviso": "probabilidade alta não significa boa aposta — o EV é quem diz isso",
@@ -399,6 +411,10 @@ async function carregarApostarias() {
 }
 
 function renderizarCard(j, gruposOrdem) {
+  if (j.modelado === false) {
+    return `<div class="jogo-card">${j.time_casa} x ${j.time_fora} — ${j.commence_time}<br>`
+      + `<span class="etiqueta-sem-edge">⚠️ campeonato sem modelo — sem previsão</span></div>`;
+  }
   const rotuloOdds = j.tem_odds_coletadas ? '' : ' — odds ainda não coletadas hoje';
   let html = `<details class="jogo-card"><summary>${j.time_casa} x ${j.time_fora} (${j.liga})${rotuloOdds}</summary><div class="card-conteudo">`;
   for (const grupo of gruposOrdem) {
@@ -424,7 +440,7 @@ function renderizarCard(j, gruposOrdem) {
 async function carregarJogosHoje(forcar) {
   const d = await buscar('/api/jogos-do-dia?dia=hoje' + (forcar ? '&forcar=true' : ''));
   const el = document.getElementById('jogos-hoje');
-  if (!d.jogos.length) { el.innerHTML = '<i class="card">Nenhum jogo real das 5 ligas hoje.</i>'; return; }
+  if (!d.jogos.length) { el.innerHTML = '<i class="card">Nenhum jogo real capturado pra hoje (nem das 5 ligas modeladas, nem de outro campeonato).</i>'; return; }
   el.innerHTML = d.jogos.map(j => renderizarCard(j, d.grupos_ordem)).join('');
 }
 
@@ -434,7 +450,8 @@ async function carregarJogosAmanha() {
   if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo real confirmado pra amanhã ainda.</i>'; return; }
   let html = '<table><tr><th>Liga</th><th>Jogo</th><th>Horário</th></tr>';
   for (const j of d.jogos) {
-    html += `<tr><td>${j.liga}</td><td>${j.casa} x ${j.fora}</td><td>${j.commence_time}</td></tr>`;
+    const liga = j.modelado ? j.liga : '<span class="etiqueta-sem-edge">⚠️ sem modelo</span>';
+    html += `<tr><td>${liga}</td><td>${j.casa} x ${j.fora}</td><td>${j.commence_time}</td></tr>`;
   }
   el.innerHTML = html + '</table>';
 }

@@ -15,6 +15,7 @@ import predict
 from catalogo import (
     _grupo_exibicao, maiores_probabilidades, card_completo, GRUPOS_CARD,
     _mercados_para_jogo, combinar_modelo_e_odds, _selecao_h2h, _selecao_over_under,
+    descobrir_jogos_do_dia_completo,
 )
 
 
@@ -165,3 +166,42 @@ def test_card_completo_liga_sem_estatisticas_avisa_escanteios_e_cartoes(tmp_path
     assert card["grupos"]["Escanteios"] == []  # nenhuma linha, mas o grupo existe (nunca some em silêncio)
     assert len(card["grupos"]["1X2 e dupla chance"]) > 0
     assert all(item["odd"] is None and item["ev"] is None for linhas in card["grupos"].values() for item in linhas)
+
+
+def _criar_odds_coletadas(caminho, linhas):
+    import sqlite3
+    with sqlite3.connect(caminho) as conn:
+        conn.execute("""CREATE TABLE odds_coletadas (
+            id INTEGER PRIMARY KEY, coletado_em TEXT, tipo_foto TEXT, casa_apostas TEXT,
+            time_casa_coletado TEXT, time_fora_coletado TEXT, commence_time TEXT,
+            mercado TEXT, selecao TEXT, odd REAL
+        )""")
+        conn.executemany(
+            "INSERT INTO odds_coletadas (coletado_em, tipo_foto, casa_apostas, time_casa_coletado, "
+            "time_fora_coletado, commence_time, mercado, selecao, odd) VALUES (?,?,?,?,?,?,?,?,?)",
+            linhas,
+        )
+        conn.commit()
+
+
+def test_descobrir_jogos_do_dia_completo_inclui_jogo_sem_modelo(tmp_path):
+    """Regressão: um jogo real (ex.: Série B) sem os dois times na lista
+    fechada de nenhuma liga modelada não pode sumir em silêncio da listagem
+    de 'jogos de hoje' — precisa aparecer marcado como 'modelado: False',
+    senão o painel dá a entender que não há jogo nenhum naquele dia."""
+    import datetime
+    caminho = tmp_path / "odds.sqlite"
+    _criar_odds_coletadas(caminho, [
+        ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", "2026-07-28T22:30:00+00:00", "h2h", "1", 2.1),
+        ("2026-07-28T09:00:00", "manha", "betano", "Ponte Preta", "Athletic Club MG", "2026-07-28T22:30:00+00:00", "h2h", "1", 2.0),
+    ])
+    times = {"brasileirao": ["Flamengo RJ", "Palmeiras", "Ponte Preta", "Ceara"]}
+    jogos = descobrir_jogos_do_dia_completo(datetime.date(2026, 7, 28), times, caminho)
+    assert len(jogos) == 2
+    modelados = {j["casa"]: j for j in jogos if j["modelado"]}
+    sem_modelo = [j for j in jogos if not j["modelado"]]
+    assert "Flamengo RJ" in modelados and modelados["Flamengo RJ"]["liga"] == "brasileirao"
+    assert len(sem_modelo) == 1
+    assert sem_modelo[0]["casa"] == "Ponte Preta"
+    assert sem_modelo[0]["fora"] == "Athletic Club MG"
+    assert sem_modelo[0]["liga"] is None

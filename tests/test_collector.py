@@ -118,6 +118,24 @@ def test_parse_betano_ignora_eventos_virtuais():
     assert eventos == []
 
 
+def test_parse_betano_ignora_outros_esportes():
+    """Regressão: a listagem geral da Betano embute eventos de VÁRIOS
+    esportes (visto ao vivo: beisebol/basquete apareciam mesmo numa página
+    só de futebol) — sportId='FOOT' é o único jeito confiável de saber
+    que é futebol de verdade."""
+    dados = _betano_json_exemplo()
+    dados["events"]["1"]["sportId"] = "BASE"  # beisebol
+    eventos = _parse_betano(dados, "betano")
+    assert eventos == []
+
+
+def test_parse_betano_aceita_sportid_foot():
+    dados = _betano_json_exemplo()
+    dados["events"]["1"]["sportId"] = "FOOT"
+    eventos = _parse_betano(dados, "betano")
+    assert len(eventos) == 1
+
+
 def test_salvar_snapshot_grava_linhas(tmp_path):
     caminho_db = tmp_path / "teste.sqlite"
     resultado = {

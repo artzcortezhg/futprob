@@ -226,6 +226,39 @@ def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], cami
     return jogos
 
 
+def descobrir_jogos_do_dia_completo(dia: date, times_por_liga: dict[str, list[str]],
+                                     caminho_db: Path = CAMINHO_DB_PADRAO) -> list[dict]:
+    """Como descobrir_jogos_do_dia, mas inclui TAMBÉM os jogos reais SEM
+    modelo (nunca esconde em silêncio) — é o que o painel usa pra listar
+    'jogos de hoje'. Sem isso, um dia com jogo real só de campeonato sem
+    modelo (ex.: Série B) aparecia como 'nenhum jogo real hoje', dando a
+    entender que não havia jogo nenhum, quando na verdade havia um jogo
+    real só que sem previsão possível — a mesma armadilha que o /jogo já
+    evita (ver resolver_fixture_para_liga)."""
+    df = _snapshot_mais_recente(caminho_db)
+    jogos = []
+    for _, row in df.iterrows():
+        try:
+            dt = pd.Timestamp(row["commence_time"])
+            if dt.tzinfo is None:
+                dt = dt.tz_localize("UTC")
+            dt_br = dt.tz_convert(FUSO_BR)
+        except Exception:
+            continue
+        if dt_br.date() != dia:
+            continue
+        resolvido = resolver_fixture_para_liga(row["time_casa_coletado"], row["time_fora_coletado"], times_por_liga)
+        if resolvido:
+            liga, casa, fora = resolvido
+            jogos.append({"liga": liga, "casa": casa, "fora": fora, "commence_time": dt.isoformat(), "modelado": True})
+        else:
+            jogos.append({
+                "liga": None, "casa": row["time_casa_coletado"], "fora": row["time_fora_coletado"],
+                "commence_time": dt.isoformat(), "modelado": False,
+            })
+    return jogos
+
+
 def buscar_fixture_real(nome_busca: str, caminho_db: Path = CAMINHO_DB_PADRAO,
                          limiar: float = 0.55, margem_ambiguidade: float = 0.08) -> dict:
     """Busca o time pelo NOME CRU coletado (não pelo roster do modelo) nas

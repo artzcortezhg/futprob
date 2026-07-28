@@ -18,8 +18,14 @@ from tabulate import tabulate
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
-from markets import calcular_mercados, para_linhas_tabela
+from markets import (
+    calcular_mercados, para_linhas_tabela,
+    mercado_escanteios, mercado_cartoes, mercado_faltas,
+    para_linhas_tabela_escanteios, para_linhas_tabela_cartoes, para_linhas_tabela_faltas,
+)
 from model_goals import XI_PADRAO, ajustar_modelo, matriz_placares
+from model_corners import ajustar_modelo_escanteios, matriz_escanteios
+from model_cards import ajustar_modelo_cartoes, ajustar_modelo_faltas, matriz_contagem
 
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_DADOS_PADRAO = RAIZ / "data" / "processed" / "partidas.csv"
@@ -96,6 +102,8 @@ def prever(
     data_corte: str | None = None,
     xi: float = XI_PADRAO,
     max_gols: int = 10,
+    fonte_gols: str = "gols",
+    arbitro: str | None = None,
     caminho_db: Path = CAMINHO_DB_PADRAO,
     gravar: bool = True,
 ):
@@ -105,11 +113,28 @@ def prever(
         raise ValueError(f"Liga '{liga}' não encontrada na base. Ligas disponíveis: {sorted(df['liga'].unique())}")
 
     data_corte = data_corte or datetime.now().date().isoformat()
-    modelo = ajustar_modelo(df, liga, data_corte, xi=xi)
+    modelo = ajustar_modelo(df, liga, data_corte, xi=xi, fonte=fonte_gols)
 
     matriz = matriz_placares(modelo, time_casa, time_fora, max_gols=max_gols)
     mercados = calcular_mercados(matriz)
     linhas_mercados = para_linhas_tabela(mercados)
+
+    # escanteios/cartões/faltas sempre a partir dos gols observados (não
+    # dependem da fonte escolhida para o modelo de gols, que só se aplica a
+    # este último). Se --dados já é a base padrão, reaproveita o mesmo df.
+    df_padrao = df if fonte_gols == "gols" else pd.read_csv(CAMINHO_DADOS_PADRAO, parse_dates=["Date"])
+
+    modelo_escanteios = ajustar_modelo_escanteios(df_padrao, liga, data_corte, xi=xi)
+    matriz_esc = matriz_escanteios(modelo_escanteios, time_casa, time_fora)
+    linhas_mercados += para_linhas_tabela_escanteios(mercado_escanteios(matriz_esc))
+
+    modelo_cartoes = ajustar_modelo_cartoes(df_padrao, liga, data_corte, xi=xi)
+    matriz_cart = matriz_contagem(modelo_cartoes, time_casa, time_fora, arbitro=arbitro, max_valor=10)
+    linhas_mercados += para_linhas_tabela_cartoes(mercado_cartoes(matriz_cart))
+
+    modelo_faltas = ajustar_modelo_faltas(df_padrao, liga, data_corte, xi=xi)
+    matriz_falt = matriz_contagem(modelo_faltas, time_casa, time_fora, arbitro=arbitro, max_valor=30)
+    linhas_mercados += para_linhas_tabela_faltas(mercado_faltas(matriz_falt))
 
     previsao_id = None
     if gravar:
@@ -133,6 +158,9 @@ def main():
     parser.add_argument("--dados", default=str(CAMINHO_DADOS_PADRAO))
     parser.add_argument("--xi", type=float, default=XI_PADRAO)
     parser.add_argument("--max-gols", type=int, default=10)
+    parser.add_argument("--fonte-gols", choices=["gols", "xg"], default="gols",
+                         help="Insumo de treino do modelo de gols (Premier League/La Liga apenas para 'xg')")
+    parser.add_argument("--arbitro", default=None, help="Nome do árbitro (para os mercados de cartões/faltas); sem árbitro = média da liga")
     parser.add_argument("--db", default=str(CAMINHO_DB_PADRAO))
     parser.add_argument("--no-gravar", action="store_true", help="Não grava a previsão no SQLite (uso em testes)")
     args = parser.parse_args()
@@ -145,6 +173,8 @@ def main():
         data_corte=args.data_corte,
         xi=args.xi,
         max_gols=args.max_gols,
+        fonte_gols=args.fonte_gols,
+        arbitro=args.arbitro,
         caminho_db=Path(args.db),
         gravar=not args.no_gravar,
     )

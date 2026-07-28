@@ -1,0 +1,1145 @@
+Date,liga,HomeTeam,AwayTeam,total_real,data_corte_modelo,prob_over_3.5,over_real_3.5
+2023-05-25,Premier League,Man United,Chelsea,2.0,2023-05-25,0.47251417654955896,0.0
+2023-05-28,Premier League,Arsenal,Wolves,0.0,2023-05-25,0.5081404867760144,0.0
+2023-05-28,Premier League,Aston Villa,Brighton,8.0,2023-05-25,0.6470363983711891,1.0
+2023-05-28,Premier League,Brentford,Man City,4.0,2023-05-25,0.35093533349589384,1.0
+2023-05-28,Premier League,Chelsea,Newcastle,0.0,2023-05-25,0.38495616235743424,0.0
+2023-05-28,Premier League,Crystal Palace,Nott'm Forest,2.0,2023-05-25,0.6289159583889088,0.0
+2023-05-28,Premier League,Everton,Bournemouth,4.0,2023-05-25,0.4711796491883056,1.0
+2023-05-28,Premier League,Leeds,Tottenham,3.0,2023-05-25,0.6694743364511091,0.0
+2023-05-28,Premier League,Leicester,West Ham,2.0,2023-05-25,0.18635904090282734,0.0
+2023-05-28,Premier League,Man United,Fulham,3.0,2023-05-25,0.42890751133356203,0.0
+2023-05-28,Premier League,Southampton,Liverpool,2.0,2023-05-25,0.34890942483915727,0.0
+2023-08-11,Premier League,Burnley,Man City,0.0,2023-08-11,0.2919263527843234,0.0
+2023-08-12,Premier League,Newcastle,Aston Villa,8.0,2023-08-11,0.516248002748887,1.0
+2023-08-12,Premier League,Everton,Fulham,2.0,2023-08-11,0.5253115269779965,0.0
+2023-08-12,Premier League,Sheffield United,Crystal Palace,3.0,2023-08-11,0.5474628790274911,0.0
+2023-08-12,Premier League,Bournemouth,West Ham,5.0,2023-08-11,0.31618790762987453,1.0
+2023-08-12,Premier League,Arsenal,Nott'm Forest,4.0,2023-08-11,0.4724296686306217,1.0
+2023-08-13,Premier League,Brentford,Tottenham,5.0,2023-08-11,0.43606527843666,1.0
+2023-08-13,Premier League,Chelsea,Liverpool,6.0,2023-08-11,0.37659446267317587,1.0
+2023-08-14,Premier League,Man United,Wolves,5.0,2023-08-11,0.48077740993193757,1.0
+2023-08-18,Premier League,Nott'm Forest,Sheffield United,5.0,2023-08-11,0.5340698733198015,1.0
+2023-08-19,Premier League,Fulham,Brentford,4.0,2023-08-11,0.2819321382767378,1.0
+2023-08-19,Premier League,Liverpool,Bournemouth,4.0,2023-08-11,0.27448638140228715,1.0
+2023-08-19,Premier League,Wolves,Brighton,9.0,2023-08-11,0.49956802541481676,1.0
+2023-08-19,Premier League,Tottenham,Man United,4.0,2023-08-11,0.43516865634852553,1.0
+2023-08-19,Premier League,Man City,Newcastle,6.0,2023-08-11,0.414367387187019,1.0
+2023-08-20,Premier League,Aston Villa,Everton,7.0,2023-08-11,0.7074041440158185,1.0
+2023-08-20,Premier League,West Ham,Chelsea,5.0,2023-08-11,0.41049939734357904,1.0
+2023-08-21,Premier League,Crystal Palace,Arsenal,3.0,2023-08-11,0.6029129985113411,0.0
+2023-08-26,Premier League,Bournemouth,Tottenham,4.0,2023-08-11,0.45731437577119616,1.0
+2023-08-26,Premier League,Arsenal,Fulham,3.0,2023-08-11,0.5573913556890692,0.0
+2023-08-26,Premier League,Brentford,Crystal Palace,0.0,2023-08-11,0.5301959567394179,0.0
+2023-08-26,Premier League,Everton,Wolves,7.0,2023-08-11,0.6870015215468692,1.0
+2023-08-26,Premier League,Man United,Nott'm Forest,8.0,2023-08-11,0.5143133690814906,1.0
+2023-08-26,Premier League,Brighton,West Ham,4.0,2023-08-11,0.33852257744504166,1.0
+2023-08-27,Premier League,Burnley,Aston Villa,2.0,2023-08-11,0.5640642566472596,0.0
+2023-08-27,Premier League,Sheffield United,Man City,3.0,2023-08-11,0.15842308792893994,0.0
+2023-08-27,Premier League,Newcastle,Liverpool,3.0,2023-08-11,0.5132800118112347,0.0
+2023-09-02,Premier League,Brighton,Newcastle,8.0,2023-08-11,0.5414088080752263,1.0
+2023-09-02,Premier League,Man City,Fulham,6.0,2023-08-11,0.2837866599840866,1.0
+2023-09-02,Premier League,Chelsea,Nott'm Forest,7.0,2023-08-11,0.5414446693786287,1.0
+2023-09-02,Premier League,Burnley,Tottenham,7.0,2023-08-11,0.4188301392449472,1.0
+2023-09-02,Premier League,Sheffield United,Everton,3.0,2023-08-11,0.3179832390942708,0.0
+2023-09-02,Premier League,Brentford,Bournemouth,3.0,2023-08-11,0.47741788889560477,0.0
+2023-09-03,Premier League,Crystal Palace,Wolves,4.0,2023-08-11,0.6463502094669326,1.0
+2023-09-03,Premier League,Liverpool,Aston Villa,1.0,2023-08-11,0.41956306633566515,0.0
+2023-09-03,Premier League,Arsenal,Man United,5.0,2023-08-11,0.51988669917089,1.0
+2023-09-16,Premier League,Wolves,Liverpool,4.0,2023-09-16,0.34480634685929196,1.0
+2023-09-16,Premier League,Aston Villa,Crystal Palace,8.0,2023-09-16,0.6882810285783746,1.0
+2023-09-16,Premier League,Fulham,Luton,4.0,2023-09-16,0.5314630048802531,1.0
+2023-09-16,Premier League,Man United,Brighton,4.0,2023-09-16,0.3683195743295376,1.0
+2023-09-16,Premier League,Tottenham,Sheffield United,11.0,2023-09-16,0.6033956102553425,1.0
+2023-09-16,Premier League,West Ham,Man City,5.0,2023-09-16,0.18819357414633622,1.0
+2023-09-16,Premier League,Newcastle,Brentford,8.0,2023-09-16,0.40435829108057486,1.0
+2023-09-17,Premier League,Everton,Arsenal,2.0,2023-09-16,0.48689576810364654,0.0
+2023-09-17,Premier League,Bournemouth,Chelsea,6.0,2023-09-16,0.47116390718270296,1.0
+2023-09-18,Premier League,Nott'm Forest,Burnley,5.0,2023-09-16,0.46430926566281455,1.0
+2023-09-23,Premier League,Crystal Palace,Fulham,5.0,2023-09-16,0.5371860342817353,1.0
+2023-09-23,Premier League,Luton,Wolves,2.0,2023-09-16,0.5632862490316547,0.0
+2023-09-23,Premier League,Man City,Nott'm Forest,10.0,2023-09-16,0.5903863616096544,1.0
+2023-09-23,Premier League,Brentford,Everton,4.0,2023-09-16,0.30915862099127633,1.0
+2023-09-23,Premier League,Burnley,Man United,3.0,2023-09-16,0.28363054491115297,0.0
+2023-09-24,Premier League,Arsenal,Tottenham,7.0,2023-09-16,0.634867327322776,1.0
+2023-09-24,Premier League,Brighton,Bournemouth,6.0,2023-09-16,0.6505693172976715,1.0
+2023-09-24,Premier League,Chelsea,Aston Villa,5.0,2023-09-16,0.43028923774224165,1.0
+2023-09-24,Premier League,Liverpool,West Ham,2.0,2023-09-16,0.15521360057627528,0.0
+2023-09-24,Premier League,Sheffield United,Newcastle,3.0,2023-09-16,0.4218165551104511,0.0
+2023-09-30,Premier League,West Ham,Sheffield United,2.0,2023-09-16,0.09703605292145404,0.0
+2023-09-30,Premier League,Wolves,Man City,9.0,2023-09-16,0.5059167100606848,1.0
+2023-09-30,Premier League,Newcastle,Burnley,4.0,2023-09-16,0.36733412106442215,1.0
+2023-09-30,Premier League,Tottenham,Liverpool,9.0,2023-09-16,0.37871226538676583,1.0
+2023-09-30,Premier League,Everton,Luton,1.0,2023-09-16,0.604264835347787,0.0
+2023-09-30,Premier League,Aston Villa,Brighton,8.0,2023-09-16,0.6341172682024564,1.0
+2023-09-30,Premier League,Man United,Crystal Palace,5.0,2023-09-16,0.43567988161156956,1.0
+2023-09-30,Premier League,Bournemouth,Arsenal,1.0,2023-09-16,0.5182039402282302,0.0
+2023-10-01,Premier League,Nott'm Forest,Brentford,3.0,2023-09-16,0.48425844731579126,0.0
+2023-10-02,Premier League,Fulham,Chelsea,5.0,2023-09-16,0.4431233175133446,1.0
+2023-10-03,Premier League,Luton,Burnley,6.0,2023-09-16,0.4261257801758228,1.0
+2023-10-07,Premier League,Luton,Tottenham,3.0,2023-09-16,0.7179997709321857,0.0
+2023-10-07,Premier League,Burnley,Chelsea,6.0,2023-09-16,0.3468240960354913,1.0
+2023-10-07,Premier League,Everton,Bournemouth,3.0,2023-09-16,0.530003155054958,0.0
+2023-10-07,Premier League,Fulham,Sheffield United,3.0,2023-09-16,0.28072991881944415,0.0
+2023-10-07,Premier League,Man United,Brentford,5.0,2023-09-16,0.28825454113167115,1.0
+2023-10-07,Premier League,Crystal Palace,Nott'm Forest,1.0,2023-09-16,0.6822989070648111,0.0
+2023-10-08,Premier League,Arsenal,Man City,5.0,2023-09-16,0.27548641316941036,1.0
+2023-10-08,Premier League,Wolves,Aston Villa,4.0,2023-09-16,0.742020308399802,1.0
+2023-10-08,Premier League,Brighton,Liverpool,3.0,2023-09-16,0.46287822914888377,0.0
+2023-10-08,Premier League,West Ham,Newcastle,6.0,2023-09-16,0.43534010432277054,1.0
+2023-10-21,Premier League,Liverpool,Everton,2.0,2023-10-21,0.47364512876594356,0.0
+2023-10-21,Premier League,Bournemouth,Wolves,8.0,2023-10-21,0.5415224943881626,1.0
+2023-10-21,Premier League,Brentford,Burnley,7.0,2023-10-21,0.25476159993340314,1.0
+2023-10-21,Premier League,Man City,Brighton,4.0,2023-10-21,0.5752264367395228,1.0
+2023-10-21,Premier League,Newcastle,Crystal Palace,5.0,2023-10-21,0.5597402033511051,1.0
+2023-10-21,Premier League,Nott'm Forest,Luton,3.0,2023-10-21,0.45315356216906666,0.0
+2023-10-21,Premier League,Chelsea,Arsenal,6.0,2023-10-21,0.44590761485558456,1.0
+2023-10-21,Premier League,Sheffield United,Man United,4.0,2023-10-21,0.3195494114755521,1.0
+2023-10-22,Premier League,Aston Villa,West Ham,1.0,2023-10-21,0.44549202077032574,0.0
+2023-10-23,Premier League,Tottenham,Fulham,2.0,2023-10-21,0.6401497158902879,0.0
+2023-10-27,Premier League,Crystal Palace,Tottenham,3.0,2023-10-21,0.6557702156053199,0.0
+2023-10-28,Premier League,Wolves,Newcastle,5.0,2023-10-21,0.6790002726159466,1.0
+2023-10-28,Premier League,Bournemouth,Burnley,5.0,2023-10-21,0.30756544277725695,1.0
+2023-10-28,Premier League,Arsenal,Sheffield United,3.0,2023-10-21,0.4548865988155532,0.0
+2023-10-28,Premier League,Chelsea,Brentford,5.0,2023-10-21,0.3477578670850693,1.0
+2023-10-29,Premier League,West Ham,Everton,5.0,2023-10-21,0.3540670414543675,1.0
+2023-10-29,Premier League,Aston Villa,Luton,5.0,2023-10-21,0.6163945683721789,1.0
+2023-10-29,Premier League,Brighton,Fulham,3.0,2023-10-21,0.639051246794208,0.0
+2023-10-29,Premier League,Liverpool,Nott'm Forest,5.0,2023-10-21,0.43476286818176557,1.0
+2023-10-29,Premier League,Man United,Man City,5.0,2023-10-21,0.483388486100638,1.0
+2023-11-04,Premier League,Fulham,Man United,7.0,2023-10-21,0.5725142116308539,1.0
+2023-11-04,Premier League,Brentford,West Ham,5.0,2023-10-21,0.15341623267912305,1.0
+2023-11-04,Premier League,Burnley,Crystal Palace,5.0,2023-10-21,0.5761959261519203,1.0
+2023-11-04,Premier League,Everton,Brighton,6.0,2023-10-21,0.6093211979755512,1.0
+2023-11-04,Premier League,Man City,Bournemouth,1.0,2023-10-21,0.4436097987541128,0.0
+2023-11-04,Premier League,Sheffield United,Wolves,5.0,2023-10-21,0.5664017876434142,1.0
+2023-11-04,Premier League,Newcastle,Arsenal,6.0,2023-10-21,0.5368487674913566,1.0
+2023-11-05,Premier League,Luton,Liverpool,2.0,2023-10-21,0.2620598988260345,0.0
+2023-11-05,Premier League,Nott'm Forest,Aston Villa,2.0,2023-10-21,0.556367042308911,0.0
+2023-11-06,Premier League,Tottenham,Chelsea,6.0,2023-10-21,0.5770092244333482,1.0
+2023-11-11,Premier League,Wolves,Tottenham,7.0,2023-10-21,0.7069236834760945,1.0
+2023-11-11,Premier League,Arsenal,Burnley,1.0,2023-10-21,0.31481044449539974,0.0
+2023-11-11,Premier League,Crystal Palace,Everton,5.0,2023-10-21,0.5532306563396104,1.0
+2023-11-11,Premier League,Man United,Luton,2.0,2023-10-21,0.17510689452390393,0.0
+2023-11-11,Premier League,Bournemouth,Newcastle,3.0,2023-10-21,0.40244187196599907,0.0
+2023-11-12,Premier League,Aston Villa,Fulham,7.0,2023-10-21,0.5410368130730413,1.0
+2023-11-12,Premier League,Brighton,Sheffield United,5.0,2023-10-21,0.6832082176334424,1.0
+2023-11-12,Premier League,Liverpool,Brentford,3.0,2023-10-21,0.28741713493789256,0.0
+2023-11-12,Premier League,West Ham,Nott'm Forest,4.0,2023-10-21,0.47765506099007454,1.0
+2023-11-12,Premier League,Chelsea,Man City,8.0,2023-10-21,0.5211057167959509,1.0
+2023-11-25,Premier League,Nott'm Forest,Brighton,6.0,2023-11-25,0.7139620184365735,1.0
+2023-11-25,Premier League,Sheffield United,Bournemouth,5.0,2023-11-25,0.35440074996635706,1.0
+2023-11-25,Premier League,Brentford,Arsenal,2.0,2023-11-25,0.5542758106999499,0.0
+2023-11-25,Premier League,Luton,Crystal Palace,7.0,2023-11-25,0.20043937443062848,1.0
+2023-11-25,Premier League,Burnley,West Ham,4.0,2023-11-25,0.24401125688062134,1.0
+2023-11-25,Premier League,Newcastle,Chelsea,8.0,2023-11-25,0.6107221533680358,1.0
+2023-11-25,Premier League,Man City,Liverpool,4.0,2023-11-25,0.2966062781373148,1.0
+2023-11-26,Premier League,Tottenham,Aston Villa,4.0,2023-11-25,0.7740245370622466,1.0
+2023-11-26,Premier League,Everton,Man United,3.0,2023-11-25,0.7205654165754728,0.0
+2023-11-27,Premier League,Fulham,Wolves,4.0,2023-11-25,0.6094102263803586,1.0
+2023-12-02,Premier League,Arsenal,Wolves,3.0,2023-11-25,0.7666701285825124,0.0
+2023-12-02,Premier League,Brentford,Luton,3.0,2023-11-25,0.2991321476607713,0.0
+2023-12-02,Premier League,Burnley,Sheffield United,7.0,2023-11-25,0.33027628902988454,1.0
+2023-12-02,Premier League,Nott'm Forest,Everton,1.0,2023-11-25,0.6954853095485883,0.0
+2023-12-02,Premier League,Newcastle,Man United,3.0,2023-11-25,0.6323122626989303,0.0
+2023-12-03,Premier League,West Ham,Crystal Palace,2.0,2023-11-25,0.24705720220386368,0.0
+2023-12-03,Premier League,Man City,Tottenham,8.0,2023-11-25,0.5602730586888757,1.0
+2023-12-03,Premier League,Liverpool,Fulham,0.0,2023-11-25,0.37401805812761163,0.0
+2023-12-03,Premier League,Chelsea,Brighton,8.0,2023-11-25,0.6667533306012035,1.0
+2023-12-03,Premier League,Bournemouth,Aston Villa,8.0,2023-11-25,0.545630391277634,1.0
+2023-12-05,Premier League,Wolves,Burnley,6.0,2023-11-25,0.3285403805445025,1.0
+2023-12-05,Premier League,Luton,Arsenal,3.0,2023-11-25,0.3250438540466428,0.0
+2023-12-06,Premier League,Brighton,Brentford,4.0,2023-11-25,0.6683803180906672,1.0
+2023-12-06,Premier League,Crystal Palace,Bournemouth,4.0,2023-11-25,0.4699502007253555,1.0
+2023-12-06,Premier League,Fulham,Nott'm Forest,1.0,2023-11-25,0.531252191406823,0.0
+2023-12-06,Premier League,Sheffield United,Liverpool,5.0,2023-11-25,0.2992320622170601,1.0
+2023-12-06,Premier League,Aston Villa,Man City,4.0,2023-11-25,0.7121340335780088,1.0
+2023-12-06,Premier League,Man United,Chelsea,4.0,2023-11-25,0.5331906211056454,1.0
+2023-12-07,Premier League,Everton,Newcastle,3.0,2023-11-25,0.768689626594868,0.0
+2023-12-07,Premier League,Tottenham,West Ham,6.0,2023-11-25,0.4706188505934664,1.0
+2023-12-09,Premier League,Wolves,Nott'm Forest,1.0,2023-11-25,0.7055411845372346,0.0
+2023-12-09,Premier League,Aston Villa,Arsenal,6.0,2023-11-25,0.3791637219029477,1.0
+2023-12-09,Premier League,Sheffield United,Brentford,6.0,2023-11-25,0.3600104945323249,1.0
+2023-12-09,Premier League,Brighton,Burnley,4.0,2023-11-25,0.48917779187521826,1.0
+2023-12-09,Premier League,Crystal Palace,Liverpool,7.0,2023-11-25,0.36453169446986633,1.0
+2023-12-09,Premier League,Man United,Bournemouth,4.0,2023-11-25,0.6117917512160403,1.0
+2023-12-10,Premier League,Everton,Chelsea,4.0,2023-11-25,0.5209888626856393,1.0
+2023-12-10,Premier League,Fulham,West Ham,3.0,2023-11-25,0.31432238073293045,0.0
+2023-12-10,Premier League,Luton,Man City,3.0,2023-11-25,0.46532115443416566,0.0
+2023-12-10,Premier League,Tottenham,Newcastle,4.0,2023-11-25,0.629187872470874,1.0
+2023-12-15,Premier League,Nott'm Forest,Tottenham,6.0,2023-11-25,0.49480455431108905,1.0
+2023-12-16,Premier League,Chelsea,Sheffield United,4.0,2023-11-25,0.4971442045669369,1.0
+2023-12-16,Premier League,Man City,Crystal Palace,2.0,2023-11-25,0.5371529126368193,0.0
+2023-12-16,Premier League,Newcastle,Fulham,2.0,2023-11-25,0.5272185353021012,0.0
+2023-12-16,Premier League,Burnley,Everton,1.0,2023-11-25,0.5060654221227027,0.0
+2023-12-17,Premier League,Liverpool,Man United,6.0,2023-11-25,0.3044535212355368,1.0
+2023-12-17,Premier League,West Ham,Wolves,4.0,2023-11-25,0.36836343660160803,1.0
+2023-12-17,Premier League,Arsenal,Brighton,4.0,2023-11-25,0.7218656505462409,1.0
+2023-12-17,Premier League,Brentford,Aston Villa,10.0,2023-11-25,0.5210797996578833,1.0
+2023-12-21,Premier League,Crystal Palace,Brighton,7.0,2023-11-25,0.7380803504051568,1.0
+2023-12-22,Premier League,Aston Villa,Sheffield United,6.0,2023-11-25,0.6198072738262197,1.0
+2023-12-23,Premier League,West Ham,Man United,5.0,2023-11-25,0.3056054536314283,1.0
+2023-12-23,Premier League,Fulham,Burnley,3.0,2023-11-25,0.36311839763798803,0.0
+2023-12-23,Premier League,Luton,Newcastle,3.0,2023-11-25,0.46208869186820983,0.0
+2023-12-23,Premier League,Nott'm Forest,Bournemouth,3.0,2023-11-25,0.5720456418646378,0.0
+2023-12-23,Premier League,Tottenham,Everton,5.0,2023-11-25,0.6959480316525379,1.0
+2023-12-23,Premier League,Liverpool,Arsenal,7.0,2023-11-25,0.306169162365875,1.0
+2023-12-24,Premier League,Wolves,Chelsea,8.0,2023-11-25,0.6874987669639869,1.0
+2023-12-26,Premier League,Burnley,Liverpool,3.0,2023-12-26,0.36860311287262937,0.0
+2023-12-26,Premier League,Newcastle,Nott'm Forest,6.0,2023-12-26,0.6020524954650122,1.0
+2023-12-26,Premier League,Bournemouth,Fulham,2.0,2023-12-26,0.4432701042075093,0.0
+2023-12-26,Premier League,Sheffield United,Luton,5.0,2023-12-26,0.3992273852114042,1.0
+2023-12-26,Premier League,Man United,Aston Villa,4.0,2023-12-26,0.6831444535314051,1.0
+2023-12-27,Premier League,Chelsea,Crystal Palace,5.0,2023-12-26,0.7027480146015647,1.0
+2023-12-27,Premier League,Brentford,Wolves,2.0,2023-12-26,0.5361561960715941,0.0
+2023-12-27,Premier League,Everton,Man City,6.0,2023-12-26,0.5926146365223053,1.0
+2023-12-28,Premier League,Arsenal,West Ham,2.0,2023-12-26,0.25912737241897843,0.0
+2023-12-28,Premier League,Brighton,Tottenham,5.0,2023-12-26,0.6573526387716877,1.0
+2023-12-30,Premier League,Luton,Chelsea,4.0,2023-12-26,0.5105642222772735,1.0
+2023-12-30,Premier League,Aston Villa,Burnley,5.0,2023-12-26,0.5983025601678228,1.0
+2023-12-30,Premier League,Crystal Palace,Brentford,1.0,2023-12-26,0.49417865113845305,0.0
+2023-12-30,Premier League,Man City,Sheffield United,2.0,2023-12-26,0.6410800590238368,0.0
+2023-12-30,Premier League,Wolves,Everton,5.0,2023-12-26,0.7186470041603779,1.0
+2023-12-30,Premier League,Nott'm Forest,Man United,6.0,2023-12-26,0.6272897546586664,1.0
+2023-12-31,Premier League,Fulham,Arsenal,5.0,2023-12-26,0.3867230207325666,1.0
+2023-12-31,Premier League,Tottenham,Bournemouth,6.0,2023-12-26,0.6265039164427542,1.0
+2024-01-01,Premier League,Liverpool,Newcastle,8.0,2023-12-26,0.4684243127911608,1.0
+2024-01-02,Premier League,West Ham,Brighton,1.0,2023-12-26,0.3867472001740896,0.0
+2024-01-12,Premier League,Burnley,Luton,1.0,2023-12-26,0.2774158920001741,0.0
+2024-01-13,Premier League,Newcastle,Man City,3.0,2023-12-26,0.49069525388803353,0.0
+2024-01-13,Premier League,Chelsea,Fulham,6.0,2023-12-26,0.5487616066769551,1.0
+2024-01-14,Premier League,Everton,Aston Villa,5.0,2023-12-26,0.7004422339533762,1.0
+2024-01-14,Premier League,Man United,Tottenham,3.0,2023-12-26,0.764343200082627,0.0
+2024-01-20,Premier League,Arsenal,Crystal Palace,0.0,2023-12-26,0.5500972967959886,0.0
+2024-01-20,Premier League,Brentford,Nott'm Forest,4.0,2023-12-26,0.5221702347359642,1.0
+2024-01-21,Premier League,Sheffield United,West Ham,4.0,2023-12-26,0.41318816373174133,1.0
+2024-01-21,Premier League,Bournemouth,Liverpool,3.0,2023-12-26,0.3557139225427921,0.0
+2024-01-22,Premier League,Brighton,Wolves,5.0,2023-12-26,0.7340003438472995,1.0
+2024-01-30,Premier League,Aston Villa,Newcastle,5.0,2024-01-30,0.7976040439733498,1.0
+2024-01-30,Premier League,Nott'm Forest,Arsenal,1.0,2024-01-30,0.5845156934635833,0.0
+2024-01-30,Premier League,Fulham,Everton,3.0,2024-01-30,0.5319867531224955,0.0
+2024-01-30,Premier League,Luton,Brighton,4.0,2024-01-30,0.4970589090541959,1.0
+2024-01-30,Premier League,Crystal Palace,Sheffield United,5.0,2024-01-30,0.42899930280638426,1.0
+2024-01-31,Premier League,Tottenham,Brentford,5.0,2024-01-30,0.5942303536474233,1.0
+2024-01-31,Premier League,Liverpool,Chelsea,6.0,2024-01-30,0.5299428958350882,1.0
+2024-01-31,Premier League,Man City,Burnley,4.0,2024-01-30,0.396853586014573,1.0
+2024-02-01,Premier League,West Ham,Bournemouth,4.0,2024-01-30,0.3417721313011442,1.0
+2024-02-01,Premier League,Wolves,Man United,7.0,2024-01-30,0.55600103688883,1.0
+2024-02-03,Premier League,Everton,Tottenham,3.0,2024-01-30,0.5491243460824794,0.0
+2024-02-03,Premier League,Brighton,Crystal Palace,4.0,2024-01-30,0.6609318510293835,1.0
+2024-02-03,Premier League,Burnley,Fulham,4.0,2024-01-30,0.35280815753352535,1.0
+2024-02-03,Premier League,Newcastle,Luton,4.0,2024-01-30,0.5749734399880666,1.0
+2024-02-03,Premier League,Sheffield United,Aston Villa,1.0,2024-01-30,0.6711970972039352,0.0
+2024-02-04,Premier League,Bournemouth,Nott'm Forest,5.0,2024-01-30,0.4891503869693691,1.0
+2024-02-04,Premier League,Chelsea,Wolves,5.0,2024-01-30,0.7748906424300163,1.0
+2024-02-04,Premier League,Man United,West Ham,1.0,2024-01-30,0.3160612522265762,0.0
+2024-02-04,Premier League,Arsenal,Liverpool,8.0,2024-01-30,0.4446856032318687,1.0
+2024-02-05,Premier League,Brentford,Man City,1.0,2024-01-30,0.3112155886377462,0.0
+2024-02-10,Premier League,Nott'm Forest,Newcastle,3.0,2024-01-30,0.6688742943344775,0.0
+2024-02-10,Premier League,Wolves,Brentford,5.0,2024-01-30,0.5636864626646677,1.0
+2024-02-10,Premier League,Tottenham,Brighton,5.0,2024-01-30,0.6909788465684857,1.0
+2024-02-10,Premier League,Fulham,Bournemouth,3.0,2024-01-30,0.42240607138460584,0.0
+2024-02-10,Premier League,Liverpool,Burnley,5.0,2024-01-30,0.44768863664168357,1.0
+2024-02-10,Premier League,Man City,Everton,2.0,2024-01-30,0.6150877412029062,0.0
+2024-02-10,Premier League,Luton,Sheffield United,3.0,2024-01-30,0.4789347273384917,0.0
+2024-02-11,Premier League,West Ham,Arsenal,4.0,2024-01-30,0.3262428227666902,1.0
+2024-02-11,Premier League,Aston Villa,Man United,5.0,2024-01-30,0.6508120186356174,1.0
+2024-02-12,Premier League,Crystal Palace,Chelsea,4.0,2024-01-30,0.5354334352650091,1.0
+2024-02-17,Premier League,Nott'm Forest,West Ham,8.0,2024-01-30,0.46238890113834435,1.0
+2024-02-17,Premier League,Newcastle,Bournemouth,4.0,2024-01-30,0.5868018495680484,1.0
+2024-02-17,Premier League,Tottenham,Wolves,1.0,2024-01-30,0.7816545066414012,0.0
+2024-02-17,Premier League,Burnley,Arsenal,3.0,2024-01-30,0.3564646803067201,0.0
+2024-02-17,Premier League,Brentford,Liverpool,3.0,2024-01-30,0.2582343209640158,0.0
+2024-02-17,Premier League,Fulham,Aston Villa,7.0,2024-01-30,0.530739679356305,1.0
+2024-02-17,Premier League,Man City,Chelsea,4.0,2024-01-30,0.5708099859215124,1.0
+2024-02-18,Premier League,Luton,Man United,8.0,2024-01-30,0.466084237058414,1.0
+2024-02-18,Premier League,Sheffield United,Brighton,5.0,2024-01-30,0.6625697769146143,1.0
+2024-02-19,Premier League,Everton,Crystal Palace,2.0,2024-01-30,0.535924457705565,0.0
+2024-02-20,Premier League,Man City,Brentford,6.0,2024-01-30,0.4355223727306465,1.0
+2024-02-21,Premier League,Liverpool,Luton,5.0,2024-01-30,0.3419947685891819,1.0
+2024-02-24,Premier League,Aston Villa,Nott'm Forest,3.0,2024-01-30,0.676140945455067,0.0
+2024-02-24,Premier League,Brighton,Everton,5.0,2024-01-30,0.44022355189733964,1.0
+2024-02-24,Premier League,Crystal Palace,Burnley,4.0,2024-01-30,0.4480858507276382,1.0
+2024-02-24,Premier League,Man United,Fulham,7.0,2024-01-30,0.33693445776115405,1.0
+2024-02-24,Premier League,Bournemouth,Man City,4.0,2024-01-30,0.3414789173628271,1.0
+2024-02-24,Premier League,Arsenal,Newcastle,1.0,2024-01-30,0.5245389941455546,0.0
+2024-02-25,Premier League,Wolves,Sheffield United,3.0,2024-01-30,0.6524769823408169,0.0
+2024-02-26,Premier League,West Ham,Brentford,3.0,2024-01-30,0.28693704833181755,0.0
+2024-03-02,Premier League,Luton,Aston Villa,5.0,2024-03-02,0.5075031755145514,1.0
+2024-03-02,Premier League,Tottenham,Crystal Palace,3.0,2024-03-02,0.736121744124136,0.0
+2024-03-02,Premier League,Nott'm Forest,Liverpool,4.0,2024-03-02,0.4761916296522705,1.0
+2024-03-02,Premier League,Fulham,Brighton,3.0,2024-03-02,0.580163499015043,0.0
+2024-03-02,Premier League,Everton,West Ham,3.0,2024-03-02,0.3695707489017097,0.0
+2024-03-02,Premier League,Brentford,Chelsea,4.0,2024-03-02,0.4821693304634695,1.0
+2024-03-02,Premier League,Newcastle,Wolves,1.0,2024-03-02,0.7290768792781175,0.0
+2024-03-03,Premier League,Burnley,Bournemouth,6.0,2024-03-02,0.4940836659428438,1.0
+2024-03-03,Premier League,Man City,Man United,1.0,2024-03-02,0.5211740974721213,0.0
+2024-03-04,Premier League,Sheffield United,Arsenal,1.0,2024-03-02,0.40515876489307495,0.0
+2024-03-09,Premier League,Man United,Everton,3.0,2024-03-02,0.573015461849707,0.0
+2024-03-09,Premier League,Bournemouth,Sheffield United,8.0,2024-03-02,0.5277793790232146,1.0
+2024-03-09,Premier League,Crystal Palace,Luton,5.0,2024-03-02,0.4913329768706259,1.0
+2024-03-09,Premier League,Wolves,Fulham,4.0,2024-03-02,0.4958797868878725,1.0
+2024-03-09,Premier League,Arsenal,Brentford,6.0,2024-03-02,0.4122284341195865,1.0
+2024-03-10,Premier League,Liverpool,Man City,3.0,2024-03-02,0.3269882913271237,0.0
+2024-03-10,Premier League,West Ham,Burnley,6.0,2024-03-02,0.36323363055100777,1.0
+2024-03-10,Premier League,Brighton,Nott'm Forest,8.0,2024-03-02,0.732348762058465,1.0
+2024-03-10,Premier League,Aston Villa,Tottenham,2.0,2024-03-02,0.7427547331960749,0.0
+2024-03-11,Premier League,Chelsea,Newcastle,4.0,2024-03-02,0.7350750372101028,1.0
+2024-03-13,Premier League,Bournemouth,Luton,3.0,2024-03-02,0.42159274918465134,0.0
+2024-03-16,Premier League,Burnley,Brentford,6.0,2024-03-02,0.3763812124227733,1.0
+2024-03-16,Premier League,Luton,Nott'm Forest,3.0,2024-03-02,0.601887638279914,0.0
+2024-03-16,Premier League,Fulham,Tottenham,5.0,2024-03-02,0.5767568416865202,1.0
+2024-03-17,Premier League,West Ham,Aston Villa,6.0,2024-03-02,0.41372308138220765,1.0
+2024-03-30,Premier League,Brentford,Man United,4.0,2024-03-02,0.4981903415685483,1.0
+2024-03-30,Premier League,Tottenham,Luton,6.0,2024-03-02,0.5541165703390333,1.0
+2024-03-30,Premier League,Sheffield United,Fulham,5.0,2024-03-02,0.5470417982650351,1.0
+2024-03-30,Premier League,Aston Villa,Wolves,7.0,2024-03-02,0.6708265522246135,1.0
+2024-03-30,Premier League,Chelsea,Burnley,4.0,2024-03-02,0.6359023590222691,1.0
+2024-03-30,Premier League,Bournemouth,Everton,3.0,2024-03-02,0.3527229377316521,0.0
+2024-03-30,Premier League,Newcastle,West Ham,2.0,2024-03-02,0.3838771521102599,0.0
+2024-03-30,Premier League,Nott'm Forest,Crystal Palace,2.0,2024-03-02,0.5840629142542025,0.0
+2024-03-31,Premier League,Liverpool,Brighton,8.0,2024-03-02,0.6338083344972864,1.0
+2024-03-31,Premier League,Man City,Arsenal,2.0,2024-03-02,0.4532117765739478,0.0
+2024-04-02,Premier League,Newcastle,Everton,3.0,2024-04-02,0.45908135600842437,0.0
+2024-04-02,Premier League,Nott'm Forest,Fulham,0.0,2024-04-02,0.4368412229292355,0.0
+2024-04-02,Premier League,Bournemouth,Crystal Palace,5.0,2024-04-02,0.24725869276520365,1.0
+2024-04-02,Premier League,Burnley,Wolves,2.0,2024-04-02,0.7160306204376319,0.0
+2024-04-02,Premier League,West Ham,Tottenham,5.0,2024-04-02,0.5286822521371097,1.0
+2024-04-03,Premier League,Arsenal,Luton,2.0,2024-04-02,0.5119070132949649,0.0
+2024-04-03,Premier League,Brentford,Brighton,2.0,2024-04-02,0.5078818460018498,0.0
+2024-04-03,Premier League,Man City,Aston Villa,3.0,2024-04-02,0.6674788941575437,0.0
+2024-04-04,Premier League,Liverpool,Sheffield United,1.0,2024-04-02,0.5849258339071021,0.0
+2024-04-04,Premier League,Chelsea,Man United,3.0,2024-04-02,0.6318107089669797,0.0
+2024-04-06,Premier League,Wolves,West Ham,7.0,2024-04-02,0.3784992900293265,1.0
+2024-04-06,Premier League,Brighton,Arsenal,3.0,2024-04-02,0.6366985662102524,0.0
+2024-04-06,Premier League,Luton,Bournemouth,0.0,2024-04-02,0.4407402184087746,0.0
+2024-04-06,Premier League,Aston Villa,Brentford,4.0,2024-04-02,0.674245289190476,1.0
+2024-04-06,Premier League,Everton,Burnley,3.0,2024-04-02,0.40699759542952807,0.0
+2024-04-06,Premier League,Fulham,Newcastle,3.0,2024-04-02,0.4687358028190811,0.0
+2024-04-06,Premier League,Crystal Palace,Man City,2.0,2024-04-02,0.4092129328614466,0.0
+2024-04-07,Premier League,Man United,Liverpool,7.0,2024-04-02,0.5639981904099801,1.0
+2024-04-07,Premier League,Sheffield United,Chelsea,6.0,2024-04-02,0.6480453170065875,1.0
+2024-04-07,Premier League,Tottenham,Nott'm Forest,5.0,2024-04-02,0.699141197357867,1.0
+2024-04-13,Premier League,Newcastle,Tottenham,4.0,2024-04-02,0.6928749068946043,1.0
+2024-04-13,Premier League,Brentford,Sheffield United,4.0,2024-04-02,0.3311094291918975,1.0
+2024-04-13,Premier League,Burnley,Brighton,3.0,2024-04-02,0.6196763359868561,0.0
+2024-04-13,Premier League,Man City,Luton,1.0,2024-04-02,0.5322996440867024,0.0
+2024-04-13,Premier League,Nott'm Forest,Wolves,5.0,2024-04-02,0.6784192703913731,1.0
+2024-04-13,Premier League,Bournemouth,Man United,4.0,2024-04-02,0.4557584917366653,1.0
+2024-04-14,Premier League,Arsenal,Aston Villa,4.0,2024-04-02,0.7187143587331305,1.0
+2024-04-14,Premier League,Liverpool,Crystal Palace,2.0,2024-04-02,0.4609692574161807,0.0
+2024-04-14,Premier League,West Ham,Fulham,3.0,2024-04-02,0.32993132031960093,0.0
+2024-04-15,Premier League,Chelsea,Everton,5.0,2024-04-02,0.5620826730296054,1.0
+2024-04-20,Premier League,Luton,Brentford,3.0,2024-04-02,0.4342944694401097,0.0
+2024-04-20,Premier League,Sheffield United,Burnley,1.0,2024-04-02,0.48892745919211356,0.0
+2024-04-20,Premier League,Wolves,Arsenal,5.0,2024-04-02,0.5102034695087329,1.0
+2024-04-21,Premier League,Everton,Nott'm Forest,5.0,2024-04-02,0.6034911016798226,1.0
+2024-04-21,Premier League,Aston Villa,Bournemouth,4.0,2024-04-02,0.6888986320619754,1.0
+2024-04-21,Premier League,Crystal Palace,West Ham,5.0,2024-04-02,0.16720452577387057,1.0
+2024-04-21,Premier League,Fulham,Liverpool,3.0,2024-04-02,0.476642820546011,0.0
+2024-04-23,Premier League,Arsenal,Chelsea,4.0,2024-04-02,0.6085232598708862,1.0
+2024-04-24,Premier League,Man United,Sheffield United,1.0,2024-04-02,0.6693086643354137,0.0
+2024-04-24,Premier League,Everton,Liverpool,3.0,2024-04-02,0.4365554707590829,0.0
+2024-04-24,Premier League,Wolves,Bournemouth,5.0,2024-04-02,0.5843730951755827,1.0
+2024-04-24,Premier League,Crystal Palace,Newcastle,6.0,2024-04-02,0.6635866770641113,1.0
+2024-04-25,Premier League,Brighton,Man City,2.0,2024-04-02,0.5257081967050324,0.0
+2024-04-27,Premier League,West Ham,Liverpool,2.0,2024-04-02,0.38137886892585915,0.0
+2024-04-27,Premier League,Fulham,Crystal Palace,2.0,2024-04-02,0.4767711507799678,0.0
+2024-04-27,Premier League,Man United,Burnley,4.0,2024-04-02,0.5982564065041079,1.0
+2024-04-27,Premier League,Newcastle,Sheffield United,0.0,2024-04-02,0.5368851639636757,0.0
+2024-04-27,Premier League,Wolves,Luton,4.0,2024-04-02,0.6925359273461268,1.0
+2024-04-27,Premier League,Everton,Brentford,3.0,2024-04-02,0.5105540194687117,0.0
+2024-04-27,Premier League,Aston Villa,Chelsea,8.0,2024-04-02,0.766082695623289,1.0
+2024-04-28,Premier League,Tottenham,Arsenal,3.0,2024-04-02,0.4823950455155981,0.0
+2024-04-28,Premier League,Bournemouth,Brighton,4.0,2024-04-02,0.553603069159603,1.0
+2024-04-28,Premier League,Nott'm Forest,Man City,0.0,2024-04-02,0.5195899537805603,0.0
+2024-05-02,Premier League,Chelsea,Tottenham,1.0,2024-05-02,0.7668117980433473,0.0
+2024-05-03,Premier League,Luton,Everton,4.0,2024-05-02,0.5046410491763232,1.0
+2024-05-04,Premier League,Arsenal,Bournemouth,5.0,2024-05-02,0.5674428718720195,1.0
+2024-05-04,Premier League,Brentford,Fulham,2.0,2024-05-02,0.2552622730154959,0.0
+2024-05-04,Premier League,Burnley,Newcastle,4.0,2024-05-02,0.533762706907041,1.0
+2024-05-04,Premier League,Sheffield United,Nott'm Forest,1.0,2024-05-02,0.46803747883716834,0.0
+2024-05-04,Premier League,Man City,Wolves,4.0,2024-05-02,0.5687261391032642,1.0
+2024-05-05,Premier League,Brighton,Aston Villa,3.0,2024-05-02,0.7690431925564458,0.0
+2024-05-05,Premier League,Chelsea,West Ham,4.0,2024-05-02,0.4220433585937688,1.0
+2024-05-05,Premier League,Liverpool,Tottenham,5.0,2024-05-02,0.5690509638899017,1.0
+2024-05-06,Premier League,Crystal Palace,Man United,2.0,2024-05-02,0.5674063731918025,0.0
+2024-05-11,Premier League,West Ham,Luton,4.0,2024-05-02,0.25015508720438145,1.0
+2024-05-11,Premier League,Wolves,Crystal Palace,5.0,2024-05-02,0.7489522164335906,1.0
+2024-05-11,Premier League,Tottenham,Burnley,8.0,2024-05-02,0.5574015883903574,1.0
+2024-05-11,Premier League,Nott'm Forest,Chelsea,5.0,2024-05-02,0.6103649851790481,1.0
+2024-05-11,Premier League,Everton,Sheffield United,3.0,2024-05-02,0.48431721267235517,0.0
+2024-05-11,Premier League,Bournemouth,Brentford,4.0,2024-05-02,0.4379070846506651,1.0
+2024-05-11,Premier League,Fulham,Man City,1.0,2024-05-02,0.4222093229929862,0.0
+2024-05-11,Premier League,Newcastle,Brighton,7.0,2024-05-02,0.6660827637007714,1.0
+2024-05-12,Premier League,Man United,Arsenal,2.0,2024-05-02,0.4676037411047283,0.0
+2024-05-13,Premier League,Aston Villa,Liverpool,2.0,2024-05-02,0.6149657409166872,0.0
+2024-05-14,Premier League,Tottenham,Man City,6.0,2024-05-02,0.46645121433543224,1.0
+2024-05-15,Premier League,Brighton,Chelsea,4.0,2024-05-02,0.7746173415443084,1.0
+2024-05-15,Premier League,Man United,Newcastle,6.0,2024-05-02,0.5781726617835595,1.0
+2024-05-19,Premier League,Sheffield United,Tottenham,2.0,2024-05-02,0.521590026023275,0.0
+2024-05-19,Premier League,Man City,West Ham,1.0,2024-05-02,0.36817419766324105,0.0
+2024-05-19,Premier League,Luton,Fulham,9.0,2024-05-02,0.38928767311709045,1.0
+2024-05-19,Premier League,Crystal Palace,Aston Villa,5.0,2024-05-02,0.6674799534272732,1.0
+2024-05-19,Premier League,Liverpool,Wolves,2.0,2024-05-02,0.5465969815432156,0.0
+2024-05-19,Premier League,Burnley,Nott'm Forest,1.0,2024-05-02,0.356307184751194,0.0
+2024-05-19,Premier League,Brighton,Man United,4.0,2024-05-02,0.683370993896533,1.0
+2024-05-19,Premier League,Brentford,Newcastle,8.0,2024-05-02,0.4507316364432702,1.0
+2024-05-19,Premier League,Arsenal,Everton,7.0,2024-05-02,0.38055711818618837,1.0
+2024-05-19,Premier League,Chelsea,Bournemouth,5.0,2024-05-02,0.6825847342633945,1.0
+2024-08-16,Premier League,Man United,Fulham,5.0,2024-08-16,0.49073193080459737,1.0
+2024-08-17,Premier League,West Ham,Aston Villa,3.0,2024-08-16,0.4679514196084738,0.0
+2024-08-17,Premier League,Nott'm Forest,Bournemouth,4.0,2024-08-16,0.4508465985444378,1.0
+2024-08-17,Premier League,Newcastle,Southampton,6.0,2024-08-16,0.5088532997137242,1.0
+2024-08-17,Premier League,Everton,Brighton,2.0,2024-08-16,0.614154865292603,0.0
+2024-08-17,Premier League,Arsenal,Wolves,4.0,2024-08-16,0.5830434446305899,1.0
+2024-08-18,Premier League,Brentford,Crystal Palace,6.0,2024-08-16,0.36404409553694955,1.0
+2024-08-18,Premier League,Chelsea,Man City,2.0,2024-08-16,0.5648258643934317,0.0
+2024-08-19,Premier League,Leicester,Tottenham,2.0,2024-08-16,0.43595777434915245,0.0
+2024-08-24,Premier League,Aston Villa,Arsenal,4.0,2024-08-16,0.520028527596184,1.0
+2024-08-24,Premier League,Tottenham,Everton,0.0,2024-08-16,0.6988705554958072,0.0
+2024-08-24,Premier League,Southampton,Nott'm Forest,6.0,2024-08-16,0.3297577972635706,1.0
+2024-08-24,Premier League,Crystal Palace,West Ham,2.0,2024-08-16,0.41507714013912145,0.0
+2024-08-24,Premier League,Fulham,Leicester,4.0,2024-08-16,0.3343742238905146,1.0
+2024-08-24,Premier League,Brighton,Man United,3.0,2024-08-16,0.667240904164363,0.0
+2024-08-25,Premier League,Bournemouth,Newcastle,4.0,2024-08-16,0.6430616480836734,1.0
+2024-08-25,Premier League,Wolves,Chelsea,5.0,2024-08-16,0.776173482237961,1.0
+2024-08-25,Premier League,Liverpool,Brentford,5.0,2024-08-16,0.43563376941598697,1.0
+2024-08-31,Premier League,Arsenal,Brighton,5.0,2024-08-16,0.5045679389457315,1.0
+2024-08-31,Premier League,Brentford,Southampton,3.0,2024-08-16,0.38626683774056564,0.0
+2024-08-31,Premier League,Everton,Bournemouth,3.0,2024-08-16,0.5017611529741045,0.0
+2024-08-31,Premier League,Leicester,Aston Villa,9.0,2024-08-16,0.6043757621586022,1.0
+2024-08-31,Premier League,Nott'm Forest,Wolves,7.0,2024-08-16,0.6297838820820653,1.0
+2024-08-31,Premier League,West Ham,Man City,5.0,2024-08-16,0.23569499190854112,1.0
+2024-09-01,Premier League,Man United,Liverpool,5.0,2024-08-16,0.5508002832938778,1.0
+2024-09-01,Premier League,Newcastle,Tottenham,8.0,2024-08-16,0.6710831934484924,1.0
+2024-09-01,Premier League,Chelsea,Crystal Palace,6.0,2024-08-16,0.6373248398791695,1.0
+2024-09-14,Premier League,Southampton,Man United,5.0,2024-08-16,0.4394763920507469,1.0
+2024-09-14,Premier League,Crystal Palace,Leicester,3.0,2024-08-16,0.35689511993815304,0.0
+2024-09-14,Premier League,Fulham,West Ham,5.0,2024-08-16,0.3860080285563069,1.0
+2024-09-14,Premier League,Liverpool,Nott'm Forest,8.0,2024-08-16,0.4263808177539035,1.0
+2024-09-14,Premier League,Man City,Brentford,4.0,2024-08-16,0.39929995455153944,1.0
+2024-09-14,Premier League,Aston Villa,Everton,5.0,2024-08-16,0.680411785662996,1.0
+2024-09-14,Premier League,Bournemouth,Chelsea,14.0,2024-08-16,0.6745861604187995,1.0
+2024-09-15,Premier League,Tottenham,Arsenal,8.0,2024-09-15,0.5693407568364195,1.0
+2024-09-15,Premier League,Wolves,Newcastle,6.0,2024-09-15,0.5819097964539348,1.0
+2024-09-21,Premier League,Tottenham,Brentford,4.0,2024-09-15,0.6209016566778863,1.0
+2024-09-21,Premier League,Crystal Palace,Man United,4.0,2024-09-15,0.6893579260193218,1.0
+2024-09-21,Premier League,Southampton,Ipswich,8.0,2024-09-15,0.7243403747405436,1.0
+2024-09-21,Premier League,Liverpool,Bournemouth,5.0,2024-09-15,0.4704843093471312,1.0
+2024-09-21,Premier League,Leicester,Everton,3.0,2024-09-15,0.43761298882189087,0.0
+2024-09-21,Premier League,Fulham,Newcastle,6.0,2024-09-15,0.6182897829777005,1.0
+2024-09-21,Premier League,Aston Villa,Wolves,9.0,2024-09-15,0.7786058017379597,1.0
+2024-09-21,Premier League,West Ham,Chelsea,7.0,2024-09-15,0.5240764097361059,1.0
+2024-09-22,Premier League,Brighton,Nott'm Forest,7.0,2024-09-15,0.6690675361991184,1.0
+2024-09-22,Premier League,Man City,Arsenal,7.0,2024-09-15,0.33036506787721365,1.0
+2024-09-28,Premier League,Newcastle,Man City,8.0,2024-09-15,0.43888654013455386,1.0
+2024-09-28,Premier League,Arsenal,Leicester,6.0,2024-09-15,0.3710671798246466,1.0
+2024-09-28,Premier League,Brentford,West Ham,5.0,2024-09-15,0.3650923696503485,1.0
+2024-09-28,Premier League,Chelsea,Brighton,5.0,2024-09-15,0.8030595757491399,1.0
+2024-09-28,Premier League,Everton,Crystal Palace,3.0,2024-09-15,0.40228520593044276,0.0
+2024-09-28,Premier League,Nott'm Forest,Fulham,6.0,2024-09-15,0.5177866729172862,1.0
+2024-09-28,Premier League,Wolves,Liverpool,5.0,2024-09-15,0.6454033048539074,1.0
+2024-09-29,Premier League,Man United,Tottenham,8.0,2024-09-15,0.5642747345162106,1.0
+2024-09-29,Premier League,Ipswich,Aston Villa,5.0,2024-09-15,0.869443742742869,1.0
+2024-09-30,Premier League,Bournemouth,Southampton,7.0,2024-09-15,0.4619887350867482,1.0
+2024-10-05,Premier League,Crystal Palace,Liverpool,6.0,2024-09-15,0.5094060840728181,1.0
+2024-10-05,Premier League,Arsenal,Southampton,3.0,2024-09-15,0.3788661851515789,0.0
+2024-10-05,Premier League,Brentford,Wolves,5.0,2024-09-15,0.4687150715004537,1.0
+2024-10-05,Premier League,Leicester,Bournemouth,5.0,2024-09-15,0.5786401695828681,1.0
+2024-10-05,Premier League,Man City,Fulham,3.0,2024-09-15,0.494332509535374,0.0
+2024-10-05,Premier League,West Ham,Ipswich,1.0,2024-09-15,0.7214223489326306,0.0
+2024-10-05,Premier League,Everton,Newcastle,3.0,2024-09-15,0.5600962081372682,0.0
+2024-10-06,Premier League,Aston Villa,Man United,6.0,2024-09-15,0.6935752259432242,1.0
+2024-10-06,Premier League,Chelsea,Nott'm Forest,8.0,2024-09-15,0.6258643924553985,1.0
+2024-10-06,Premier League,Brighton,Tottenham,4.0,2024-09-15,0.796304256043945,1.0
+2024-10-19,Premier League,Southampton,Leicester,8.0,2024-10-19,0.4399493329566412,1.0
+2024-10-19,Premier League,Bournemouth,Arsenal,2.0,2024-10-19,0.5677330605431742,0.0
+2024-10-19,Premier League,Newcastle,Brighton,4.0,2024-10-19,0.7380432372215588,1.0
+2024-10-19,Premier League,Man United,Brentford,4.0,2024-10-19,0.5910264379061836,1.0
+2024-10-19,Premier League,Ipswich,Everton,2.0,2024-10-19,0.639815104667765,0.0
+2024-10-19,Premier League,Fulham,Aston Villa,6.0,2024-10-19,0.6544259833780585,1.0
+2024-10-19,Premier League,Tottenham,West Ham,4.0,2024-10-19,0.4017017995674687,1.0
+2024-10-20,Premier League,Wolves,Man City,5.0,2024-10-19,0.5134961477560922,1.0
+2024-10-20,Premier League,Liverpool,Chelsea,7.0,2024-10-19,0.6859940223528139,1.0
+2024-10-21,Premier League,Nott'm Forest,Crystal Palace,5.0,2024-10-19,0.678896142189226,1.0
+2024-10-25,Premier League,Leicester,Nott'm Forest,7.0,2024-10-19,0.4954367495274652,1.0
+2024-10-26,Premier League,Aston Villa,Bournemouth,13.0,2024-10-19,0.6013806510756736,1.0
+2024-10-26,Premier League,Brentford,Ipswich,1.0,2024-10-19,0.6729579928014174,0.0
+2024-10-26,Premier League,Brighton,Wolves,6.0,2024-10-19,0.6849496842882538,1.0
+2024-10-26,Premier League,Man City,Southampton,4.0,2024-10-19,0.3965537977746297,1.0
+2024-10-26,Premier League,Everton,Fulham,1.0,2024-10-19,0.45383275585817023,0.0
+2024-10-27,Premier League,Arsenal,Liverpool,4.0,2024-10-19,0.5125274514640575,1.0
+2024-10-27,Premier League,West Ham,Man United,6.0,2024-10-19,0.5218525057694351,1.0
+2024-10-27,Premier League,Chelsea,Newcastle,9.0,2024-10-19,0.7304605289201499,1.0
+2024-10-27,Premier League,Crystal Palace,Tottenham,8.0,2024-10-19,0.7854080074983669,1.0
+2024-11-02,Premier League,Newcastle,Arsenal,8.0,2024-10-19,0.5840710713706135,1.0
+2024-11-02,Premier League,Bournemouth,Man City,3.0,2024-10-19,0.4568497841881548,0.0
+2024-11-02,Premier League,Ipswich,Leicester,6.0,2024-10-19,0.6744990831872492,1.0
+2024-11-02,Premier League,Liverpool,Brighton,2.0,2024-10-19,0.5178787447413391,0.0
+2024-11-02,Premier League,Nott'm Forest,West Ham,3.0,2024-10-19,0.5570342550977586,0.0
+2024-11-02,Premier League,Southampton,Everton,6.0,2024-10-19,0.3691065308097735,1.0
+2024-11-02,Premier League,Wolves,Crystal Palace,3.0,2024-10-19,0.6695673905956869,0.0
+2024-11-03,Premier League,Tottenham,Aston Villa,2.0,2024-10-19,0.7565765587952182,0.0
+2024-11-03,Premier League,Man United,Chelsea,8.0,2024-10-19,0.7108774321958137,1.0
+2024-11-04,Premier League,Fulham,Brentford,3.0,2024-10-19,0.415083766996245,0.0
+2024-11-09,Premier League,Brighton,Man City,6.0,2024-10-19,0.5655572719960928,1.0
+2024-11-09,Premier League,Liverpool,Aston Villa,3.0,2024-10-19,0.7330976449040649,0.0
+2024-11-09,Premier League,West Ham,Everton,3.0,2024-10-19,0.3409661947186855,0.0
+2024-11-09,Premier League,Crystal Palace,Fulham,2.0,2024-10-19,0.5138943412661044,0.0
+2024-11-09,Premier League,Wolves,Southampton,5.0,2024-10-19,0.7004015062588616,1.0
+2024-11-09,Premier League,Brentford,Bournemouth,6.0,2024-10-19,0.6857346024449735,1.0
+2024-11-10,Premier League,Man United,Leicester,1.0,2024-10-19,0.5424939746807091,0.0
+2024-11-10,Premier League,Nott'm Forest,Newcastle,2.0,2024-10-19,0.6825684562146644,0.0
+2024-11-10,Premier League,Tottenham,Ipswich,6.0,2024-10-19,0.8396456751398227,1.0
+2024-11-10,Premier League,Chelsea,Arsenal,6.0,2024-10-19,0.6234244304480202,1.0
+2024-11-23,Premier League,Fulham,Wolves,3.0,2024-11-23,0.5773781750230348,0.0
+2024-11-23,Premier League,Everton,Brentford,0.0,2024-11-23,0.3781753539810246,0.0
+2024-11-23,Premier League,Bournemouth,Brighton,4.0,2024-11-23,0.628344602717901,1.0
+2024-11-23,Premier League,Man City,Tottenham,6.0,2024-11-23,0.5918284950675462,1.0
+2024-11-23,Premier League,Arsenal,Nott'm Forest,5.0,2024-11-23,0.6152407089096045,1.0
+2024-11-23,Premier League,Leicester,Chelsea,7.0,2024-11-23,0.6030531892630777,1.0
+2024-11-23,Premier League,Aston Villa,Crystal Palace,5.0,2024-11-23,0.7570229965633187,1.0
+2024-11-24,Premier League,Southampton,Liverpool,7.0,2024-11-23,0.6450170695998708,1.0
+2024-11-24,Premier League,Ipswich,Man United,0.0,2024-11-23,0.6819141778010042,0.0
+2024-11-25,Premier League,Newcastle,West Ham,1.0,2024-11-23,0.48504918073592296,0.0
+2024-11-29,Premier League,Brighton,Southampton,6.0,2024-11-23,0.6629616718954462,1.0
+2024-11-30,Premier League,Brentford,Leicester,2.0,2024-11-23,0.37895302779720375,0.0
+2024-11-30,Premier League,Crystal Palace,Newcastle,6.0,2024-11-23,0.6570211946755136,1.0
+2024-11-30,Premier League,Nott'm Forest,Ipswich,4.0,2024-11-23,0.6347889882449541,1.0
+2024-11-30,Premier League,Wolves,Bournemouth,5.0,2024-11-23,0.7250189137938429,1.0
+2024-11-30,Premier League,West Ham,Arsenal,5.0,2024-11-23,0.42172332721479466,1.0
+2024-12-01,Premier League,Tottenham,Fulham,1.0,2024-11-23,0.7871122015748215,0.0
+2024-12-01,Premier League,Chelsea,Aston Villa,4.0,2024-11-23,0.7951438733967877,1.0
+2024-12-01,Premier League,Man United,Everton,5.0,2024-11-23,0.5454136113828794,1.0
+2024-12-01,Premier League,Liverpool,Man City,4.0,2024-11-23,0.3793770754458131,1.0
+2024-12-03,Premier League,Leicester,West Ham,4.0,2024-11-23,0.3400114166896963,1.0
+2024-12-03,Premier League,Ipswich,Crystal Palace,6.0,2024-11-23,0.6299663914612729,1.0
+2024-12-04,Premier League,Everton,Wolves,2.0,2024-11-23,0.5452643765570246,0.0
+2024-12-04,Premier League,Man City,Nott'm Forest,6.0,2024-11-23,0.4904620546098074,1.0
+2024-12-04,Premier League,Newcastle,Liverpool,7.0,2024-11-23,0.5434988994770044,1.0
+2024-12-04,Premier League,Southampton,Chelsea,1.0,2024-11-23,0.6378649243657856,0.0
+2024-12-04,Premier League,Arsenal,Man United,4.0,2024-11-23,0.6718906815500282,1.0
+2024-12-04,Premier League,Aston Villa,Brentford,4.0,2024-11-23,0.6024712973476971,1.0
+2024-12-05,Premier League,Fulham,Brighton,4.0,2024-11-23,0.5712603430225545,1.0
+2024-12-05,Premier League,Bournemouth,Tottenham,4.0,2024-11-23,0.7130525626202232,1.0
+2024-12-07,Premier League,Crystal Palace,Man City,1.0,2024-11-23,0.4586680462771365,0.0
+2024-12-07,Premier League,Man United,Nott'm Forest,2.0,2024-11-23,0.6834911087107267,0.0
+2024-12-07,Premier League,Aston Villa,Southampton,4.0,2024-11-23,0.8878703194394393,1.0
+2024-12-07,Premier League,Brentford,Newcastle,3.0,2024-11-23,0.6234942825386616,0.0
+2024-12-08,Premier League,Fulham,Arsenal,6.0,2024-11-23,0.43675568648408514,1.0
+2024-12-08,Premier League,Ipswich,Bournemouth,3.0,2024-11-23,0.6736043532876108,0.0
+2024-12-08,Premier League,Leicester,Brighton,3.0,2024-11-23,0.4974412444274653,0.0
+2024-12-08,Premier League,Tottenham,Chelsea,4.0,2024-11-23,0.804007752095702,1.0
+2024-12-09,Premier League,West Ham,Wolves,9.0,2024-11-23,0.549389954690541,1.0
+2024-12-14,Premier League,Wolves,Ipswich,2.0,2024-11-23,0.7649321209885692,0.0
+2024-12-14,Premier League,Newcastle,Leicester,6.0,2024-11-23,0.6192170731779799,1.0
+2024-12-14,Premier League,Nott'm Forest,Aston Villa,1.0,2024-11-23,0.8144141581538257,0.0
+2024-12-14,Premier League,Arsenal,Everton,3.0,2024-11-23,0.46916451425541555,0.0
+2024-12-14,Premier League,Liverpool,Fulham,7.0,2024-11-23,0.38534533423332573,1.0
+2024-12-15,Premier League,Chelsea,Brentford,2.0,2024-11-23,0.6675635135644493,0.0
+2024-12-15,Premier League,Southampton,Tottenham,4.0,2024-11-23,0.7144696674180124,1.0
+2024-12-15,Premier League,Brighton,Crystal Palace,5.0,2024-11-23,0.5766532196253585,1.0
+2024-12-15,Premier League,Man City,Man United,2.0,2024-11-23,0.5326864057207156,0.0
+2024-12-16,Premier League,Bournemouth,West Ham,2.0,2024-11-23,0.4434216439744381,0.0
+2024-12-21,Premier League,Crystal Palace,Arsenal,4.0,2024-11-23,0.5481999109586647,1.0
+2024-12-21,Premier League,West Ham,Brighton,4.0,2024-11-23,0.4850128460376068,1.0
+2024-12-21,Premier League,Ipswich,Newcastle,2.0,2024-11-23,0.6928281376568307,0.0
+2024-12-21,Premier League,Brentford,Nott'm Forest,7.0,2024-11-23,0.5034147784681289,1.0
+2024-12-21,Premier League,Aston Villa,Man City,6.0,2024-11-23,0.616867577521061,1.0
+2024-12-22,Premier League,Everton,Chelsea,5.0,2024-11-23,0.6027929773224685,1.0
+2024-12-22,Premier League,Fulham,Southampton,4.0,2024-11-23,0.5827684004841457,1.0
+2024-12-22,Premier League,Leicester,Wolves,2.0,2024-11-23,0.5837346930358169,0.0
+2024-12-22,Premier League,Man United,Bournemouth,4.0,2024-11-23,0.6203187373712181,1.0
+2024-12-22,Premier League,Tottenham,Liverpool,3.0,2024-11-23,0.6922307682162342,0.0
+2024-12-26,Premier League,Wolves,Man United,4.0,2024-12-26,0.5483913839670147,1.0
+2024-12-26,Premier League,Southampton,West Ham,3.0,2024-12-26,0.44455428748354847,0.0
+2024-12-26,Premier League,Nott'm Forest,Tottenham,5.0,2024-12-26,0.6621951222808236,1.0
+2024-12-26,Premier League,Liverpool,Leicester,5.0,2024-12-26,0.6267072482972673,1.0
+2024-12-26,Premier League,Chelsea,Fulham,4.0,2024-12-26,0.6960580346171976,1.0
+2024-12-26,Premier League,Bournemouth,Crystal Palace,4.0,2024-12-26,0.6989707475393736,1.0
+2024-12-26,Premier League,Man City,Everton,5.0,2024-12-26,0.4271603081180158,1.0
+2024-12-26,Premier League,Newcastle,Aston Villa,3.0,2024-12-26,0.7186429631203487,0.0
+2024-12-27,Premier League,Brighton,Brentford,2.0,2024-12-26,0.5542629202630008,0.0
+2024-12-27,Premier League,Arsenal,Ipswich,2.0,2024-12-26,0.623252665986051,0.0
+2024-12-29,Premier League,West Ham,Liverpool,0.0,2024-12-26,0.4289407717381695,0.0
+2024-12-29,Premier League,Tottenham,Wolves,3.0,2024-12-26,0.6732671392431648,0.0
+2024-12-29,Premier League,Fulham,Bournemouth,4.0,2024-12-26,0.5432456579331695,1.0
+2024-12-29,Premier League,Crystal Palace,Southampton,5.0,2024-12-26,0.531565518399679,1.0
+2024-12-29,Premier League,Leicester,Man City,3.0,2024-12-26,0.4136186484065728,0.0
+2024-12-29,Premier League,Everton,Nott'm Forest,5.0,2024-12-26,0.43047824960922787,1.0
+2024-12-30,Premier League,Aston Villa,Brighton,5.0,2024-12-26,0.7143802922231639,1.0
+2024-12-30,Premier League,Ipswich,Chelsea,8.0,2024-12-26,0.7635582448872086,1.0
+2024-12-30,Premier League,Man United,Newcastle,2.0,2024-12-26,0.6254984306950735,0.0
+2025-01-01,Premier League,Brentford,Arsenal,3.0,2024-12-26,0.48992028941907906,0.0
+2025-01-04,Premier League,Southampton,Brentford,2.0,2024-12-26,0.43257768191966967,0.0
+2025-01-04,Premier League,Brighton,Arsenal,5.0,2024-12-26,0.5951157569814951,1.0
+2025-01-04,Premier League,Man City,West Ham,3.0,2024-12-26,0.3408754610793068,0.0
+2025-01-04,Premier League,Bournemouth,Everton,4.0,2024-12-26,0.6195748250153105,1.0
+2025-01-04,Premier League,Aston Villa,Leicester,1.0,2024-12-26,0.6576291619416074,0.0
+2025-01-04,Premier League,Tottenham,Newcastle,5.0,2024-12-26,0.6893394437544277,1.0
+2025-01-04,Premier League,Crystal Palace,Chelsea,2.0,2024-12-26,0.7718181862123392,0.0
+2025-01-05,Premier League,Fulham,Ipswich,6.0,2024-12-26,0.5786830870908157,1.0
+2025-01-05,Premier League,Liverpool,Man United,6.0,2024-12-26,0.5632702997347028,1.0
+2025-01-06,Premier League,Wolves,Nott'm Forest,3.0,2024-12-26,0.7158157911426618,0.0
+2025-01-14,Premier League,Brentford,Man City,0.0,2024-12-26,0.37962526656129997,0.0
+2025-01-14,Premier League,Chelsea,Bournemouth,5.0,2024-12-26,0.7401841700582322,1.0
+2025-01-14,Premier League,West Ham,Fulham,6.0,2024-12-26,0.3725701019080277,1.0
+2025-01-14,Premier League,Nott'm Forest,Liverpool,3.0,2024-12-26,0.5716873913511409,0.0
+2025-01-15,Premier League,Newcastle,Wolves,2.0,2024-12-26,0.745017513771513,0.0
+2025-01-15,Premier League,Everton,Aston Villa,3.0,2024-12-26,0.6304077191118213,0.0
+2025-01-15,Premier League,Leicester,Crystal Palace,0.0,2024-12-26,0.5096560030364721,0.0
+2025-01-15,Premier League,Arsenal,Tottenham,4.0,2024-12-26,0.6290465422894909,1.0
+2025-01-16,Premier League,Man United,Southampton,4.0,2024-12-26,0.6755879490180059,1.0
+2025-01-16,Premier League,Ipswich,Brighton,4.0,2024-12-26,0.5168911122182899,1.0
+2025-01-18,Premier League,Newcastle,Bournemouth,7.0,2024-12-26,0.6143720647483247,1.0
+2025-01-18,Premier League,Brentford,Liverpool,5.0,2024-12-26,0.48028217602007517,1.0
+2025-01-18,Premier League,Leicester,Fulham,4.0,2024-12-26,0.3955673699027629,1.0
+2025-01-18,Premier League,West Ham,Crystal Palace,1.0,2024-12-26,0.5379567085394232,0.0
+2025-01-18,Premier League,Arsenal,Aston Villa,5.0,2024-12-26,0.6332281296891781,1.0
+2025-01-19,Premier League,Everton,Tottenham,3.0,2024-12-26,0.5734627350263143,0.0
+2025-01-19,Premier League,Man United,Brighton,6.0,2024-12-26,0.6438170467034904,1.0
+2025-01-19,Premier League,Nott'm Forest,Southampton,4.0,2024-12-26,0.6291485468523279,1.0
+2025-01-19,Premier League,Ipswich,Man City,1.0,2024-12-26,0.5307766532446249,0.0
+2025-01-20,Premier League,Chelsea,Wolves,6.0,2024-12-26,0.778038323259694,1.0
+2025-01-25,Premier League,Wolves,Arsenal,1.0,2025-01-25,0.6278344325385173,0.0
+2025-01-25,Premier League,Man City,Chelsea,5.0,2025-01-25,0.7340721564042375,1.0
+2025-01-25,Premier League,Southampton,Newcastle,1.0,2025-01-25,0.6408282442128552,0.0
+2025-01-25,Premier League,Brighton,Everton,7.0,2025-01-25,0.6237028913855917,1.0
+2025-01-25,Premier League,Bournemouth,Nott'm Forest,5.0,2025-01-25,0.6732369232790791,1.0
+2025-01-25,Premier League,Liverpool,Ipswich,2.0,2025-01-25,0.559979210524864,0.0
+2025-01-26,Premier League,Crystal Palace,Brentford,4.0,2025-01-25,0.36712760365169006,1.0
+2025-01-26,Premier League,Tottenham,Leicester,6.0,2025-01-25,0.5521939651161895,1.0
+2025-01-26,Premier League,Aston Villa,West Ham,5.0,2025-01-25,0.5652736624011885,1.0
+2025-01-26,Premier League,Fulham,Man United,1.0,2025-01-25,0.47674774673479686,0.0
+2025-02-01,Premier League,Nott'm Forest,Brighton,4.0,2025-01-25,0.6947073089939308,1.0
+2025-02-01,Premier League,Bournemouth,Liverpool,5.0,2025-01-25,0.6077249487507878,1.0
+2025-02-01,Premier League,Everton,Leicester,0.0,2025-01-25,0.5335817171743653,0.0
+2025-02-01,Premier League,Ipswich,Southampton,3.0,2025-01-25,0.5354449681629496,0.0
+2025-02-01,Premier League,Newcastle,Fulham,8.0,2025-01-25,0.5604558717197127,1.0
+2025-02-01,Premier League,Wolves,Aston Villa,5.0,2025-01-25,0.7190920118941885,1.0
+2025-02-02,Premier League,Man United,Crystal Palace,4.0,2025-01-25,0.6499153329640607,1.0
+2025-02-02,Premier League,Arsenal,Man City,2.0,2025-01-25,0.46708075248089115,0.0
+2025-02-02,Premier League,Brentford,Tottenham,1.0,2025-01-25,0.5352120766115644,0.0
+2025-02-03,Premier League,Chelsea,West Ham,4.0,2025-01-25,0.5332454284595591,1.0
+2025-02-12,Premier League,Everton,Liverpool,4.0,2025-01-25,0.4869126982779425,1.0
+2025-02-14,Premier League,Brighton,Chelsea,3.0,2025-01-25,0.7609119522875251,0.0
+2025-02-15,Premier League,Leicester,Arsenal,3.0,2025-01-25,0.47053701762797073,0.0
+2025-02-15,Premier League,Aston Villa,Ipswich,3.0,2025-01-25,0.6706624909971696,0.0
+2025-02-15,Premier League,Fulham,Nott'm Forest,0.0,2025-01-25,0.6365950936884239,0.0
+2025-02-15,Premier League,Man City,Newcastle,1.0,2025-01-25,0.503622250906608,0.0
+2025-02-15,Premier League,Southampton,Bournemouth,4.0,2025-01-25,0.6334155643615628,1.0
+2025-02-15,Premier League,West Ham,Brentford,2.0,2025-01-25,0.33582947547282493,0.0
+2025-02-15,Premier League,Crystal Palace,Everton,1.0,2025-01-25,0.4132936124963387,0.0
+2025-02-16,Premier League,Tottenham,Man United,3.0,2025-01-25,0.6580026560581338,0.0
+2025-02-16,Premier League,Liverpool,Wolves,4.0,2025-01-25,0.6532373227256965,1.0
+2025-02-19,Premier League,Aston Villa,Liverpool,1.0,2025-01-25,0.6661055933239236,0.0
+2025-02-21,Premier League,Leicester,Brentford,4.0,2025-01-25,0.3111802139426548,1.0
+2025-02-22,Premier League,Everton,Man United,5.0,2025-01-25,0.4615046547819453,1.0
+2025-02-22,Premier League,Arsenal,West Ham,4.0,2025-01-25,0.4527819670526096,1.0
+2025-02-22,Premier League,Bournemouth,Wolves,6.0,2025-01-25,0.6553937886069695,1.0
+2025-02-22,Premier League,Fulham,Crystal Palace,4.0,2025-01-25,0.5027012276426659,1.0
+2025-02-22,Premier League,Ipswich,Tottenham,3.0,2025-01-25,0.6673038980174073,0.0
+2025-02-22,Premier League,Southampton,Brighton,2.0,2025-01-25,0.7873095290567501,0.0
+2025-02-22,Premier League,Aston Villa,Chelsea,4.0,2025-01-25,0.7992567029820623,1.0
+2025-02-23,Premier League,Newcastle,Nott'm Forest,5.0,2025-01-25,0.6928039335331345,1.0
+2025-02-23,Premier League,Man City,Liverpool,0.0,2025-01-25,0.4171657986146235,0.0
+2025-02-25,Premier League,Wolves,Fulham,4.0,2025-02-25,0.616703714004582,1.0
+2025-02-25,Premier League,Chelsea,Southampton,3.0,2025-02-25,0.6697879868143111,0.0
+2025-02-25,Premier League,Brighton,Bournemouth,3.0,2025-02-25,0.6946126414062255,0.0
+2025-02-25,Premier League,Crystal Palace,Aston Villa,4.0,2025-02-25,0.6084233954051874,1.0
+2025-02-26,Premier League,Brentford,Everton,3.0,2025-02-25,0.40463210947731987,0.0
+2025-02-26,Premier League,Man United,Ipswich,8.0,2025-02-25,0.49950481308761463,1.0
+2025-02-26,Premier League,Nott'm Forest,Arsenal,2.0,2025-02-25,0.5824583294447142,0.0
+2025-02-26,Premier League,Tottenham,Man City,3.0,2025-02-25,0.48771684790718417,0.0
+2025-02-26,Premier League,Liverpool,Newcastle,1.0,2025-02-25,0.576954528149325,0.0
+2025-02-27,Premier League,West Ham,Leicester,0.0,2025-02-25,0.33808336413869244,0.0
+2025-03-08,Premier League,Brentford,Aston Villa,4.0,2025-02-25,0.551669622837666,1.0
+2025-03-08,Premier League,Nott'm Forest,Man City,5.0,2025-02-25,0.47349105422929366,1.0
+2025-03-08,Premier League,Brighton,Fulham,2.0,2025-02-25,0.5896470363907184,0.0
+2025-03-08,Premier League,Crystal Palace,Ipswich,7.0,2025-02-25,0.5049306631477747,1.0
+2025-03-08,Premier League,Liverpool,Southampton,3.0,2025-02-25,0.5429928543466259,0.0
+2025-03-08,Premier League,Wolves,Everton,4.0,2025-02-25,0.5136577086607096,1.0
+2025-03-09,Premier League,Tottenham,Bournemouth,6.0,2025-02-25,0.8016707850954481,1.0
+2025-03-09,Premier League,Chelsea,Leicester,1.0,2025-02-25,0.6971733216752837,0.0
+2025-03-09,Premier League,Man United,Arsenal,1.0,2025-02-25,0.46933093548394883,0.0
+2025-03-10,Premier League,West Ham,Newcastle,1.0,2025-02-25,0.47631492993798313,0.0
+2025-03-15,Premier League,Bournemouth,Brentford,3.0,2025-02-25,0.5285533962779427,0.0
+2025-03-15,Premier League,Southampton,Wolves,0.0,2025-02-25,0.6306071689273938,0.0
+2025-03-15,Premier League,Man City,Brighton,7.0,2025-02-25,0.5215956078330835,1.0
+2025-03-15,Premier League,Everton,West Ham,3.0,2025-02-25,0.40954482630500944,0.0
+2025-03-15,Premier League,Ipswich,Nott'm Forest,2.0,2025-02-25,0.5241376494456447,0.0
+2025-03-16,Premier League,Arsenal,Chelsea,6.0,2025-02-25,0.6792046344743722,1.0
+2025-03-16,Premier League,Fulham,Tottenham,0.0,2025-02-25,0.5798674692576038,0.0
+2025-03-16,Premier League,Leicester,Man United,2.0,2025-02-25,0.45137236133196446,0.0
+2025-04-01,Premier League,Arsenal,Fulham,3.0,2025-04-01,0.629934116647871,0.0
+2025-04-01,Premier League,Wolves,West Ham,6.0,2025-04-01,0.4624418521229009,1.0
+2025-04-01,Premier League,Nott'm Forest,Man United,4.0,2025-04-01,0.6113660118362508,1.0
+2025-04-02,Premier League,Southampton,Crystal Palace,3.0,2025-04-01,0.4750194629031059,0.0
+2025-04-02,Premier League,Newcastle,Brentford,2.0,2025-04-01,0.5256018537750696,0.0
+2025-04-02,Premier League,Liverpool,Everton,4.0,2025-04-01,0.4371380188922823,1.0
+2025-04-02,Premier League,Brighton,Aston Villa,4.0,2025-04-01,0.6730760400316703,1.0
+2025-04-02,Premier League,Bournemouth,Ipswich,3.0,2025-04-01,0.6268742233250975,0.0
+2025-04-02,Premier League,Man City,Leicester,5.0,2025-04-01,0.4252938698749621,1.0
+2025-04-03,Premier League,Chelsea,Tottenham,10.0,2025-04-01,0.7340362395907105,1.0
+2025-04-05,Premier League,Everton,Arsenal,4.0,2025-04-01,0.491783579720461,1.0
+2025-04-05,Premier League,Crystal Palace,Brighton,1.0,2025-04-01,0.547404415990232,0.0
+2025-04-05,Premier League,Ipswich,Wolves,4.0,2025-04-01,0.6299337064471857,1.0
+2025-04-05,Premier League,West Ham,Bournemouth,4.0,2025-04-01,0.5399501275981704,1.0
+2025-04-05,Premier League,Aston Villa,Nott'm Forest,4.0,2025-04-01,0.7444541541604165,1.0
+2025-04-06,Premier League,Brentford,Chelsea,4.0,2025-04-01,0.5865392376461078,1.0
+2025-04-06,Premier League,Fulham,Liverpool,3.0,2025-04-01,0.4802787180493672,0.0
+2025-04-06,Premier League,Tottenham,Southampton,2.0,2025-04-01,0.5283405206428259,0.0
+2025-04-06,Premier League,Man United,Man City,5.0,2025-04-01,0.5851191094260441,1.0
+2025-04-07,Premier League,Leicester,Newcastle,2.0,2025-04-01,0.4900582235981129,0.0
+2025-04-12,Premier League,Southampton,Aston Villa,4.0,2025-04-01,0.57141720013773,1.0
+2025-04-12,Premier League,Nott'm Forest,Everton,3.0,2025-04-01,0.5351135449326369,0.0
+2025-04-12,Premier League,Arsenal,Brentford,4.0,2025-04-01,0.48688489747845237,1.0
+2025-04-12,Premier League,Man City,Crystal Palace,5.0,2025-04-01,0.4721280262893497,1.0
+2025-04-12,Premier League,Brighton,Leicester,7.0,2025-04-01,0.6013221157271966,1.0
+2025-04-13,Premier League,Chelsea,Ipswich,4.0,2025-04-01,0.6426827069226004,1.0
+2025-04-13,Premier League,Liverpool,West Ham,2.0,2025-04-01,0.3818998692419055,0.0
+2025-04-13,Premier League,Wolves,Tottenham,3.0,2025-04-01,0.595127261402068,0.0
+2025-04-13,Premier League,Newcastle,Man United,2.0,2025-04-01,0.6135804349214132,0.0
+2025-04-14,Premier League,Bournemouth,Fulham,5.0,2025-04-01,0.5623950588358358,1.0
+2025-04-16,Premier League,Newcastle,Crystal Palace,5.0,2025-04-01,0.6444762840573635,1.0
+2025-04-19,Premier League,Brentford,Brighton,6.0,2025-04-01,0.571603787882729,1.0
+2025-04-19,Premier League,Crystal Palace,Bournemouth,7.0,2025-04-01,0.5886660373818564,1.0
+2025-04-19,Premier League,Everton,Man City,4.0,2025-04-01,0.43586753585656235,1.0
+2025-04-19,Premier League,West Ham,Southampton,3.0,2025-04-01,0.37691890638876774,0.0
+2025-04-19,Premier League,Aston Villa,Newcastle,4.0,2025-04-01,0.693130457552519,1.0
+2025-04-20,Premier League,Leicester,Liverpool,3.0,2025-04-01,0.3767500781094063,0.0
+2025-04-20,Premier League,Man United,Wolves,5.0,2025-04-01,0.6183095084657741,1.0
+2025-04-20,Premier League,Fulham,Chelsea,4.0,2025-04-01,0.5677639420785042,1.0
+2025-04-20,Premier League,Ipswich,Arsenal,0.0,2025-04-01,0.531619843365535,0.0
+2025-04-21,Premier League,Tottenham,Nott'm Forest,5.0,2025-04-01,0.6704289039685213,1.0
+2025-04-22,Premier League,Man City,Aston Villa,6.0,2025-04-01,0.5615564781710355,1.0
+2025-04-23,Premier League,Arsenal,Crystal Palace,2.0,2025-04-01,0.4717803071582161,0.0
+2025-04-26,Premier League,Chelsea,Everton,0.0,2025-04-01,0.6089343361290821,0.0
+2025-04-26,Premier League,Brighton,West Ham,2.0,2025-04-01,0.5431982340683139,0.0
+2025-04-26,Premier League,Newcastle,Ipswich,3.0,2025-04-01,0.5660875327295471,0.0
+2025-04-26,Premier League,Southampton,Fulham,2.0,2025-04-01,0.43389513519718914,0.0
+2025-04-26,Premier League,Wolves,Leicester,5.0,2025-04-01,0.4807291808776518,1.0
+2025-04-27,Premier League,Bournemouth,Man United,6.0,2025-04-01,0.6476084378703371,1.0
+2025-04-27,Premier League,Liverpool,Tottenham,3.0,2025-04-01,0.5259975561888846,0.0
+2025-05-01,Premier League,Nott'm Forest,Brentford,8.0,2025-05-01,0.5502579576432539,1.0
+2025-05-02,Premier League,Man City,Wolves,0.0,2025-05-01,0.5942621017410757,0.0
+2025-05-03,Premier League,Arsenal,Bournemouth,2.0,2025-05-01,0.6206735041832073,0.0
+2025-05-03,Premier League,Leicester,Southampton,4.0,2025-05-01,0.3838696761525469,1.0
+2025-05-03,Premier League,Aston Villa,Fulham,5.0,2025-05-01,0.5964742103115674,1.0
+2025-05-03,Premier League,Everton,Ipswich,8.0,2025-05-01,0.37945820064819497,1.0
+2025-05-04,Premier League,Brentford,Man United,2.0,2025-05-01,0.38548218819557467,0.0
+2025-05-04,Premier League,Brighton,Newcastle,3.0,2025-05-01,0.6761782805033864,0.0
+2025-05-04,Premier League,West Ham,Tottenham,4.0,2025-05-01,0.4691556304758635,1.0
+2025-05-04,Premier League,Chelsea,Liverpool,4.0,2025-05-01,0.7121958190647018,1.0
+2025-05-05,Premier League,Crystal Palace,Nott'm Forest,11.0,2025-05-01,0.545166363370013,1.0
+2025-05-10,Premier League,Fulham,Everton,1.0,2025-05-01,0.3144211882982577,0.0
+2025-05-10,Premier League,Ipswich,Brentford,6.0,2025-05-01,0.4152147888935242,1.0
+2025-05-10,Premier League,Southampton,Man City,2.0,2025-05-01,0.5152089863477686,0.0
+2025-05-10,Premier League,Wolves,Brighton,2.0,2025-05-01,0.6845060294101776,0.0
+2025-05-10,Premier League,Bournemouth,Aston Villa,7.0,2025-05-01,0.6858862877423162,1.0
+2025-05-11,Premier League,Liverpool,Arsenal,2.0,2025-05-01,0.39600586992565306,0.0
+2025-05-11,Premier League,Tottenham,Crystal Palace,2.0,2025-05-01,0.5501182128468778,0.0
+2025-05-11,Premier League,Newcastle,Chelsea,6.0,2025-05-01,0.8329313395704534,1.0
+2025-05-11,Premier League,Man United,West Ham,1.0,2025-05-01,0.4369523535734229,0.0
+2025-05-11,Premier League,Nott'm Forest,Leicester,6.0,2025-05-01,0.5048903100704508,1.0
+2025-05-16,Premier League,Aston Villa,Tottenham,3.0,2025-05-01,0.7195291100855333,0.0
+2025-05-16,Premier League,Chelsea,Man United,7.0,2025-05-01,0.6388864911409767,1.0
+2025-05-18,Premier League,Arsenal,Newcastle,6.0,2025-05-01,0.5875745680124653,1.0
+2025-05-18,Premier League,Everton,Southampton,2.0,2025-05-01,0.38114944724219285,0.0
+2025-05-18,Premier League,West Ham,Nott'm Forest,9.0,2025-05-01,0.4766518236483196,1.0
+2025-05-18,Premier League,Brentford,Fulham,8.0,2025-05-01,0.4157202670226446,1.0
+2025-05-18,Premier League,Leicester,Ipswich,1.0,2025-05-01,0.3846218108557016,0.0
+2025-05-19,Premier League,Brighton,Liverpool,1.0,2025-05-01,0.7062644061971884,0.0
+2025-05-20,Premier League,Man City,Bournemouth,4.0,2025-05-01,0.5404115395249873,1.0
+2025-05-20,Premier League,Crystal Palace,Wolves,3.0,2025-05-01,0.6174068673147322,0.0
+2025-05-25,Premier League,Wolves,Brentford,3.0,2025-05-01,0.5703189025628078,0.0
+2025-05-25,Premier League,Tottenham,Brighton,4.0,2025-05-01,0.6604499498735751,1.0
+2025-05-25,Premier League,Nott'm Forest,Chelsea,4.0,2025-05-01,0.6525303013313283,1.0
+2025-05-25,Premier League,Southampton,Arsenal,0.0,2025-05-01,0.5787187111018399,0.0
+2025-05-25,Premier League,Newcastle,Everton,5.0,2025-05-01,0.5039658555305355,1.0
+2025-05-25,Premier League,Fulham,Man City,0.0,2025-05-01,0.3922349415217088,0.0
+2025-05-25,Premier League,Liverpool,Crystal Palace,1.0,2025-05-01,0.5808026528134478,0.0
+2025-05-25,Premier League,Ipswich,West Ham,2.0,2025-05-01,0.4305188655753678,0.0
+2025-05-25,Premier League,Bournemouth,Leicester,2.0,2025-05-01,0.5349418306037322,0.0
+2025-05-25,Premier League,Man United,Aston Villa,4.0,2025-05-01,0.6017599846853352,1.0
+2025-08-15,Premier League,Liverpool,Bournemouth,3.0,2025-08-15,0.4938143986318665,0.0
+2025-08-16,Premier League,Tottenham,Burnley,0.0,2025-08-15,0.5355380240522145,0.0
+2025-08-16,Premier League,Sunderland,West Ham,1.0,2025-08-15,0.2901895236784706,0.0
+2025-08-16,Premier League,Wolves,Man City,3.0,2025-08-15,0.5012241461594849,0.0
+2025-08-16,Premier League,Aston Villa,Newcastle,2.0,2025-08-15,0.7023046092311271,0.0
+2025-08-16,Premier League,Brighton,Fulham,6.0,2025-08-15,0.6331410754392621,1.0
+2025-08-17,Premier League,Chelsea,Crystal Palace,5.0,2025-08-15,0.7418231311771523,1.0
+2025-08-17,Premier League,Nott'm Forest,Brentford,3.0,2025-08-15,0.5773916382895224,0.0
+2025-08-17,Premier League,Man United,Arsenal,5.0,2025-08-15,0.5577146197788434,1.0
+2025-08-18,Premier League,Leeds,Everton,2.0,2025-08-15,0.4174553251653716,0.0
+2025-08-22,Premier League,West Ham,Chelsea,1.0,2025-08-15,0.5533761330368493,0.0
+2025-08-23,Premier League,Burnley,Sunderland,1.0,2025-08-15,0.2736133369356294,0.0
+2025-08-23,Premier League,Man City,Tottenham,5.0,2025-08-15,0.4838046163193027,1.0
+2025-08-23,Premier League,Bournemouth,Wolves,6.0,2025-08-15,0.6374904330743967,1.0
+2025-08-23,Premier League,Brentford,Aston Villa,3.0,2025-08-15,0.6122681090789496,0.0
+2025-08-23,Premier League,Arsenal,Leeds,2.0,2025-08-15,0.5454026102917682,0.0
+2025-08-24,Premier League,Everton,Brighton,7.0,2025-08-15,0.4734094515429433,1.0
+2025-08-24,Premier League,Crystal Palace,Nott'm Forest,6.0,2025-08-15,0.5604173128030676,1.0
+2025-08-24,Premier League,Fulham,Man United,2.0,2025-08-15,0.45168532684806223,0.0
+2025-08-25,Premier League,Newcastle,Liverpool,5.0,2025-08-15,0.5761545091081883,1.0
+2025-08-30,Premier League,Chelsea,Fulham,4.0,2025-08-15,0.6456329458106163,1.0
+2025-08-30,Premier League,Man United,Burnley,6.0,2025-08-15,0.5774923832074692,1.0
+2025-08-30,Premier League,Sunderland,Brentford,5.0,2025-08-15,0.27503900185647323,1.0
+2025-08-30,Premier League,Tottenham,Bournemouth,6.0,2025-08-15,0.7488138382689961,1.0
+2025-08-30,Premier League,Wolves,Everton,1.0,2025-08-15,0.508654370558675,0.0
+2025-08-30,Premier League,Leeds,Newcastle,2.0,2025-08-15,0.5906284477330359,0.0
+2025-08-31,Premier League,Brighton,Man City,4.0,2025-08-15,0.5317822002904258,1.0
+2025-08-31,Premier League,Nott'm Forest,West Ham,0.0,2025-08-15,0.5673242977431463,0.0
+2025-08-31,Premier League,Liverpool,Arsenal,4.0,2025-08-15,0.37670530076019804,1.0
+2025-08-31,Premier League,Aston Villa,Crystal Palace,5.0,2025-08-15,0.622806841499595,1.0
+2025-09-13,Premier League,Brentford,Chelsea,5.0,2025-08-15,0.6089413734142537,1.0
+2025-09-13,Premier League,West Ham,Tottenham,1.0,2025-08-15,0.4796526669764241,0.0
+2025-09-13,Premier League,Newcastle,Wolves,5.0,2025-08-15,0.5958000273647045,1.0
+2025-09-13,Premier League,Fulham,Leeds,3.0,2025-08-15,0.5402234923341371,0.0
+2025-09-13,Premier League,Everton,Aston Villa,6.0,2025-08-15,0.6229619680582574,1.0
+2025-09-13,Premier League,Crystal Palace,Sunderland,2.0,2025-08-15,0.37497381946655395,0.0
+2025-09-13,Premier League,Bournemouth,Brighton,8.0,2025-08-15,0.6544478627319757,1.0
+2025-09-13,Premier League,Arsenal,Nott'm Forest,2.0,2025-08-15,0.6567237572128568,0.0
+2025-09-14,Premier League,Burnley,Liverpool,2.0,2025-09-14,0.3482605758426765,0.0
+2025-09-14,Premier League,Man City,Man United,0.0,2025-09-14,0.4312014977248399,0.0
+2025-09-20,Premier League,Liverpool,Everton,5.0,2025-09-14,0.48109598917320234,1.0
+2025-09-20,Premier League,Brighton,Tottenham,3.0,2025-09-14,0.6126895633406152,0.0
+2025-09-20,Premier League,Burnley,Nott'm Forest,2.0,2025-09-14,0.5135242347466796,0.0
+2025-09-20,Premier League,West Ham,Crystal Palace,6.0,2025-09-14,0.4061250970672395,1.0
+2025-09-20,Premier League,Wolves,Leeds,2.0,2025-09-14,0.4915525563293882,0.0
+2025-09-20,Premier League,Man United,Chelsea,5.0,2025-09-14,0.6977888519572769,1.0
+2025-09-20,Premier League,Fulham,Brentford,5.0,2025-09-14,0.38160364995325285,1.0
+2025-09-21,Premier League,Arsenal,Man City,3.0,2025-09-14,0.38571653201168404,0.0
+2025-09-21,Premier League,Sunderland,Aston Villa,3.0,2025-09-14,0.468357075366164,0.0
+2025-09-21,Premier League,Bournemouth,Newcastle,3.0,2025-09-14,0.6630336033860775,0.0
+2025-09-27,Premier League,Brentford,Man United,4.0,2025-09-14,0.5015454649871308,1.0
+2025-09-27,Premier League,Chelsea,Brighton,8.0,2025-09-14,0.8194853568853454,1.0
+2025-09-27,Premier League,Crystal Palace,Liverpool,4.0,2025-09-14,0.44532172661887004,1.0
+2025-09-27,Premier League,Leeds,Bournemouth,4.0,2025-09-14,0.5286213045918017,1.0
+2025-09-27,Premier League,Man City,Burnley,4.0,2025-09-14,0.39209469869159574,1.0
+2025-09-27,Premier League,Nott'm Forest,Sunderland,6.0,2025-09-14,0.3849797252588337,1.0
+2025-09-27,Premier League,Tottenham,Wolves,5.0,2025-09-14,0.5190188105140329,1.0
+2025-09-28,Premier League,Aston Villa,Fulham,5.0,2025-09-14,0.5983665001131624,1.0
+2025-09-28,Premier League,Newcastle,Arsenal,3.0,2025-09-14,0.4784951471631552,0.0
+2025-09-29,Premier League,Everton,West Ham,7.0,2025-09-14,0.402418670333612,1.0
+2025-10-03,Premier League,Bournemouth,Fulham,1.0,2025-09-14,0.6864016683290866,0.0
+2025-10-04,Premier League,Chelsea,Liverpool,2.0,2025-09-14,0.5560330106063819,0.0
+2025-10-04,Premier League,Man United,Sunderland,5.0,2025-09-14,0.3073049832647396,1.0
+2025-10-04,Premier League,Leeds,Tottenham,5.0,2025-09-14,0.49601722144961957,1.0
+2025-10-04,Premier League,Arsenal,West Ham,2.0,2025-09-14,0.4532504419927286,0.0
+2025-10-05,Premier League,Aston Villa,Burnley,4.0,2025-09-14,0.5676032835172964,1.0
+2025-10-05,Premier League,Everton,Crystal Palace,5.0,2025-09-14,0.3529368817003649,1.0
+2025-10-05,Premier League,Newcastle,Nott'm Forest,4.0,2025-09-14,0.6653158738390021,1.0
+2025-10-05,Premier League,Wolves,Brighton,6.0,2025-09-14,0.640157324378402,1.0
+2025-10-05,Premier League,Brentford,Man City,5.0,2025-09-14,0.43870068550090974,1.0
+2025-10-18,Premier League,Fulham,Arsenal,0.0,2025-10-18,0.3263164992687954,0.0
+2025-10-18,Premier League,Nott'm Forest,Chelsea,4.0,2025-10-18,0.7207397838957474,1.0
+2025-10-18,Premier League,Brighton,Newcastle,1.0,2025-10-18,0.6203865636577431,0.0
+2025-10-18,Premier League,Burnley,Leeds,3.0,2025-10-18,0.4476575945323656,0.0
+2025-10-18,Premier League,Crystal Palace,Bournemouth,5.0,2025-10-18,0.642932028403631,1.0
+2025-10-18,Premier League,Man City,Everton,2.0,2025-10-18,0.5132537306476449,0.0
+2025-10-18,Premier League,Sunderland,Wolves,0.0,2025-10-18,0.45707067245710953,0.0
+2025-10-19,Premier League,Liverpool,Man United,2.0,2025-10-18,0.44675021116536945,0.0
+2025-10-19,Premier League,Tottenham,Aston Villa,2.0,2025-10-18,0.7559100888351565,0.0
+2025-10-20,Premier League,West Ham,Brentford,2.0,2025-10-18,0.35449597835227215,0.0
+2025-10-24,Premier League,Leeds,West Ham,6.0,2025-10-18,0.36301511548127924,1.0
+2025-10-25,Premier League,Chelsea,Sunderland,2.0,2025-10-18,0.5608728941272013,0.0
+2025-10-25,Premier League,Newcastle,Fulham,2.0,2025-10-18,0.5348922230181994,0.0
+2025-10-25,Premier League,Man United,Brighton,4.0,2025-10-18,0.5322458314580932,1.0
+2025-10-25,Premier League,Brentford,Liverpool,5.0,2025-10-18,0.5210374455773708,1.0
+2025-10-26,Premier League,Arsenal,Crystal Palace,0.0,2025-10-18,0.46108282382233906,0.0
+2025-10-26,Premier League,Aston Villa,Man City,5.0,2025-10-18,0.4712018585236969,1.0
+2025-10-26,Premier League,Bournemouth,Nott'm Forest,4.0,2025-10-18,0.8188048665705197,1.0
+2025-10-26,Premier League,Wolves,Burnley,1.0,2025-10-18,0.5590886753137047,0.0
+2025-10-26,Premier League,Everton,Tottenham,2.0,2025-10-18,0.5219043464274812,0.0
+2025-11-01,Premier League,Liverpool,Aston Villa,5.0,2025-10-18,0.5927064578030008,1.0
+2025-11-01,Premier League,Tottenham,Chelsea,6.0,2025-10-18,0.7191101873845754,1.0
+2025-11-01,Premier League,Nott'm Forest,Man United,2.0,2025-10-18,0.704253996860248,0.0
+2025-11-01,Premier League,Crystal Palace,Brentford,3.0,2025-10-18,0.5259660611073785,0.0
+2025-11-01,Premier League,Burnley,Arsenal,3.0,2025-10-18,0.3287171729997331,0.0
+2025-11-01,Premier League,Brighton,Leeds,1.0,2025-10-18,0.5306572644048252,0.0
+2025-11-01,Premier League,Fulham,Wolves,4.0,2025-10-18,0.6339657049225093,1.0
+2025-11-02,Premier League,West Ham,Newcastle,3.0,2025-10-18,0.40193459145297794,0.0
+2025-11-02,Premier League,Man City,Bournemouth,4.0,2025-10-18,0.46753183215760546,1.0
+2025-11-03,Premier League,Sunderland,Everton,5.0,2025-10-18,0.32921272485089803,1.0
+2025-11-08,Premier League,Tottenham,Man United,6.0,2025-10-18,0.7304887075989668,1.0
+2025-11-08,Premier League,Everton,Fulham,4.0,2025-10-18,0.41325291629649347,1.0
+2025-11-08,Premier League,West Ham,Burnley,4.0,2025-10-18,0.2400873712925861,1.0
+2025-11-08,Premier League,Sunderland,Arsenal,3.0,2025-10-18,0.3492098762356685,0.0
+2025-11-08,Premier League,Chelsea,Wolves,3.0,2025-10-18,0.735312839781696,0.0
+2025-11-09,Premier League,Man City,Liverpool,6.0,2025-10-18,0.35464197579207896,1.0
+2025-11-09,Premier League,Nott'm Forest,Leeds,3.0,2025-10-18,0.5720744906347884,0.0
+2025-11-09,Premier League,Brentford,Newcastle,3.0,2025-10-18,0.5271496982715522,0.0
+2025-11-09,Premier League,Aston Villa,Bournemouth,4.0,2025-10-18,0.8169062470981154,1.0
+2025-11-09,Premier League,Crystal Palace,Brighton,5.0,2025-10-18,0.6889232697641012,1.0
+2025-11-22,Premier League,Burnley,Chelsea,5.0,2025-11-22,0.5611668769622999,1.0
+2025-11-22,Premier League,Bournemouth,West Ham,5.0,2025-11-22,0.45820577620112346,1.0
+2025-11-22,Premier League,Brighton,Brentford,6.0,2025-11-22,0.5472778060917428,1.0
+2025-11-22,Premier League,Fulham,Sunderland,6.0,2025-11-22,0.3390844319124664,1.0
+2025-11-22,Premier League,Liverpool,Nott'm Forest,2.0,2025-11-22,0.5595057720261576,0.0
+2025-11-22,Premier League,Wolves,Crystal Palace,5.0,2025-11-22,0.4809606760991583,1.0
+2025-11-22,Premier League,Newcastle,Man City,4.0,2025-11-22,0.5802967580417469,1.0
+2025-11-23,Premier League,Leeds,Aston Villa,6.0,2025-11-22,0.5478094333777827,1.0
+2025-11-23,Premier League,Arsenal,Tottenham,4.0,2025-11-22,0.43608678800702805,1.0
+2025-11-24,Premier League,Man United,Everton,2.0,2025-11-22,0.5459258617542265,0.0
+2025-11-29,Premier League,Man City,Leeds,5.0,2025-11-22,0.44071959997396903,1.0
+2025-11-29,Premier League,Tottenham,Fulham,5.0,2025-11-22,0.5634758980921356,1.0
+2025-11-29,Premier League,Everton,Newcastle,0.0,2025-11-22,0.467021589411969,0.0
+2025-11-29,Premier League,Brentford,Burnley,2.0,2025-11-22,0.5216853470530265,0.0
+2025-11-29,Premier League,Sunderland,Bournemouth,10.0,2025-11-22,0.48552856879199396,1.0
+2025-11-30,Premier League,Crystal Palace,Man United,5.0,2025-11-22,0.5462230599132717,1.0
+2025-11-30,Premier League,Aston Villa,Wolves,4.0,2025-11-22,0.6502318455156629,1.0
+2025-11-30,Premier League,Nott'm Forest,Brighton,1.0,2025-11-22,0.608534424844535,0.0
+2025-11-30,Premier League,West Ham,Liverpool,1.0,2025-11-22,0.4244360983839734,0.0
+2025-11-30,Premier League,Chelsea,Arsenal,7.0,2025-11-22,0.47717008769745123,1.0
+2025-12-02,Premier League,Fulham,Man City,1.0,2025-11-22,0.3800870234019608,0.0
+2025-12-02,Premier League,Bournemouth,Everton,6.0,2025-11-22,0.5148260269304449,1.0
+2025-12-02,Premier League,Newcastle,Tottenham,3.0,2025-11-22,0.5515588507339704,0.0
+2025-12-03,Premier League,Leeds,Chelsea,2.0,2025-11-22,0.6623841837294797,0.0
+2025-12-03,Premier League,Wolves,Nott'm Forest,4.0,2025-11-22,0.6981936085519808,1.0
+2025-12-03,Premier League,Liverpool,Sunderland,2.0,2025-11-22,0.38709948247148906,0.0
+2025-12-03,Premier League,Brighton,Aston Villa,4.0,2025-11-22,0.6779832599152635,1.0
+2025-12-03,Premier League,Arsenal,Brentford,1.0,2025-11-22,0.45021701666052,0.0
+2025-12-03,Premier League,Burnley,Crystal Palace,0.0,2025-11-22,0.43546633496652576,0.0
+2025-12-04,Premier League,Man United,West Ham,4.0,2025-11-22,0.4317728394625398,1.0
+2025-12-06,Premier League,Aston Villa,Arsenal,2.0,2025-11-22,0.5319646999728969,0.0
+2025-12-06,Premier League,Bournemouth,Chelsea,2.0,2025-11-22,0.6896474550211679,0.0
+2025-12-06,Premier League,Everton,Nott'm Forest,7.0,2025-11-22,0.5299151825694374,1.0
+2025-12-06,Premier League,Man City,Sunderland,1.0,2025-11-22,0.3309744205475142,0.0
+2025-12-06,Premier League,Newcastle,Burnley,4.0,2025-11-22,0.48203221122904444,1.0
+2025-12-06,Premier League,Tottenham,Brentford,7.0,2025-11-22,0.5223997249409167,1.0
+2025-12-06,Premier League,Leeds,Liverpool,6.0,2025-11-22,0.3433141035998844,1.0
+2025-12-07,Premier League,Brighton,West Ham,4.0,2025-11-22,0.5754583635298065,1.0
+2025-12-07,Premier League,Fulham,Crystal Palace,0.0,2025-11-22,0.6144552353872745,0.0
+2025-12-08,Premier League,Wolves,Man United,5.0,2025-11-22,0.5204235185333906,1.0
+2025-12-13,Premier League,Chelsea,Everton,1.0,2025-11-22,0.5965791098564033,0.0
+2025-12-13,Premier League,Liverpool,Brighton,3.0,2025-11-22,0.5391453599070424,0.0
+2025-12-13,Premier League,Burnley,Fulham,3.0,2025-11-22,0.3144744938468973,0.0
+2025-12-13,Premier League,Arsenal,Wolves,4.0,2025-11-22,0.4738691108466128,1.0
+2025-12-14,Premier League,Crystal Palace,Man City,2.0,2025-11-22,0.5195387737611381,0.0
+2025-12-14,Premier League,Nott'm Forest,Tottenham,4.0,2025-11-22,0.775221792493617,1.0
+2025-12-14,Premier League,Sunderland,Newcastle,9.0,2025-11-22,0.3626771652150394,1.0
+2025-12-14,Premier League,West Ham,Aston Villa,3.0,2025-11-22,0.4051807057852043,0.0
+2025-12-14,Premier League,Brentford,Leeds,0.0,2025-11-22,0.5369220642260389,0.0
+2025-12-15,Premier League,Man United,Bournemouth,5.0,2025-11-22,0.7201114357105176,1.0
+2025-12-20,Premier League,Leeds,Crystal Palace,4.0,2025-11-22,0.4508268463267668,1.0
+2025-12-20,Premier League,Tottenham,Liverpool,6.0,2025-11-22,0.628490655376434,1.0
+2025-12-20,Premier League,Wolves,Brentford,6.0,2025-11-22,0.5275232557695614,1.0
+2025-12-20,Premier League,Everton,Arsenal,4.0,2025-11-22,0.5347787994805021,1.0
+2025-12-20,Premier League,Brighton,Sunderland,4.0,2025-11-22,0.4920057206633697,1.0
+2025-12-20,Premier League,Bournemouth,Burnley,2.0,2025-11-22,0.4843026662542813,0.0
+2025-12-20,Premier League,Newcastle,Chelsea,9.0,2025-11-22,0.6722878302469153,1.0
+2025-12-20,Premier League,Man City,West Ham,2.0,2025-11-22,0.35472028475667905,0.0
+2025-12-21,Premier League,Aston Villa,Man United,3.0,2025-11-22,0.5813174044565802,0.0
+2025-12-22,Premier League,Fulham,Nott'm Forest,9.0,2025-12-22,0.45006592807101586,1.0
+2025-12-26,Premier League,Man United,Newcastle,3.0,2025-12-22,0.49893960131992604,0.0
+2025-12-27,Premier League,Chelsea,Aston Villa,8.0,2025-12-22,0.7787592785654227,1.0
+2025-12-27,Premier League,West Ham,Fulham,4.0,2025-12-22,0.33904443104343224,1.0
+2025-12-27,Premier League,Liverpool,Wolves,1.0,2025-12-22,0.6318957184067864,0.0
+2025-12-27,Premier League,Brentford,Bournemouth,4.0,2025-12-22,0.6449063723350138,1.0
+2025-12-27,Premier League,Arsenal,Brighton,5.0,2025-12-22,0.5909142468070628,1.0
+2025-12-27,Premier League,Nott'm Forest,Man City,3.0,2025-12-22,0.5089495937108746,0.0
+2025-12-27,Premier League,Burnley,Everton,2.0,2025-12-22,0.2982355578694204,0.0
+2025-12-28,Premier League,Sunderland,Leeds,1.0,2025-12-22,0.4746746579013525,0.0
+2025-12-28,Premier League,Crystal Palace,Tottenham,5.0,2025-12-22,0.5977874986315269,1.0
+2025-12-30,Premier League,Arsenal,Aston Villa,5.0,2025-12-22,0.5543492949788493,1.0
+2025-12-30,Premier League,Man United,Wolves,2.0,2025-12-22,0.5194442184701336,0.0
+2025-12-30,Premier League,West Ham,Brighton,8.0,2025-12-22,0.44197685638846274,1.0
+2025-12-30,Premier League,Burnley,Newcastle,3.0,2025-12-22,0.41578606646989374,0.0
+2025-12-30,Premier League,Chelsea,Bournemouth,2.0,2025-12-22,0.8379727516800672,0.0
+2025-12-30,Premier League,Nott'm Forest,Everton,1.0,2025-12-22,0.46918024140835723,0.0
+2026-01-01,Premier League,Crystal Palace,Fulham,5.0,2025-12-22,0.44799758610793905,1.0
+2026-01-01,Premier League,Liverpool,Leeds,2.0,2025-12-22,0.4526796056891226,0.0
+2026-01-01,Premier League,Brentford,Tottenham,3.0,2025-12-22,0.5409182303273469,0.0
+2026-01-01,Premier League,Sunderland,Man City,2.0,2025-12-22,0.45054323467872226,0.0
+2026-01-03,Premier League,Aston Villa,Nott'm Forest,3.0,2025-12-22,0.7647045000810513,0.0
+2026-01-03,Premier League,Brighton,Burnley,4.0,2025-12-22,0.5532196520782406,1.0
+2026-01-03,Premier League,Wolves,West Ham,1.0,2025-12-22,0.48930686124064726,0.0
+2026-01-03,Premier League,Bournemouth,Arsenal,4.0,2025-12-22,0.5461008207890513,1.0
+2026-01-04,Premier League,Man City,Chelsea,6.0,2025-12-22,0.5033399710255019,1.0
+2026-01-04,Premier League,Fulham,Liverpool,2.0,2025-12-22,0.3502824385428763,0.0
+2026-01-04,Premier League,Tottenham,Sunderland,5.0,2025-12-22,0.6383784545793048,1.0
+2026-01-04,Premier League,Everton,Brentford,2.0,2025-12-22,0.3883489853735151,0.0
+2026-01-04,Premier League,Leeds,Man United,1.0,2025-12-22,0.49964751542783864,0.0
+2026-01-04,Premier League,Newcastle,Crystal Palace,4.0,2025-12-22,0.6364639411444314,1.0
+2026-01-06,Premier League,West Ham,Nott'm Forest,3.0,2025-12-22,0.45114137598717813,0.0
+2026-01-07,Premier League,Bournemouth,Tottenham,6.0,2025-12-22,0.7188336031182426,1.0
+2026-01-07,Premier League,Brentford,Sunderland,3.0,2025-12-22,0.5041482192540729,0.0
+2026-01-07,Premier League,Crystal Palace,Aston Villa,2.0,2025-12-22,0.5927891814637083,0.0
+2026-01-07,Premier League,Everton,Wolves,4.0,2025-12-22,0.5196293681968841,1.0
+2026-01-07,Premier League,Fulham,Chelsea,6.0,2025-12-22,0.6230879332278819,1.0
+2026-01-07,Premier League,Man City,Brighton,7.0,2025-12-22,0.44147460508206,1.0
+2026-01-07,Premier League,Burnley,Man United,2.0,2025-12-22,0.4358024371230847,0.0
+2026-01-07,Premier League,Newcastle,Leeds,5.0,2025-12-22,0.501237365856114,1.0
+2026-01-08,Premier League,Arsenal,Liverpool,4.0,2025-12-22,0.3531916678247658,1.0
+2026-01-17,Premier League,Nott'm Forest,Arsenal,2.0,2025-12-22,0.41142116225680625,0.0
+2026-01-17,Premier League,Tottenham,West Ham,8.0,2025-12-22,0.4744470914786939,1.0
+2026-01-17,Premier League,Sunderland,Crystal Palace,6.0,2025-12-22,0.5448067117049162,1.0
+2026-01-17,Premier League,Liverpool,Burnley,3.0,2025-12-22,0.34174464527333176,0.0
+2026-01-17,Premier League,Chelsea,Brentford,5.0,2025-12-22,0.7076316661450128,1.0
+2026-01-17,Premier League,Man United,Man City,5.0,2025-12-22,0.3927360023317396,1.0
+2026-01-17,Premier League,Leeds,Fulham,6.0,2025-12-22,0.4100334519398246,1.0
+2026-01-18,Premier League,Wolves,Newcastle,4.0,2025-12-22,0.6817805346549065,1.0
+2026-01-18,Premier League,Aston Villa,Everton,3.0,2025-12-22,0.59091411279853,0.0
+2026-01-19,Premier League,Brighton,Bournemouth,5.0,2025-12-22,0.66900763113763,1.0
+2026-01-24,Premier League,West Ham,Sunderland,6.0,2026-01-24,0.3740984680735947,1.0
+2026-01-24,Premier League,Burnley,Tottenham,1.0,2026-01-24,0.4721600370463091,0.0
+2026-01-24,Premier League,Fulham,Brighton,2.0,2026-01-24,0.4824278183068698,0.0
+2026-01-24,Premier League,Man City,Wolves,4.0,2026-01-24,0.4967009819581724,1.0
+2026-01-24,Premier League,Bournemouth,Liverpool,2.0,2026-01-24,0.5933347921339223,0.0
+2026-01-25,Premier League,Newcastle,Aston Villa,3.0,2026-01-24,0.6377062259783762,0.0
+2026-01-25,Premier League,Arsenal,Man United,2.0,2026-01-24,0.3758761751672293,0.0
+2026-01-25,Premier League,Crystal Palace,Chelsea,4.0,2026-01-24,0.7143825818731402,1.0
+2026-01-25,Premier League,Brentford,Nott'm Forest,1.0,2026-01-24,0.5990369985410542,0.0
+2026-01-26,Premier League,Everton,Leeds,3.0,2026-01-24,0.4477478465164829,0.0
+2026-01-31,Premier League,Brighton,Everton,3.0,2026-01-24,0.5840628150369671,0.0
+2026-01-31,Premier League,Leeds,Arsenal,2.0,2026-01-24,0.4210065982425541,0.0
+2026-01-31,Premier League,Wolves,Bournemouth,6.0,2026-01-24,0.535262510043646,1.0
+2026-01-31,Premier League,Chelsea,West Ham,5.0,2026-01-24,0.546220041475094,1.0
+2026-01-31,Premier League,Liverpool,Newcastle,4.0,2026-01-24,0.5396693409679015,1.0
+2026-02-01,Premier League,Aston Villa,Brentford,3.0,2026-01-24,0.6886843792951256,0.0
+2026-02-01,Premier League,Man United,Fulham,3.0,2026-01-24,0.5860737282169783,0.0
+2026-02-01,Premier League,Nott'm Forest,Crystal Palace,4.0,2026-01-24,0.621414749303968,1.0
+2026-02-01,Premier League,Tottenham,Man City,6.0,2026-01-24,0.5531970903320603,1.0
+2026-02-02,Premier League,Sunderland,Burnley,5.0,2026-01-24,0.3292983616920679,1.0
+2026-02-06,Premier League,Leeds,Nott'm Forest,2.0,2026-01-24,0.5392402703221586,0.0
+2026-02-07,Premier League,Newcastle,Brentford,4.0,2026-01-24,0.48271738705768225,1.0
+2026-02-07,Premier League,Wolves,Chelsea,2.0,2026-01-24,0.6939785100122108,0.0
+2026-02-07,Premier League,Fulham,Everton,6.0,2026-01-24,0.4709328832245995,1.0
+2026-02-07,Premier League,Man United,Tottenham,3.0,2026-01-24,0.5094700222002733,0.0
+2026-02-07,Premier League,Bournemouth,Aston Villa,2.0,2026-01-24,0.6762188836316216,0.0
+2026-02-07,Premier League,Arsenal,Sunderland,3.0,2026-01-24,0.5098474378645003,0.0
+2026-02-07,Premier League,Burnley,West Ham,4.0,2026-01-24,0.31901902948494765,1.0
+2026-02-08,Premier League,Brighton,Crystal Palace,4.0,2026-01-24,0.5749812680207372,1.0
+2026-02-08,Premier League,Liverpool,Man City,6.0,2026-01-24,0.3238449259586938,1.0
+2026-02-10,Premier League,Tottenham,Newcastle,5.0,2026-01-24,0.5953994170170607,1.0
+2026-02-10,Premier League,Chelsea,Leeds,8.0,2026-01-24,0.61557618198965,1.0
+2026-02-10,Premier League,Everton,Bournemouth,4.0,2026-01-24,0.5123190557345263,1.0
+2026-02-10,Premier League,West Ham,Man United,2.0,2026-01-24,0.48409136286206733,0.0
+2026-02-11,Premier League,Sunderland,Liverpool,1.0,2026-01-24,0.4649353812173769,0.0
+2026-02-11,Premier League,Nott'm Forest,Wolves,2.0,2026-01-24,0.7111265042783499,0.0
+2026-02-11,Premier League,Aston Villa,Brighton,5.0,2026-01-24,0.7405687636748232,1.0
+2026-02-11,Premier League,Crystal Palace,Burnley,3.0,2026-01-24,0.376116710801561,0.0
+2026-02-11,Premier League,Man City,Fulham,4.0,2026-01-24,0.43701684735360735,1.0
+2026-02-12,Premier League,Brentford,Arsenal,5.0,2026-01-24,0.47961765449995,1.0
+2026-02-18,Premier League,Wolves,Arsenal,3.0,2026-01-24,0.42739561443785673,0.0
+2026-02-21,Premier League,Aston Villa,Leeds,5.0,2026-01-24,0.4498114448836636,1.0
+2026-02-21,Premier League,Brentford,Brighton,3.0,2026-01-24,0.5903259170673298,0.0
+2026-02-21,Premier League,Chelsea,Burnley,4.0,2026-01-24,0.5086592033979133,1.0
+2026-02-21,Premier League,West Ham,Bournemouth,2.0,2026-01-24,0.5832365000398599,0.0
+2026-02-21,Premier League,Man City,Newcastle,7.0,2026-01-24,0.42200813790603353,1.0
+2026-02-22,Premier League,Crystal Palace,Wolves,6.0,2026-01-24,0.5473612985546915,1.0
+2026-02-22,Premier League,Nott'm Forest,Liverpool,2.0,2026-01-24,0.4939916629377096,0.0
+2026-02-22,Premier League,Sunderland,Fulham,2.0,2026-01-24,0.4053141886042384,0.0
+2026-02-22,Premier League,Tottenham,Arsenal,3.0,2026-01-24,0.55280680011831,0.0
+2026-02-23,Premier League,Everton,Man United,5.0,2026-02-23,0.4868412875140613,1.0
+2026-02-27,Premier League,Wolves,Aston Villa,6.0,2026-02-23,0.5403447088020856,1.0
+2026-02-28,Premier League,Leeds,Man City,3.0,2026-02-23,0.43545511273936593,0.0
+2026-02-28,Premier League,Newcastle,Everton,5.0,2026-02-23,0.5957963205965215,1.0
+2026-02-28,Premier League,Bournemouth,Sunderland,6.0,2026-02-23,0.5660326610443059,1.0
+2026-02-28,Premier League,Burnley,Brentford,4.0,2026-02-23,0.34537773284406087,1.0
+2026-02-28,Premier League,Liverpool,West Ham,4.0,2026-02-23,0.4509954757137363,1.0
+2026-03-01,Premier League,Brighton,Nott'm Forest,4.0,2026-02-23,0.6097384505547513,1.0
+2026-03-01,Premier League,Fulham,Tottenham,6.0,2026-02-23,0.5778064579002671,1.0
+2026-03-01,Premier League,Man United,Crystal Palace,4.0,2026-02-23,0.5139424782913732,1.0
+2026-03-01,Premier League,Arsenal,Chelsea,4.0,2026-02-23,0.6493084659189053,1.0
+2026-03-03,Premier League,Bournemouth,Brentford,3.0,2026-02-23,0.48307272811024915,0.0
+2026-03-03,Premier League,Everton,Burnley,1.0,2026-02-23,0.37944437012884147,0.0
+2026-03-03,Premier League,Leeds,Sunderland,4.0,2026-02-23,0.5130631856458372,1.0
+2026-03-03,Premier League,Wolves,Liverpool,3.0,2026-02-23,0.47638211671702374,0.0
+2026-03-04,Premier League,Newcastle,Man United,5.0,2026-02-23,0.5523047725576697,1.0
+2026-03-04,Premier League,Man City,Nott'm Forest,4.0,2026-02-23,0.5741554560778067,1.0
+2026-03-04,Premier League,Fulham,West Ham,6.0,2026-02-23,0.40518355380581067,1.0
+2026-03-04,Premier League,Brighton,Arsenal,5.0,2026-02-23,0.5189948922773436,1.0
+2026-03-04,Premier League,Aston Villa,Chelsea,5.0,2026-02-23,0.7396918916186103,1.0
+2026-03-05,Premier League,Tottenham,Crystal Palace,5.0,2026-02-23,0.5802318280785901,1.0
+2026-03-14,Premier League,Burnley,Bournemouth,1.0,2026-02-23,0.44646819024142664,0.0
+2026-03-14,Premier League,Sunderland,Brighton,3.0,2026-02-23,0.5990385734978064,0.0
+2026-03-14,Premier League,Arsenal,Everton,0.0,2026-02-23,0.3851884190306477,0.0
+2026-03-14,Premier League,Chelsea,Newcastle,4.0,2026-02-23,0.6991008062086911,1.0
+2026-03-14,Premier League,West Ham,Man City,4.0,2026-02-23,0.3248599504678466,1.0
+2026-03-15,Premier League,Crystal Palace,Leeds,3.0,2026-02-23,0.48259448423796225,0.0
+2026-03-15,Premier League,Man United,Aston Villa,5.0,2026-02-23,0.5394820605391479,1.0
+2026-03-15,Premier League,Nott'm Forest,Fulham,5.0,2026-02-23,0.5634691679060793,1.0
+2026-03-15,Premier League,Liverpool,Tottenham,0.0,2026-02-23,0.5498789378980293,0.0
+2026-03-16,Premier League,Brentford,Wolves,6.0,2026-02-23,0.5510905678005208,1.0
+2026-03-20,Premier League,Bournemouth,Man United,4.0,2026-02-23,0.6456212642230523,1.0
+2026-03-21,Premier League,Brighton,Liverpool,10.0,2026-02-23,0.5793030486201255,1.0
+2026-03-21,Premier League,Fulham,Burnley,4.0,2026-02-23,0.33528865140656966,1.0
+2026-03-21,Premier League,Everton,Chelsea,2.0,2026-02-23,0.6379075720665766,0.0
+2026-03-21,Premier League,Leeds,Brentford,2.0,2026-02-23,0.39623873872599336,0.0
+2026-03-22,Premier League,Newcastle,Sunderland,7.0,2026-02-23,0.533308096373977,1.0
+2026-03-22,Premier League,Aston Villa,West Ham,1.0,2026-02-23,0.5190692349286162,0.0
+2026-03-22,Premier League,Tottenham,Nott'm Forest,3.0,2026-02-23,0.5476657128884493,0.0
+2026-04-10,Premier League,West Ham,Wolves,4.0,2026-04-10,0.44956763692249685,1.0
+2026-04-11,Premier League,Arsenal,Bournemouth,4.0,2026-04-10,0.4500289587544327,1.0
+2026-04-11,Premier League,Brentford,Everton,2.0,2026-04-10,0.4142687980367382,0.0
+2026-04-11,Premier League,Burnley,Brighton,3.0,2026-04-10,0.4600936077619352,0.0
+2026-04-11,Premier League,Liverpool,Fulham,0.0,2026-04-10,0.4559510985918851,0.0
+2026-04-12,Premier League,Chelsea,Man City,4.0,2026-04-10,0.6193163024360875,1.0
+2026-04-12,Premier League,Sunderland,Tottenham,6.0,2026-04-10,0.6539829284787604,1.0
+2026-04-12,Premier League,Nott'm Forest,Aston Villa,4.0,2026-04-10,0.6365187408626919,1.0
+2026-04-12,Premier League,Crystal Palace,Newcastle,3.0,2026-04-10,0.5236799935224513,0.0
+2026-04-13,Premier League,Man United,Leeds,5.0,2026-04-10,0.4046754352076784,1.0
+2026-04-18,Premier League,Brentford,Fulham,1.0,2026-04-10,0.43370645142281644,0.0
+2026-04-18,Premier League,Leeds,Wolves,3.0,2026-04-10,0.4922130721386816,0.0
+2026-04-18,Premier League,Newcastle,Bournemouth,6.0,2026-04-10,0.6902907464014343,1.0
+2026-04-18,Premier League,Tottenham,Brighton,4.0,2026-04-10,0.7636469489985525,1.0
+2026-04-18,Premier League,Chelsea,Man United,4.0,2026-04-10,0.5687993081720891,1.0
+2026-04-19,Premier League,Aston Villa,Sunderland,4.0,2026-04-10,0.6612220140520862,1.0
+2026-04-19,Premier League,Everton,Liverpool,2.0,2026-04-10,0.373226940451183,0.0
+2026-04-19,Premier League,Nott'm Forest,Burnley,2.0,2026-04-10,0.4048073461618088,0.0
+2026-04-19,Premier League,Man City,Arsenal,4.0,2026-04-10,0.378123337421386,1.0
+2026-04-20,Premier League,Crystal Palace,West Ham,3.0,2026-04-10,0.5281183546762712,0.0
+2026-04-21,Premier League,Brighton,Chelsea,2.0,2026-04-10,0.7005702257529732,0.0
+2026-04-22,Premier League,Burnley,Man City,0.0,2026-04-10,0.292610907314918,0.0
+2026-04-22,Premier League,Bournemouth,Leeds,3.0,2026-04-10,0.5411739883790833,0.0
+2026-04-24,Premier League,Sunderland,Nott'm Forest,7.0,2026-04-10,0.6461296012215173,1.0
+2026-04-25,Premier League,Fulham,Aston Villa,4.0,2026-04-10,0.5068495830956241,1.0
+2026-04-25,Premier League,Liverpool,Crystal Palace,4.0,2026-04-10,0.4268526275837946,1.0
+2026-04-25,Premier League,West Ham,Everton,7.0,2026-04-10,0.4366918446203083,1.0
+2026-04-25,Premier League,Wolves,Tottenham,7.0,2026-04-10,0.6065952803659843,1.0
+2026-04-25,Premier League,Arsenal,Newcastle,4.0,2026-04-10,0.4908952866967864,1.0
+2026-04-27,Premier League,Man United,Brentford,6.0,2026-04-10,0.46184413418502224,1.0
+2026-05-01,Premier League,Leeds,Burnley,7.0,2026-04-10,0.3168624765070526,1.0
+2026-05-02,Premier League,Brentford,West Ham,4.0,2026-04-10,0.34050524301276014,1.0
+2026-05-02,Premier League,Newcastle,Brighton,6.0,2026-04-10,0.6812231539915863,1.0
+2026-05-02,Premier League,Wolves,Sunderland,4.0,2026-04-10,0.5191143848008308,1.0
+2026-05-02,Premier League,Arsenal,Fulham,1.0,2026-04-10,0.42968874138278973,0.0
+2026-05-03,Premier League,Aston Villa,Tottenham,7.0,2026-04-10,0.7115797184496426,1.0
+2026-05-03,Premier League,Man United,Liverpool,4.0,2026-04-10,0.5279244475824691,1.0
+2026-05-03,Premier League,Bournemouth,Crystal Palace,2.0,2026-04-10,0.6474029578682978,0.0
+2026-05-04,Premier League,Chelsea,Nott'm Forest,4.0,2026-04-10,0.6708920969765781,1.0
+2026-05-04,Premier League,Everton,Man City,5.0,2026-04-10,0.3405931591927717,1.0
+2026-05-09,Premier League,Liverpool,Chelsea,6.0,2026-04-10,0.545346249394522,1.0
+2026-05-09,Premier League,Brighton,Wolves,3.0,2026-04-10,0.7345435013573061,0.0
+2026-05-09,Premier League,Fulham,Bournemouth,6.0,2026-04-10,0.539348537239559,1.0
+2026-05-09,Premier League,Sunderland,Man United,3.0,2026-04-10,0.5958141507359421,0.0
+2026-05-09,Premier League,Man City,Brentford,6.0,2026-04-10,0.4750980926200608,1.0
+2026-05-10,Premier League,Nott'm Forest,Newcastle,2.0,2026-05-10,0.5489008656314586,0.0
+2026-05-10,Premier League,Burnley,Aston Villa,2.0,2026-05-10,0.4068601472100668,0.0
+2026-05-10,Premier League,Crystal Palace,Everton,2.0,2026-05-10,0.4955956050594818,0.0
+2026-05-10,Premier League,West Ham,Arsenal,7.0,2026-05-10,0.3618185582064973,1.0
+2026-05-11,Premier League,Tottenham,Leeds,4.0,2026-05-10,0.5247811893060563,1.0
+2026-05-13,Premier League,Man City,Crystal Palace,2.0,2026-05-10,0.579582222280159,0.0
+2026-05-15,Premier League,Aston Villa,Liverpool,4.0,2026-05-10,0.5270801429790033,1.0
+2026-05-17,Premier League,Man United,Nott'm Forest,3.0,2026-05-10,0.573659696516827,0.0
+2026-05-17,Premier League,Brentford,Crystal Palace,4.0,2026-05-10,0.5137824447610572,1.0
+2026-05-17,Premier League,Everton,Sunderland,3.0,2026-05-10,0.5394689265667535,0.0
+2026-05-17,Premier League,Leeds,Brighton,1.0,2026-05-10,0.4925652728798843,0.0
+2026-05-17,Premier League,Wolves,Fulham,1.0,2026-05-10,0.5203929038591438,0.0
+2026-05-17,Premier League,Newcastle,West Ham,4.0,2026-05-10,0.4862255434750067,1.0
+2026-05-18,Premier League,Arsenal,Burnley,4.0,2026-05-10,0.2593728830573927,1.0
+2026-05-19,Premier League,Chelsea,Tottenham,7.0,2026-05-10,0.8037628140091397,1.0
+2026-05-19,Premier League,Bournemouth,Man City,6.0,2026-05-10,0.554837533075014,1.0
+2026-05-24,Premier League,Nott'm Forest,Bournemouth,2.0,2026-05-10,0.5770127098534442,0.0
+2026-05-24,Premier League,Man City,Aston Villa,1.0,2026-05-10,0.5182342842829268,0.0
+2026-05-24,Premier League,Sunderland,Chelsea,5.0,2026-05-10,0.6876675519122258,1.0
+2026-05-24,Premier League,Liverpool,Brentford,5.0,2026-05-10,0.513438529662804,1.0
+2026-05-24,Premier League,Tottenham,Everton,8.0,2026-05-10,0.47584288236953837,1.0
+2026-05-24,Premier League,Crystal Palace,Arsenal,1.0,2026-05-10,0.4069804725455822,0.0
+2026-05-24,Premier League,Burnley,Wolves,4.0,2026-05-10,0.36977394364720345,1.0
+2026-05-24,Premier League,Brighton,Man United,1.0,2026-05-10,0.6433927994423487,0.0
+2026-05-24,Premier League,Fulham,Newcastle,4.0,2026-05-10,0.5837692147048572,1.0
+2026-05-24,Premier League,West Ham,Leeds,3.0,2026-05-10,0.39077258304966234,0.0

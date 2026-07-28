@@ -53,6 +53,7 @@ class ModeloDixonColes:
     home_adv: float
     rho: float
     n_jogos_usados: int = 0
+    fonte: str = "gols"  # "gols" (FTHG/FTAG) ou "xg" (xG_casa/xG_fora arredondado)
 
     def to_dict(self) -> dict:
         return {
@@ -65,10 +66,12 @@ class ModeloDixonColes:
             "home_adv": self.home_adv,
             "rho": self.rho,
             "n_jogos_usados": self.n_jogos_usados,
+            "fonte": self.fonte,
         }
 
     @classmethod
     def from_dict(cls, d: dict) -> "ModeloDixonColes":
+        d = {**d, "fonte": d.get("fonte", "gols")}  # compatibilidade com modelos salvos antes deste campo
         return cls(**d)
 
 
@@ -136,24 +139,49 @@ def ajustar_modelo(
     liga: str,
     data_corte,
     xi: float = XI_PADRAO,
+    fonte: str = "gols",
 ) -> ModeloDixonColes:
     """Ajusta um modelo Dixon-Coles para UMA liga usando apenas partidas com
     Date < data_corte. `df` deve conter (ao menos) as colunas: liga, Date,
-    HomeTeam, AwayTeam, FTHG, FTAG.
+    HomeTeam, AwayTeam, FTHG, FTAG (ou xG_casa, xG_fora se fonte='xg').
+
+    fonte='gols' (padrão): usa os gols observados (FTHG/FTAG) como variável
+    de treino, como no Dixon-Coles clássico.
+    fonte='xg': usa o xG de cada time (xG_casa/xG_fora) arredondado ao
+    inteiro mais próximo como "pseudo-gols" de treino, no lugar dos gols
+    observados. A verossimilhança de Poisson exige contagens inteiras
+    (scipy.stats.poisson dá densidade 0 para valores fracionários), então o
+    arredondamento é o que permite reaproveitar exatamente a mesma máquina
+    de ajuste (mesma log-verossimilhança ponderada, mesma correção rho de
+    Dixon-Coles) — só o insumo (gols vs. xG) muda, a estrutura do modelo e a
+    previsão de gols continuam as mesmas.
     """
+    if fonte not in ("gols", "xg"):
+        raise ValueError("fonte deve ser 'gols' ou 'xg'.")
+
     data_corte = pd.Timestamp(data_corte)
 
     df_liga = df[df["liga"] == liga].copy()
     df_liga = df_liga[df_liga["Date"] < data_corte]
-    df_liga = df_liga.dropna(subset=["FTHG", "FTAG", "HomeTeam", "AwayTeam"])
+
+    if fonte == "gols":
+        df_liga = df_liga.dropna(subset=["FTHG", "FTAG", "HomeTeam", "AwayTeam"])
+    else:
+        if not {"xG_casa", "xG_fora"}.issubset(df_liga.columns):
+            raise ValueError("fonte='xg' exige as colunas xG_casa/xG_fora no DataFrame (ver src/ingest_xg.py).")
+        df_liga = df_liga.dropna(subset=["xG_casa", "xG_fora", "HomeTeam", "AwayTeam"])
 
     if df_liga.empty:
-        raise ValueError(f"Sem partidas de '{liga}' anteriores a {data_corte.date()} para ajustar o modelo.")
+        raise ValueError(f"Sem partidas de '{liga}' anteriores a {data_corte.date()} para ajustar o modelo (fonte={fonte}).")
 
     times, idx_casa, idx_fora = _preparar_indices(df_liga)
     n_times = len(times)
-    gols_casa = df_liga["FTHG"].to_numpy(dtype=float)
-    gols_fora = df_liga["FTAG"].to_numpy(dtype=float)
+    if fonte == "gols":
+        gols_casa = df_liga["FTHG"].to_numpy(dtype=float)
+        gols_fora = df_liga["FTAG"].to_numpy(dtype=float)
+    else:
+        gols_casa = df_liga["xG_casa"].round().clip(lower=0).to_numpy(dtype=float)
+        gols_fora = df_liga["xG_fora"].round().clip(lower=0).to_numpy(dtype=float)
     pesos = calcular_pesos_temporais(df_liga["Date"], data_corte, xi)
 
     # x0: ataque/defesa livres = 0, home_adv modesto, rho pequeno negativo
@@ -185,6 +213,7 @@ def ajustar_modelo(
         home_adv=float(home_adv),
         rho=float(rho),
         n_jogos_usados=len(df_liga),
+        fonte=fonte,
     )
 
 
@@ -221,20 +250,24 @@ def matriz_placares(
     return matriz
 
 
+def _nome_arquivo_modelo(liga: str, fonte: str) -> str:
+    slug = liga.lower().replace(" ", "_")
+    sufixo = "" if fonte == "gols" else f"_{fonte}"
+    return f"{slug}{sufixo}.json"
+
+
 def salvar_modelo(modelo: ModeloDixonColes, caminho: Path | None = None) -> Path:
     PASTA_MODELOS.mkdir(parents=True, exist_ok=True)
     if caminho is None:
-        slug = modelo.liga.lower().replace(" ", "_")
-        caminho = PASTA_MODELOS / f"{slug}.json"
+        caminho = PASTA_MODELOS / _nome_arquivo_modelo(modelo.liga, modelo.fonte)
     caminho.write_text(json.dumps(modelo.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
     return caminho
 
 
-def carregar_modelo(liga: str) -> ModeloDixonColes:
-    slug = liga.lower().replace(" ", "_")
-    caminho = PASTA_MODELOS / f"{slug}.json"
+def carregar_modelo(liga: str, fonte: str = "gols") -> ModeloDixonColes:
+    caminho = PASTA_MODELOS / _nome_arquivo_modelo(liga, fonte)
     if not caminho.exists():
-        raise FileNotFoundError(f"Modelo não encontrado para a liga '{liga}' em {caminho}.")
+        raise FileNotFoundError(f"Modelo (fonte={fonte}) não encontrado para a liga '{liga}' em {caminho}.")
     d = json.loads(caminho.read_text(encoding="utf-8"))
     return ModeloDixonColes.from_dict(d)
 
@@ -245,18 +278,21 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Ajusta modelos Dixon-Coles por liga")
-    parser.add_argument("--dados", default=str(RAIZ / "data" / "processed" / "partidas.csv"))
+    parser.add_argument("--dados", default=None, help="Padrão: partidas.csv (ou partidas_xg.csv se --fonte xg)")
     parser.add_argument("--data-corte", default=None, help="YYYY-MM-DD (padrão: hoje)")
     parser.add_argument("--xi", type=float, default=XI_PADRAO)
+    parser.add_argument("--fonte", choices=["gols", "xg"], default="gols")
     args = parser.parse_args()
 
-    df = pd.read_csv(args.dados, parse_dates=["Date"])
+    caminho_dados = args.dados or str(RAIZ / "data" / "processed" / ("partidas_xg.csv" if args.fonte == "xg" else "partidas.csv"))
+    df = pd.read_csv(caminho_dados, parse_dates=["Date"])
     data_corte = args.data_corte or date.today().isoformat()
 
     for liga in sorted(df["liga"].unique()):
-        modelo = ajustar_modelo(df, liga, data_corte, xi=args.xi)
+        modelo = ajustar_modelo(df, liga, data_corte, xi=args.xi, fonte=args.fonte)
         caminho = salvar_modelo(modelo)
-        print(f"[{liga}] ajustado com {modelo.n_jogos_usados} jogos | home_adv={modelo.home_adv:.3f} rho={modelo.rho:.3f} -> {caminho}")
+        print(f"[{liga}] ajustado (fonte={args.fonte}) com {modelo.n_jogos_usados} jogos | "
+              f"home_adv={modelo.home_adv:.3f} rho={modelo.rho:.3f} -> {caminho}")
 
 
 if __name__ == "__main__":

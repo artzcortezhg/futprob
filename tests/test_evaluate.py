@@ -48,3 +48,22 @@ def test_tabela_calibracao_formato():
     probs = rng.dirichlet([1, 1, 1], n)
     tabela = tabela_calibracao(y_idx, probs, n_bins=5)
     assert tabela["n"].sum() == n * 3  # 3 probabilidades (casa/empate/fora) por jogo
+
+
+def test_brier_score_generico_funciona_com_duas_classes():
+    """over/under é um mercado binário (k=2): brier/log_loss/calibração
+    precisam ser genéricos no número de classes, não hard-coded para 3."""
+    y_idx = np.array([0, 1, 0])  # 0=over, 1=under
+    probs = np.array([[0.7, 0.3], [0.2, 0.8], [0.9, 0.1]])
+    assert brier_score_multiclasse(y_idx, probs) < 0.1
+    assert log_loss_multiclasse(y_idx, probs) < 0.5
+
+
+def test_tabela_calibracao_duas_classes():
+    rng = np.random.default_rng(1)
+    n = 100
+    y_idx = rng.integers(0, 2, n)
+    p = rng.uniform(0, 1, n)
+    probs = np.column_stack([p, 1 - p])
+    tabela = tabela_calibracao(y_idx, probs, n_bins=5)
+    assert tabela["n"].sum() == n * 2

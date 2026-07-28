@@ -76,3 +76,33 @@ def test_erro_se_time_desconhecido():
     modelo = ajustar_modelo(df, "Teste", data_corte="2030-01-01")
     with pytest.raises(ValueError):
         matriz_placares(modelo, "A", "TimeInexistente")
+
+
+def test_ajuste_com_xg_usa_xg_arredondado_como_pseudo_gols():
+    df, *_ = _dados_sinteticos()
+    # cria colunas de xG idênticas aos gols observados -> o ajuste com
+    # fonte='xg' deve reproduzir exatamente o ajuste com fonte='gols'
+    df_xg = df.copy()
+    df_xg["xG_casa"] = df_xg["FTHG"].astype(float)
+    df_xg["xG_fora"] = df_xg["FTAG"].astype(float)
+
+    modelo_gols = ajustar_modelo(df_xg, "Teste", data_corte="2030-01-01", fonte="gols")
+    modelo_xg = ajustar_modelo(df_xg, "Teste", data_corte="2030-01-01", fonte="xg")
+
+    assert modelo_xg.fonte == "xg"
+    assert modelo_gols.fonte == "gols"
+    assert abs(modelo_xg.home_adv - modelo_gols.home_adv) < 1e-6
+    for t in modelo_gols.ataque:
+        assert abs(modelo_xg.ataque[t] - modelo_gols.ataque[t]) < 1e-6
+
+
+def test_ajuste_xg_exige_colunas_de_xg():
+    df, *_ = _dados_sinteticos()
+    with pytest.raises(ValueError):
+        ajustar_modelo(df, "Teste", data_corte="2030-01-01", fonte="xg")
+
+
+def test_fonte_invalida_gera_erro():
+    df, *_ = _dados_sinteticos()
+    with pytest.raises(ValueError):
+        ajustar_modelo(df, "Teste", data_corte="2030-01-01", fonte="chutometro")

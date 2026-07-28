@@ -7,7 +7,11 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from markets import calcular_mercados, mercado_1x2, mercado_handicap_europeu
+from markets import (
+    calcular_mercados, mercado_1x2, mercado_handicap_europeu,
+    mercado_escanteios, mercado_cartoes, mercado_faltas,
+    para_linhas_tabela_escanteios, para_linhas_tabela_cartoes, para_linhas_tabela_faltas,
+)
 
 
 def _matriz_exemplo():
@@ -66,3 +70,41 @@ def test_dupla_chance_consistente():
     mat = _matriz_exemplo()
     m = calcular_mercados(mat)
     assert abs(m["dupla_chance"]["12 (casa ou fora)"] - (1 - m["1x2"]["empate"])) < 1e-9
+
+
+def _matriz_escanteios_exemplo():
+    from scipy.stats import nbinom
+    n, p_casa, p_fora = 20.0, 20.0 / (20.0 + 5.5), 20.0 / (20.0 + 4.2)
+    valores = np.arange(0, 25)
+    pmf_casa = nbinom.pmf(valores, n, p_casa)
+    pmf_fora = nbinom.pmf(valores, n, p_fora)
+    mat = np.outer(pmf_casa, pmf_fora)
+    return mat / mat.sum()
+
+
+def test_mercado_escanteios_soma_um_em_todas_as_linhas():
+    mat = _matriz_escanteios_exemplo()
+    m = mercado_escanteios(mat)
+    for grupo in ("total", "casa", "fora"):
+        for linha, p in m[grupo].items():
+            assert abs(p["over"] + p["under"] - 1.0) < 1e-9
+
+
+def test_mercado_cartoes_e_faltas_soma_um():
+    mat = _matriz_escanteios_exemplo()  # mesma forma de matriz conjunta, serve para o teste
+    m_cartoes = mercado_cartoes(mat)
+    m_faltas = mercado_faltas(mat)
+    for m in (m_cartoes, m_faltas):
+        for linha, p in m["total"].items():
+            assert abs(p["over"] + p["under"] - 1.0) < 1e-9
+
+
+def test_para_linhas_tabela_escanteios_cartoes_faltas():
+    mat = _matriz_escanteios_exemplo()
+    linhas_esc = para_linhas_tabela_escanteios(mercado_escanteios(mat))
+    linhas_cart = para_linhas_tabela_cartoes(mercado_cartoes(mat))
+    linhas_falt = para_linhas_tabela_faltas(mercado_faltas(mat))
+    # total + casa + fora, 2 linhas (over/under) por linha de aposta
+    assert len(linhas_esc) == 2 * (6 + 6 + 6)
+    assert len(linhas_cart) == 2 * 4
+    assert len(linhas_falt) == 2 * 9

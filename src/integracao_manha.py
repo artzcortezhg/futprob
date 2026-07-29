@@ -40,7 +40,7 @@ from collector import coletar, salvar_snapshot, salvar_bruto_coleta  # noqa: E40
 from painel_db import inserir_registro, registrar_coleta, carregar_estado_bot  # noqa: E402
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, probs_modelo_de_linhas  # noqa: E402
-from resolucao_times import carregar_times_por_liga  # noqa: E402
+from resolucao_times import carregar_times_por_liga, LIGA_SERIE_B  # noqa: E402
 from catalogo import FUSO_BR, resolver_fixture_para_liga, combinar_modelo_e_odds  # noqa: E402
 
 
@@ -77,8 +77,10 @@ async def processar_foto_manha_async(limiar_ev: float = 0.05) -> dict:
     for ev in eventos:
         resolvido = resolver_fixture_para_liga(ev.home_team, ev.away_team, times_por_liga)
         if resolvido is None:
-            continue  # campeonato sem modelo (ver regra de pertencimento em catalogo.py)
+            continue  # fora de escopo (ver regra de pertencimento em catalogo.py)
         liga, time_casa, time_fora = resolvido
+        if liga == LIGA_SERIE_B:
+            continue  # Série B tem roster mas NÃO tem modelo treinado — sem EV/apostaria possível, só o /jogo e o painel mostram a odd crua
 
         try:
             resultado_pred = prever(liga, time_casa, time_fora, gravar=False)

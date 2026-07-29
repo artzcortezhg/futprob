@@ -32,6 +32,7 @@ traceback completo no log.
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
@@ -81,14 +82,15 @@ from painel_db import (  # noqa: E402
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, formatar_tabela, probs_modelo_de_linhas  # noqa: E402
 from resolucao_times import (  # noqa: E402
-    normalizar_texto, carregar_times_por_liga, candidatos_time, resolver_time, resolver_time_ambiguo,
+    normalizar_texto, carregar_times_por_liga, candidatos_time, resolver_time, resolver_time_ambiguo, LIGA_SERIE_B,
 )
 from integracao_manha import processar_foto_manha_async  # noqa: E402
 from catalogo import (  # noqa: E402
     _mercados_para_jogo, buscar_fixture_real, resolver_fixture_para_liga, buscar_odds_coletadas_para_fixture,
     combinar_modelo_e_odds, descobrir_jogos_do_dia, familia_mercado, hoje_br,
-    card_completo, maiores_probabilidades, GRUPOS_CARD,
+    card_completo, card_sem_modelo, maiores_probabilidades, GRUPOS_CARD,
 )
+import oddspapi  # noqa: E402
 
 
 # ── Mercados/odds coladas manualmente (fallback) ────────────────────────────
@@ -228,7 +230,8 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "/clv — fecha registros abertos com a odd de fechamento (1X2)\n"
         "/report — acumulado de CLV/ROI\n"
         "/desfazer — remove o último registro (mantém no histórico, só marca como desfeito)\n"
-        "/status — bot, agendador, painel e última coleta estão ok?"
+        "/status — bot, agendador, painel e última coleta estão ok?\n"
+        "/oddspapi — busca manual das odds Pinnacle (Brasileirão A/B, MLS) — gasta 1 uso da cota"
     )
 
 
@@ -327,6 +330,20 @@ async def cmd_jogo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if dt.tzinfo is None:
         dt = dt.tz_localize("UTC")
     data_jogo = dt.tz_convert(FUSO_BR).date().isoformat()
+
+    if liga == LIGA_SERIE_B:
+        # Série B: sem modelo treinado (FBref bloqueado) — mostra a odd
+        # coletada crua, nunca probabilidade/EV inventados
+        card = card_sem_modelo(liga, time_casa, time_fora, data_jogo, times_por_liga, CAMINHO_DB)
+        cabecalho = f"{time_casa} x {time_fora} (Brasileirão Série B) — {horario_fmt}\n⚠️ sem modelo treinado pra esta liga\n\n"
+        if not card["linhas"]:
+            texto = cabecalho + "(odds ainda não coletadas hoje pra esse jogo)"
+        else:
+            linhas_fmt = [f"{item['mercado']}/{item['selecao']}: odd {item['odd']:.2f}" for item in card["linhas"]]
+            texto = cabecalho + "\n".join(linhas_fmt)
+        await update.message.reply_text(texto)
+        return
+
     await _enviar_jogo(update.message, liga, time_casa, time_fora, data_jogo, horario_fmt)
 
 
@@ -490,6 +507,33 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     await update.message.reply_text("\n".join(linhas))
 
 
+async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Busca manual (NUNCA automática) das odds Pinnacle atuais via OddsPapi
+    — Brasileirão Série A/B e MLS. Cada chamada gasta 1 uso da cota
+    gratuita (250 no total), por isso só roda quando pedido."""
+    await update.message.reply_text("Buscando na OddsPapi (gasta 1 uso da cota)…")
+    resumo = await asyncio.to_thread(oddspapi.buscar_melhores_odds, CAMINHO_DB)
+    status = oddspapi.uso_atual(CAMINHO_DB)
+
+    if not resumo["sucesso"]:
+        await update.message.reply_text(f"⚠️ {resumo['erro']} (cota usada: {status}/{oddspapi.LIMITE_USOS})")
+        return
+    if not resumo["jogos"]:
+        await update.message.reply_text(f"Nenhum jogo com odds Pinnacle no momento (cota usada: {status}/{oddspapi.LIMITE_USOS}).")
+        return
+
+    linhas = [f"🎲 OddsPapi (Pinnacle) — {len(resumo['jogos'])} jogo(s), cota {status}/{oddspapi.LIMITE_USOS}:\n"]
+    for j in resumo["jogos"]:
+        linhas.append(f"{j['casa']} x {j['fora']} ({j['liga']}) — {j['commence_time']}")
+        for m in j["mercados"]:
+            linhas.append(f"  {m['mercado']}/{m['selecao']}: {m['odd']:.2f}")
+        linhas.append("")
+    texto = "\n".join(linhas)
+    if len(texto) > 4000:
+        texto = texto[:3990] + "\n(...)"
+    await update.message.reply_text(texto)
+
+
 async def _heartbeat(context: ContextTypes.DEFAULT_TYPE) -> None:
     """Grava sinal de vida periódico — é isso que o painel e o /status usam
     pra saber que o bot está rodando (não travado, não morto)."""
@@ -635,6 +679,7 @@ def main():
     app.add_handler(CommandHandler("report", cmd_report))
     app.add_handler(CommandHandler("desfazer", cmd_desfazer))
     app.add_handler(CommandHandler("status", cmd_status))
+    app.add_handler(CommandHandler("oddspapi", cmd_oddspapi))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, responder_odds_coladas))
     app.add_error_handler(tratar_erro)
 

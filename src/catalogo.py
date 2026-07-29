@@ -20,8 +20,14 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
-from resolucao_times import resolver_time, score_nomes
+from resolucao_times import resolver_time, resolver_time_todas_ligas, score_nomes, LIGA_SERIE_B
 from predict import prever, probs_modelo_de_linhas, LIGAS_SEM_ESTATISTICAS_EXTRAS
+
+# ligas "de interesse" do projeto — tudo fora dessa lista é considerado
+# fora de escopo e não aparece em "jogos do dia" (nem como card, nem como
+# placeholder "sem modelo"). LIGA_SERIE_B tem roster mas NENHUM modelo
+# treinado (ver resolucao_times.py) — mostra odds coletadas, nunca EV.
+LIGAS_DE_INTERESSE = {"Premier League", "La Liga", "Championship", "brasileirao", "mls", LIGA_SERIE_B}
 
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_DB_PADRAO = RAIZ / "db" / "previsoes.sqlite"
@@ -183,24 +189,26 @@ def _snapshot_mais_recente(caminho_db: Path) -> pd.DataFrame:
 
 def resolver_fixture_para_liga(casa_cru: str, fora_cru: str,
                                 times_por_liga: dict[str, list[str]]) -> tuple[str, str, str] | None:
-    """REGRA DE PERTENCIMENTO: um confronto só casa com o modelo de uma
-    liga se OS DOIS times existirem na lista fechada de times daquela liga
-    (vinda dos dados de treino) — nunca um jogo com só um lado resolvido,
-    nem os dois resolvidos em ligas diferentes. Retorna (liga, casa_interno,
-    fora_interno) ou None ("campeonato sem modelo — sem previsão").
+    """REGRA DE PERTENCIMENTO: um confronto só casa com uma liga se OS DOIS
+    times existirem na lista fechada DAQUELA MESMA liga. Retorna (liga,
+    casa_interno, fora_interno) ou None ("fora de escopo — sem previsão").
 
-    Isso sozinho não basta pra evitar contaminação entre divisões: um time
-    que já jogou a Série A em alguma temporada do histórico (ex.: Ponte
-    Preta) continua "existindo" no roster mesmo jogando a Série B agora.
-    A defesa real contra isso é o adversário: se o adversário REAL de hoje
-    (ex.: Athletic Club) não está em NENHUMA lista fechada, a regra rejeita
-    o confronto inteiro — é assim que se evita gerar previsão pra um jogo
-    de outra divisão."""
-    casa_resolvido = resolver_time(casa_cru, times_por_liga)
-    fora_resolvido = resolver_time(fora_cru, times_por_liga)
-    if not casa_resolvido or not fora_resolvido or casa_resolvido[0] != fora_resolvido[0]:
+    Um time pode existir em mais de uma lista ao mesmo tempo (ex.:
+    'Fortaleza' jogou a Série A no histórico de treino E está na Série B
+    2026 — ver TIMES_SERIE_B_2026 em resolucao_times.py) — por isso cada
+    lado é resolvido contra TODAS as ligas em que aparece
+    (resolver_time_todas_ligas), e o confronto só é aceito na liga em que
+    os dois lados coincidem. 'Fortaleza x Botafogo-SP': Fortaleza bate em
+    'brasileirao' (histórico) e 'brasileirao_b' (atual); Botafogo-SP só
+    bate em 'brasileirao_b' (nunca jogou a Série A no período do treino) —
+    a interseção resolve pra 'brasileirao_b', a liga certa, sem ambiguidade."""
+    casa_opcoes = dict(resolver_time_todas_ligas(casa_cru, times_por_liga))
+    fora_opcoes = dict(resolver_time_todas_ligas(fora_cru, times_por_liga))
+    ligas_comuns = set(casa_opcoes) & set(fora_opcoes)
+    if not ligas_comuns:
         return None
-    return (casa_resolvido[0], casa_resolvido[1], fora_resolvido[1])
+    liga = LIGA_SERIE_B if LIGA_SERIE_B in ligas_comuns else next(iter(ligas_comuns))
+    return (liga, casa_opcoes[liga], fora_opcoes[liga])
 
 
 def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], caminho_db: Path = CAMINHO_DB_PADRAO) -> list[dict]:
@@ -228,13 +236,12 @@ def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], cami
 
 def descobrir_jogos_do_dia_completo(dia: date, times_por_liga: dict[str, list[str]],
                                      caminho_db: Path = CAMINHO_DB_PADRAO) -> list[dict]:
-    """Como descobrir_jogos_do_dia, mas inclui TAMBÉM os jogos reais SEM
-    modelo (nunca esconde em silêncio) — é o que o painel usa pra listar
-    'jogos de hoje'. Sem isso, um dia com jogo real só de campeonato sem
-    modelo (ex.: Série B) aparecia como 'nenhum jogo real hoje', dando a
-    entender que não havia jogo nenhum, quando na verdade havia um jogo
-    real só que sem previsão possível — a mesma armadilha que o /jogo já
-    evita (ver resolver_fixture_para_liga)."""
+    """Como descobrir_jogos_do_dia, mas inclui TAMBÉM os jogos reais das
+    ligas de interesse que ainda não têm modelo (Série B — nunca esconde
+    em silêncio; mostra odds coletadas, nunca EV). Jogos de QUALQUER outro
+    campeonato/esporte (fora de LIGAS_DE_INTERESSE) ficam de fora da lista
+    inteiramente — o projeto é sobre as ligas citadas, não sobre listar
+    todo jogo que a Betano capturar no mundo."""
     df = _snapshot_mais_recente(caminho_db)
     jogos = []
     for _, row in df.iterrows():
@@ -248,14 +255,13 @@ def descobrir_jogos_do_dia_completo(dia: date, times_por_liga: dict[str, list[st
         if dt_br.date() != dia:
             continue
         resolvido = resolver_fixture_para_liga(row["time_casa_coletado"], row["time_fora_coletado"], times_por_liga)
-        if resolvido:
-            liga, casa, fora = resolvido
-            jogos.append({"liga": liga, "casa": casa, "fora": fora, "commence_time": dt.isoformat(), "modelado": True})
-        else:
-            jogos.append({
-                "liga": None, "casa": row["time_casa_coletado"], "fora": row["time_fora_coletado"],
-                "commence_time": dt.isoformat(), "modelado": False,
-            })
+        if not resolvido:
+            continue  # fora de escopo (outro campeonato/esporte) — não lista
+        liga, casa, fora = resolvido
+        jogos.append({
+            "liga": liga, "casa": casa, "fora": fora, "commence_time": dt.isoformat(),
+            "modelado": liga != LIGA_SERIE_B,
+        })
     return jogos
 
 
@@ -419,6 +425,31 @@ def card_completo(liga: str, time_casa: str, time_fora: str, data_jogo: str | No
         "grupos": grupos,
         "avisos_grupo": avisos_grupo,
         "avisos_modelo": resultado_pred["avisos"],
+    }
+
+
+def card_sem_modelo(liga: str, time_casa: str, time_fora: str, data_jogo: str | None,
+                     times_por_liga: dict[str, list[str]], caminho_db: Path = CAMINHO_DB_PADRAO) -> dict:
+    """Card pra jogo real de uma liga DE INTERESSE sem modelo treinado
+    (hoje só a Série B — ver LIGA_SERIE_B): mostra as odds coletadas cruas,
+    NUNCA probabilidade nem EV (não há modelo pra calcular isso, e nunca se
+    inventa um número). Nunca roda prever() — impossível sem histórico de
+    treino pra essa liga."""
+    odds = buscar_odds_coletadas_para_fixture(time_casa, time_fora, times_por_liga, caminho_db)
+    linhas: list[dict] = []
+    if odds is not None:
+        for mercado_key, outcomes in odds["mercados"].items():
+            if mercado_key == "h2h":
+                for nome_odd, odd in outcomes.items():
+                    selecao = _selecao_h2h(nome_odd, odds["casa_coletado"], odds["fora_coletado"])
+                    if selecao:
+                        linhas.append({"mercado": "1X2", "selecao": selecao, "odd": odd})
+            else:
+                for mercado, selecao, odd in _mercados_para_jogo(mercado_key, outcomes):
+                    linhas.append({"mercado": mercado, "selecao": selecao, "odd": odd})
+    return {
+        "liga": liga, "time_casa": time_casa, "time_fora": time_fora, "data_jogo": data_jogo,
+        "modelado": False, "tem_odds_coletadas": odds is not None, "linhas": linhas,
     }
 
 

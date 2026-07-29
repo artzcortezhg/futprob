@@ -8,6 +8,7 @@ entre os dois, que também usam essas funções.
 from __future__ import annotations
 
 import difflib
+import re
 import unicodedata
 from pathlib import Path
 
@@ -15,6 +16,21 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_PARTIDAS_PADRAO = RAIZ / "data" / "processed" / "partidas.csv"
+
+# Roster ESTÁTICO da Série B 2026 (fonte: Wikipedia — 20 participantes da
+# temporada). SEM modelo próprio (FBref bloqueado por Cloudflare, ver
+# investigação anterior — não dá pra treinar Dixon-Coles sem histórico de
+# gols coletável) — mas reconhecido como "em escopo" do projeto, pra que um
+# jogo real da Série B (ex.: Fortaleza x Botafogo-SP) apareça identificado
+# e com as odds coletadas, em vez de cair no mesmo balaio de qualquer jogo
+# aleatório de fora do projeto (liga estrangeira, outro esporte etc.).
+LIGA_SERIE_B = "brasileirao_b"
+TIMES_SERIE_B_2026 = [
+    "America MG", "Athletic", "Atletico GO", "Avai", "Botafogo-SP", "Ceara",
+    "CRB", "Criciuma", "Cuiaba", "Fortaleza", "Goias", "Juventude", "Londrina",
+    "Nautico", "Novorizontino", "Operario Ferroviario", "Ponte Preta",
+    "Sao Bernardo", "Sport", "Vila Nova",
+]
 
 
 def normalizar_texto(s: str) -> str:
@@ -30,6 +46,7 @@ def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO) ->
     for liga in df["liga"].unique():
         d = df[df["liga"] == liga]
         resultado[liga] = sorted(set(d["HomeTeam"]) | set(d["AwayTeam"]))
+    resultado[LIGA_SERIE_B] = list(TIMES_SERIE_B_2026)
     return resultado
 
 
@@ -60,18 +77,44 @@ def candidatos_time(nome: str, times_por_liga: dict[str, list[str]], top_n: int 
 
 
 def _aceitavel(nome: str, candidato: str, score: float, limiar: float) -> bool:
-    """Um candidato só é aceito se, além do score mínimo, um dos nomes for
-    substring do outro (após normalizar) OU o score for bem alto (>=0.90).
-    Sem essa segunda condição, clubes DIFERENTES que só compartilham uma
-    palavra (ex.: 'Botafogo-SP' e 'Botafogo RJ' — dois times reais e
-    distintos do futebol brasileiro) batiam ~0.73 no SequenceMatcher e
-    eram confundidos um com o outro."""
+    """Um candidato só é aceito se, além do score mínimo, TODAS as palavras
+    de um dos nomes existirem como palavra INTEIRA no outro (após
+    normalizar) OU o score for bem alto (>=0.90).
+
+    Precisa ser por palavra inteira, não por trecho dentro de uma palavra:
+    'Botafogo-SP' x 'Botafogo RJ' (dois clubes DISTINTOS que só
+    compartilham uma palavra) batiam ~0.73 no SequenceMatcher e eram
+    confundidos. Um substring bruto (sem respeitar fronteira de palavra)
+    tem o MESMO problema de outro jeito: 'Parana' (Paraná Clube) é
+    literalmente um trecho de 'Paranaense' (Athletico Paranaense, clube
+    DIFERENTE) — 'parana' in 'ca paranaense pr' dá True, mas não é a
+    mesma palavra. Comparando por tokens, 'parana' nunca aparece como
+    palavra inteira em ['ca','paranaense','pr'], então é rejeitado."""
     if score < limiar:
         return False
-    alvo_norm = normalizar_texto(nome)
-    cand_norm = normalizar_texto(candidato)
-    eh_substring = alvo_norm in cand_norm or cand_norm in alvo_norm
-    return eh_substring or score >= 0.90
+    alvo_tokens = set(re.split(r"[\s\-]+", normalizar_texto(nome)))
+    cand_tokens = set(re.split(r"[\s\-]+", normalizar_texto(candidato)))
+    eh_substring_por_palavra = alvo_tokens <= cand_tokens or cand_tokens <= alvo_tokens
+    return eh_substring_por_palavra or score >= 0.90
+
+
+def resolver_time_todas_ligas(nome: str, times_por_liga: dict[str, list[str]]) -> list[tuple[str, str]]:
+    """Como resolver_time, mas retorna TODOS os matches aceitáveis (o
+    melhor de cada liga), não só o global — necessário porque um time pode
+    existir em mais de uma lista ao mesmo tempo (ex.: 'Fortaleza' jogou a
+    Série A no histórico E está na Série B 2026). Decidir qual liga vale
+    pro CONFRONTO cabe a quem cruza os dois lados de um jogo (ver
+    resolver_fixture_para_liga em catalogo.py), não a essa função."""
+    resultado = []
+    for liga, times in times_por_liga.items():
+        melhor_time, melhor_score = None, 0.0
+        for t in times:
+            score = score_nomes(nome, t)
+            if score > melhor_score:
+                melhor_time, melhor_score = t, score
+        if melhor_time and _aceitavel(nome, melhor_time, melhor_score, limiar=0.55):
+            resultado.append((liga, melhor_time))
+    return resultado
 
 
 def resolver_time(nome: str, times_por_liga: dict[str, list[str]]) -> tuple[str, str] | None:

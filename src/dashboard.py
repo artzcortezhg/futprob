@@ -66,9 +66,11 @@ from painel_db import inicializar_db_painel, marcar_resultado_manual  # noqa: E4
 from predict import inicializar_db as inicializar_db_previsoes  # noqa: E402
 from resolucao_times import carregar_times_por_liga  # noqa: E402
 from catalogo import (  # noqa: E402
-    descobrir_jogos_do_dia_completo, card_completo, maiores_probabilidades, hoje_br, familia_mercado, GRUPOS_CARD,
+    descobrir_jogos_do_dia_completo, card_completo, card_sem_modelo, maiores_probabilidades,
+    hoje_br, familia_mercado, GRUPOS_CARD,
 )
 from saude_sistema import calcular_status_sistema  # noqa: E402
+import oddspapi  # noqa: E402
 
 app = FastAPI(title="futprob — painel")
 
@@ -102,13 +104,13 @@ def _conectar() -> sqlite3.Connection:
 
 
 def _cards_hoje(forcar: bool = False) -> list[dict]:
-    """Jogos reais de hoje (fonte: coleta mais recente da Betano, nunca
-    previsões avulsas do banco — ver catalogo.py): card completo pros
-    modelados, e um placeholder explícito 'campeonato sem modelo' pros que
-    não têm — nunca omite um jogo real em silêncio (ex.: um dia em que o
-    único jogo real é de uma divisão sem modelo, tipo Série B, não pode
-    aparecer como "nenhum jogo real hoje"). Cache curto porque cada card
-    recalcula o modelo do zero."""
+    """Jogos reais de hoje das ligas DE INTERESSE (Premier League, La Liga,
+    Championship, Brasileirão Série A, Série B, MLS — ver
+    catalogo.LIGAS_DE_INTERESSE): card completo pros modelados, e odds cruas
+    (sem EV) pra Série B, que não tem modelo treinado. Jogos de qualquer
+    outro campeonato/esporte não aparecem aqui — ver
+    descobrir_jogos_do_dia_completo. Cache curto porque cada card recalcula
+    o modelo do zero."""
     agora = time.time()
     if not forcar and "hoje" in _cache_catalogo:
         ts, cards = _cache_catalogo["hoje"]
@@ -120,15 +122,12 @@ def _cards_hoje(forcar: bool = False) -> list[dict]:
     jogos = descobrir_jogos_do_dia_completo(dia, times_por_liga, CAMINHO_DB)
     cards = []
     for j in jogos:
-        if not j["modelado"]:
-            cards.append({
-                "liga": None, "time_casa": j["casa"], "time_fora": j["fora"],
-                "commence_time": j["commence_time"], "modelado": False,
-            })
-            continue
         try:
-            card = card_completo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB)
-            card["modelado"] = True
+            if j["modelado"]:
+                card = card_completo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB)
+                card["modelado"] = True
+            else:
+                card = card_sem_modelo(j["liga"], j["casa"], j["fora"], dia.isoformat(), times_por_liga, CAMINHO_DB)
             cards.append(card)
         except Exception:
             logger.exception(f"falha ao montar card de {j['casa']} x {j['fora']} — pulando esse jogo, sem quebrar o resto")
@@ -279,6 +278,21 @@ def status_sistema():
     return calcular_status_sistema(CAMINHO_DB)
 
 
+@app.get("/api/oddspapi/status")
+def oddspapi_status():
+    """Só lê o contador local — nunca chama a API (gratuito, sem custo)."""
+    gasto = oddspapi.uso_atual(CAMINHO_DB)
+    return {"gasto": gasto, "limite": oddspapi.LIMITE_USOS, "restante": oddspapi.LIMITE_USOS - gasto}
+
+
+@app.post("/api/oddspapi/buscar")
+def oddspapi_buscar():
+    """Botão manual (nunca automático/agendado) — busca as odds Pinnacle
+    atuais pra Brasileirão A/B e MLS. Gasta 1 uso da cota da OddsPapi
+    (+1 na primeiríssima vez, pra resolver nomes de time)."""
+    return oddspapi.buscar_melhores_odds(CAMINHO_DB)
+
+
 @app.post("/api/registros/{registro_id}/resultado")
 def marcar_resultado(registro_id: int, resultado: str):
     """Única escrita manual permitida no painel: marcar o resultado
@@ -366,6 +380,15 @@ PAGINA_HTML = """<!doctype html>
 <h2>Evolução do CLV médio e ROI de papel (com IC 95%)</h2>
 <div id="grafico" class="card">carregando…</div>
 
+<h2>OddsPapi (Pinnacle) — sob demanda</h2>
+<div class="card">
+  <p style="font-size:0.85rem;opacity:0.85">Fonte independente de odds (Brasileirão Série A/B e MLS). Nunca busca sozinho —
+  só quando você aperta o botão, porque cada busca gasta 1 uso da cota gratuita (250 no total).</p>
+  <div id="oddspapi-status" style="font-size:0.85rem;margin-bottom:0.5rem">carregando cota…</div>
+  <button onclick="buscarOddspapi()">Buscar odds agora</button>
+  <div id="oddspapi-resultado" style="margin-top:0.7rem">Ainda não buscado nesta sessão.</div>
+</div>
+
 <script>
 async function buscar(url, opts) {
   const r = await fetch(url, opts);
@@ -424,8 +447,17 @@ async function carregarApostarias() {
 
 function renderizarCard(j, gruposOrdem) {
   if (j.modelado === false) {
-    return `<div class="jogo-card">${j.time_casa} x ${j.time_fora} — ${j.commence_time}<br>`
-      + `<span class="etiqueta-sem-edge">⚠️ campeonato sem modelo — sem previsão</span></div>`;
+    const rotuloOdds = j.tem_odds_coletadas ? '' : ' — odds ainda não coletadas hoje';
+    let html = `<div class="jogo-card">${j.time_casa} x ${j.time_fora} (Brasileirão Série B)${rotuloOdds}<br>`
+      + `<span class="etiqueta-sem-edge">⚠️ sem modelo treinado pra esta liga — mostrando só a odd coletada, sem probabilidade nem EV</span>`;
+    if (j.linhas && j.linhas.length) {
+      html += '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th></tr>';
+      for (const item of j.linhas) {
+        html += `<tr><td>${item.mercado}</td><td>${item.selecao}</td><td>${fmtOdd(item.odd)}</td></tr>`;
+      }
+      html += '</table>';
+    }
+    return html + '</div>';
   }
   const rotuloOdds = j.tem_odds_coletadas ? '' : ' — odds ainda não coletadas hoje';
   let html = `<details class="jogo-card"><summary>${j.time_casa} x ${j.time_fora} (${j.liga})${rotuloOdds}</summary><div class="card-conteudo">`;
@@ -452,7 +484,7 @@ function renderizarCard(j, gruposOrdem) {
 async function carregarJogosHoje(forcar) {
   const d = await buscar('/api/jogos-do-dia?dia=hoje' + (forcar ? '&forcar=true' : ''));
   const el = document.getElementById('jogos-hoje');
-  if (!d.jogos.length) { el.innerHTML = '<i class="card">Nenhum jogo real capturado pra hoje (nem das 5 ligas modeladas, nem de outro campeonato).</i>'; return; }
+  if (!d.jogos.length) { el.innerHTML = '<i class="card">Nenhum jogo real das ligas de interesse hoje (Premier League, La Liga, Championship, Brasileirão Série A/B, MLS).</i>'; return; }
   el.innerHTML = d.jogos.map(j => renderizarCard(j, d.grupos_ordem)).join('');
 }
 
@@ -462,7 +494,7 @@ async function carregarJogosAmanha() {
   if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo real confirmado pra amanhã ainda.</i>'; return; }
   let html = '<table><tr><th>Liga</th><th>Jogo</th><th>Horário</th></tr>';
   for (const j of d.jogos) {
-    const liga = j.modelado ? j.liga : '<span class="etiqueta-sem-edge">⚠️ sem modelo</span>';
+    const liga = j.modelado ? j.liga : `${j.liga} <span class="etiqueta-sem-edge">⚠️ sem modelo</span>`;
     html += `<tr><td>${liga}</td><td>${j.casa} x ${j.fora}</td><td>${j.commence_time}</td></tr>`;
   }
   el.innerHTML = html + '</table>';
@@ -530,10 +562,36 @@ async function carregarGrafico() {
   el.innerHTML = svg + '<div style="font-size:0.75rem;opacity:0.7;margin-top:0.3rem">Faixa sombreada = intervalo de confiança de 95%. Enquanto a faixa cruzar o zero, a diferença de CLV/ROI não é estatisticamente distinguível de ruído.</div>';
 }
 
+async function carregarStatusOddspapi() {
+  const s = await buscar('/api/oddspapi/status');
+  document.getElementById('oddspapi-status').innerHTML =
+    `Cota: ${s.gasto}/${s.limite} usos (restam ${s.restante})`;
+}
+
+async function buscarOddspapi() {
+  const el = document.getElementById('oddspapi-resultado');
+  el.innerHTML = 'Buscando na OddsPapi (gasta 1 uso da cota)…';
+  const d = await buscar('/api/oddspapi/buscar', { method: 'POST' });
+  await carregarStatusOddspapi();
+  if (!d.sucesso) { el.innerHTML = `⚠️ ${d.erro}`; return; }
+  if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo com odds Pinnacle no momento pra essas ligas.</i>'; return; }
+  let html = '';
+  for (const j of d.jogos) {
+    html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}`
+      + '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th></tr>';
+    for (const m of j.mercados) {
+      html += `<tr><td>${m.mercado}</td><td>${m.selecao}</td><td>${fmtOdd(m.odd)}</td></tr>`;
+    }
+    html += '</table></div>';
+  }
+  el.innerHTML = html;
+}
+
 async function atualizarTudo(forcar) {
   await Promise.all([
     carregarStatus(), carregarStatusSistema(), carregarMaioresProbabilidades(), carregarApostarias(),
     carregarJogosHoje(forcar), carregarJogosAmanha(), carregarRegistros(), carregarGrafico(),
+    carregarStatusOddspapi(),
   ]);
 }
 atualizarTudo(false);

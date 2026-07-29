@@ -13,10 +13,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import predict
 from catalogo import (
-    _grupo_exibicao, maiores_probabilidades, card_completo, GRUPOS_CARD,
+    _grupo_exibicao, maiores_probabilidades, card_completo, card_sem_modelo, GRUPOS_CARD,
     _mercados_para_jogo, combinar_modelo_e_odds, _selecao_h2h, _selecao_over_under,
-    descobrir_jogos_do_dia_completo,
+    descobrir_jogos_do_dia_completo, resolver_fixture_para_liga,
 )
+from resolucao_times import LIGA_SERIE_B
 
 
 def test_grupo_exibicao_agrupa_1x2_e_dupla_chance_juntos():
@@ -184,24 +185,59 @@ def _criar_odds_coletadas(caminho, linhas):
         conn.commit()
 
 
-def test_descobrir_jogos_do_dia_completo_inclui_jogo_sem_modelo(tmp_path):
-    """Regressão: um jogo real (ex.: Série B) sem os dois times na lista
-    fechada de nenhuma liga modelada não pode sumir em silêncio da listagem
-    de 'jogos de hoje' — precisa aparecer marcado como 'modelado: False',
-    senão o painel dá a entender que não há jogo nenhum naquele dia."""
+def test_descobrir_jogos_do_dia_completo_inclui_serie_b_e_esconde_fora_de_escopo(tmp_path):
+    """Jogo real de liga DE INTERESSE sem modelo treinado (Série B) precisa
+    aparecer marcado 'modelado: False' (nunca sumir em silêncio — senão o
+    painel dá a entender que não há jogo nenhum). Jogo de campeonato FORA
+    de escopo (nem modelado, nem Série B) não entra na lista nem como
+    placeholder — só polui, e o pedido foi focar nas ligas citadas."""
     import datetime
     caminho = tmp_path / "odds.sqlite"
     _criar_odds_coletadas(caminho, [
         ("2026-07-28T09:00:00", "manha", "betano", "Flamengo", "Palmeiras", "2026-07-28T22:30:00+00:00", "h2h", "1", 2.1),
         ("2026-07-28T09:00:00", "manha", "betano", "Ponte Preta", "Athletic Club MG", "2026-07-28T22:30:00+00:00", "h2h", "1", 2.0),
+        ("2026-07-28T09:00:00", "manha", "betano", "Time Aleatorio XPTO", "Outro Time XPTO", "2026-07-28T22:30:00+00:00", "h2h", "1", 2.0),
     ])
-    times = {"brasileirao": ["Flamengo RJ", "Palmeiras", "Ponte Preta", "Ceara"]}
+    times = {
+        "brasileirao": ["Flamengo RJ", "Palmeiras", "Ponte Preta", "Ceara"],
+        "brasileirao_b": ["Ponte Preta", "Athletic Club"],
+    }
     jogos = descobrir_jogos_do_dia_completo(datetime.date(2026, 7, 28), times, caminho)
-    assert len(jogos) == 2
+    assert len(jogos) == 2  # o "Time Aleatorio XPTO" fora de escopo não entra
     modelados = {j["casa"]: j for j in jogos if j["modelado"]}
-    sem_modelo = [j for j in jogos if not j["modelado"]]
+    serie_b = [j for j in jogos if not j["modelado"]]
     assert "Flamengo RJ" in modelados and modelados["Flamengo RJ"]["liga"] == "brasileirao"
-    assert len(sem_modelo) == 1
-    assert sem_modelo[0]["casa"] == "Ponte Preta"
-    assert sem_modelo[0]["fora"] == "Athletic Club MG"
-    assert sem_modelo[0]["liga"] is None
+    assert len(serie_b) == 1
+    assert serie_b[0]["casa"] == "Ponte Preta"
+    assert serie_b[0]["fora"] == "Athletic Club"
+    assert serie_b[0]["liga"] == "brasileirao_b"
+
+
+def test_resolver_fixture_para_liga_desambigua_fortaleza_botafogo_sp():
+    """Fortaleza jogou a Série A no histórico (roster de treino) E está na
+    Série B 2026; Botafogo-SP só existe na Série B. O confronto real entre
+    os dois só pode ser a Série B — é isso que a interseção de ligas
+    decide, sem precisar de nenhuma regra especial."""
+    times = {
+        "brasileirao": ["Fortaleza", "Ceara"],
+        LIGA_SERIE_B: ["Fortaleza", "Botafogo-SP"],
+    }
+    resolvido = resolver_fixture_para_liga("Fortaleza", "Botafogo-SP", times)
+    assert resolvido == (LIGA_SERIE_B, "Fortaleza", "Botafogo-SP")
+
+
+def test_card_sem_modelo_mostra_odd_sem_prob_nem_ev(tmp_path):
+    caminho_db = tmp_path / "odds.sqlite"
+    _criar_odds_coletadas(caminho_db, [
+        ("2026-07-28T09:00:00", "manha", "betano", "Fortaleza", "Botafogo-SP", "2026-07-29T00:35:00+00:00", "h2h", "1", 1.32),
+        ("2026-07-28T09:00:00", "manha", "betano", "Fortaleza", "Botafogo-SP", "2026-07-29T00:35:00+00:00", "h2h", "2", 3.2),
+    ])
+    times = {LIGA_SERIE_B: ["Fortaleza", "Botafogo-SP"]}
+    card = card_sem_modelo(LIGA_SERIE_B, "Fortaleza", "Botafogo-SP", "2026-07-29", times, caminho_db)
+    assert card["modelado"] is False
+    assert card["tem_odds_coletadas"] is True
+    mercados = {(item["mercado"], item["selecao"]): item["odd"] for item in card["linhas"]}
+    assert mercados[("1X2", "Casa")] == 1.32
+    assert mercados[("1X2", "Fora")] == 3.2
+    assert "prob_modelo" not in card["linhas"][0]
+    assert "ev" not in card["linhas"][0]

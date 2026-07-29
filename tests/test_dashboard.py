@@ -91,6 +91,29 @@ def test_status_sistema_responde(cliente):
     assert "proxima_rotina" in dados
 
 
+def test_oddspapi_status_sem_uso(cliente):
+    client, _ = cliente
+    dados = client.get("/api/oddspapi/status").json()
+    assert dados == {"gasto": 0, "limite": 250, "restante": 250}
+
+
+def test_oddspapi_buscar_usa_a_funcao_de_verdade_mas_mockada(cliente, monkeypatch):
+    """Nunca deve chamar a rede de verdade num teste — mocka
+    oddspapi.buscar_melhores_odds inteira."""
+    import dashboard
+    client, _ = cliente
+    monkeypatch.setattr(
+        dashboard.oddspapi, "buscar_melhores_odds",
+        lambda caminho_db: {"sucesso": True, "jogos": [{"liga": "brasileirao", "casa": "A", "fora": "B",
+                                                          "commence_time": "x", "mercados": []}], "uso_apos": 1},
+    )
+    resposta = client.post("/api/oddspapi/buscar")
+    assert resposta.status_code == 200
+    dados = resposta.json()
+    assert dados["sucesso"] is True
+    assert dados["jogos"][0]["casa"] == "A"
+
+
 def test_registros_vazio(cliente):
     client, _ = cliente
     resposta = client.get("/api/registros")

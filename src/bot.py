@@ -82,13 +82,13 @@ from painel_db import (  # noqa: E402
 from guardrails import aplicar_guardrails, formatar_ranking  # noqa: E402
 from predict import prever, formatar_tabela, probs_modelo_de_linhas  # noqa: E402
 from resolucao_times import (  # noqa: E402
-    normalizar_texto, carregar_times_por_liga, candidatos_time, resolver_time, resolver_time_ambiguo, LIGA_SERIE_B,
+    normalizar_texto, carregar_times_por_liga, candidatos_time, resolver_time, resolver_time_ambiguo,
 )
 from integracao_manha import processar_foto_manha_async  # noqa: E402
 from catalogo import (  # noqa: E402
     _mercados_para_jogo, buscar_fixture_real, resolver_fixture_para_liga, buscar_odds_coletadas_para_fixture,
     combinar_modelo_e_odds, descobrir_jogos_do_dia, familia_mercado, hoje_br,
-    card_completo, card_sem_modelo, maiores_probabilidades, GRUPOS_CARD, enriquecer_odds_externas_com_modelo,
+    card_completo, maiores_probabilidades, GRUPOS_CARD, enriquecer_odds_externas_com_modelo,
 )
 import oddspapi  # noqa: E402
 
@@ -321,7 +321,7 @@ async def cmd_jogo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text(
             f"{casa_cru} x {fora_cru} — {horario_fmt}\n"
             "⚠️ campeonato sem modelo — sem previsão (um dos dois times, ou os dois, não está na base de "
-            "times modelados das 5 ligas do futprob)."
+            "times modelados das 6 ligas do futprob)."
         )
         return
 
@@ -330,19 +330,6 @@ async def cmd_jogo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if dt.tzinfo is None:
         dt = dt.tz_localize("UTC")
     data_jogo = dt.tz_convert(FUSO_BR).date().isoformat()
-
-    if liga == LIGA_SERIE_B:
-        # Série B: sem modelo treinado (FBref bloqueado) — mostra a odd
-        # coletada crua, nunca probabilidade/EV inventados
-        card = card_sem_modelo(liga, time_casa, time_fora, data_jogo, times_por_liga, CAMINHO_DB)
-        cabecalho = f"{time_casa} x {time_fora} (Brasileirão Série B) — {horario_fmt}\n⚠️ sem modelo treinado pra esta liga\n\n"
-        if not card["linhas"]:
-            texto = cabecalho + "(odds ainda não coletadas hoje pra esse jogo)"
-        else:
-            linhas_fmt = [f"{item['mercado']}/{item['selecao']}: odd {item['odd']:.2f}" for item in card["linhas"]]
-            texto = cabecalho + "\n".join(linhas_fmt)
-        await update.message.reply_text(texto)
-        return
 
     await _enviar_jogo(update.message, liga, time_casa, time_fora, data_jogo, horario_fmt)
 

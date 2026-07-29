@@ -30,8 +30,8 @@ from markets import prob_conjunta
 
 # ligas "de interesse" do projeto — tudo fora dessa lista é considerado
 # fora de escopo e não aparece em "jogos do dia" (nem como card, nem como
-# placeholder "sem modelo"). LIGA_SERIE_B tem roster mas NENHUM modelo
-# treinado (ver resolucao_times.py) — mostra odds coletadas, nunca EV.
+# placeholder "sem modelo"). Todas, incluindo LIGA_SERIE_B, têm modelo
+# próprio treinado (ver resolucao_times.py / ingest_cbf.py / ingest_geglobo.py).
 LIGAS_DE_INTERESSE = {"Premier League", "La Liga", "Championship", "brasileirao", "mls", LIGA_SERIE_B}
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -241,12 +241,15 @@ def descobrir_jogos_do_dia(dia: date, times_por_liga: dict[str, list[str]], cami
 
 def descobrir_jogos_do_dia_completo(dia: date, times_por_liga: dict[str, list[str]],
                                      caminho_db: Path = CAMINHO_DB_PADRAO) -> list[dict]:
-    """Como descobrir_jogos_do_dia, mas inclui TAMBÉM os jogos reais das
-    ligas de interesse que ainda não têm modelo (Série B — nunca esconde
-    em silêncio; mostra odds coletadas, nunca EV). Jogos de QUALQUER outro
-    campeonato/esporte (fora de LIGAS_DE_INTERESSE) ficam de fora da lista
-    inteiramente — o projeto é sobre as ligas citadas, não sobre listar
-    todo jogo que a Betano capturar no mundo."""
+    """Como descobrir_jogos_do_dia, mas com o campo "modelado" explícito —
+    hoje todas as ligas de LIGAS_DE_INTERESSE (incluindo a Série B, desde
+    que passou a ter modelo próprio via súmula da CBF + ge.globo.com) têm
+    modelo treinado; o campo continua presente pra nunca esconder em
+    silêncio caso uma liga nova de interesse seja adicionada sem modelo
+    ainda. Jogos de QUALQUER outro campeonato/esporte (fora de
+    LIGAS_DE_INTERESSE) ficam de fora da lista inteiramente — o projeto é
+    sobre as ligas citadas, não sobre listar todo jogo que a Betano
+    capturar no mundo."""
     df = _snapshot_mais_recente(caminho_db)
     jogos = []
     for _, row in df.iterrows():
@@ -265,7 +268,7 @@ def descobrir_jogos_do_dia_completo(dia: date, times_por_liga: dict[str, list[st
         liga, casa, fora = resolvido
         jogos.append({
             "liga": liga, "casa": casa, "fora": fora, "commence_time": dt.isoformat(),
-            "modelado": liga != LIGA_SERIE_B,
+            "modelado": True,
         })
     return jogos
 
@@ -435,9 +438,12 @@ def card_completo(liga: str, time_casa: str, time_fora: str, data_jogo: str | No
 
 def card_sem_modelo(liga: str, time_casa: str, time_fora: str, data_jogo: str | None,
                      times_por_liga: dict[str, list[str]], caminho_db: Path = CAMINHO_DB_PADRAO) -> dict:
-    """Card pra jogo real de uma liga DE INTERESSE sem modelo treinado
-    (hoje só a Série B — ver LIGA_SERIE_B): mostra as odds coletadas cruas,
-    NUNCA probabilidade nem EV (não há modelo pra calcular isso, e nunca se
+    """Card pra jogo real de uma liga DE INTERESSE sem modelo treinado —
+    hoje nenhuma liga de LIGAS_DE_INTERESSE cai nesse caso (Série B passou a
+    ter modelo próprio, ver LIGA_SERIE_B), mas a função continua existindo
+    pra caso alguma liga nova entre em LIGAS_DE_INTERESSE antes de ter
+    histórico suficiente pra treinar: mostra as odds coletadas cruas, NUNCA
+    probabilidade nem EV (não há modelo pra calcular isso, e nunca se
     inventa um número). Nunca roda prever() — impossível sem histórico de
     treino pra essa liga."""
     odds = buscar_odds_coletadas_para_fixture(time_casa, time_fora, times_por_liga, caminho_db)
@@ -549,7 +555,6 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
         tem_modelo = bool(
             casa_resolvido and fora_resolvido
             and casa_resolvido[0] == fora_resolvido[0] == jogo["liga"]
-            and jogo["liga"] != LIGA_SERIE_B
         )
 
         probs, matriz, avisos_modelo = None, None, []

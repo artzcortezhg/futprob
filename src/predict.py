@@ -33,9 +33,13 @@ CAMINHO_DADOS_PADRAO = RAIZ / "data" / "processed" / "partidas.csv"
 CAMINHO_DADOS_XG_PADRAO = RAIZ / "data" / "processed" / "partidas_xg.csv"
 CAMINHO_DB_PADRAO = RAIZ / "db" / "previsoes.sqlite"
 
-# ligas cuja fonte não tem escanteios/cartões/faltas/árbitro (extra leagues
-# do football-data.co.uk, ver src/ingest.py) — nelas só saem mercados de gols
-LIGAS_SEM_ESTATISTICAS_EXTRAS = set(LIGAS_EXTRA.values())
+# ligas cuja fonte não tem escanteios/cartões/faltas/árbitro. O Brasileirão
+# (Série A) tinha esse problema só porque football-data.co.uk (ingest.py)
+# não trazia essas colunas — agora vêm de outra fonte (súmula da CBF +
+# ge.globo.com, ver ingest_cbf.py/ingest_geglobo.py e
+# scripts/merge_estatisticas_brasileirao.py), por isso já não entra aqui.
+# MLS continua sem fonte conhecida pra esses mercados.
+LIGAS_SEM_ESTATISTICAS_EXTRAS = set(LIGAS_EXTRA.values()) - {"brasileirao"}
 
 # ligas com xG disponível (src/ingest_xg.py): recebem alpha_xg=0.5 por padrão
 LIGAS_COM_XG = {"Premier League", "La Liga"}

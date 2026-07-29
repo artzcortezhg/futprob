@@ -29,8 +29,11 @@ def test_alpha_xg_padrao_demais_ligas_e_zero():
     assert alpha_xg_padrao("mls") == 0.0
 
 
-def test_ligas_sem_estatisticas_extras_contem_brasileirao_e_mls():
-    assert LIGAS_SEM_ESTATISTICAS_EXTRAS == {"brasileirao", "mls"}
+def test_ligas_sem_estatisticas_extras_contem_so_mls():
+    """Brasileirão (Série A) saiu desse conjunto -- escanteios/cartões/
+    faltas/árbitro agora vêm da súmula da CBF + ge.globo.com (ver
+    ingest_cbf.py/ingest_geglobo.py), não mais só de football-data.co.uk."""
+    assert LIGAS_SEM_ESTATISTICAS_EXTRAS == {"mls"}
 
 
 def test_ligas_com_xg_nao_inclui_ligas_sem_estatisticas():
@@ -57,17 +60,17 @@ def _dados_sinteticos_liga(liga: str, n: int = 500, seed: int = 0) -> pd.DataFra
 
 
 def test_prever_liga_sem_estatisticas_gera_aviso_e_pula_mercados_extras(tmp_path):
-    df = _dados_sinteticos_liga("brasileirao")
+    df = _dados_sinteticos_liga("mls")
     caminho_csv = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho_csv, index=False)
 
     resultado = prever(
-        "brasileirao", "A", "B",
+        "mls", "A", "B",
         caminho_dados=caminho_csv, data_corte="2022-01-01", gravar=False,
     )
 
     assert len(resultado["avisos"]) == 1
-    assert "brasileirao" in resultado["avisos"][0]
+    assert "mls" in resultado["avisos"][0]
     mercados_presentes = {m for m, _, _ in resultado["linhas_mercados"]}
     assert not any("Escanteios" in m or "Cartões" in m or "Faltas" in m for m in mercados_presentes)
     assert any(m == "1X2" for m in mercados_presentes)  # mercados de gols continuam presentes
@@ -77,14 +80,14 @@ def test_prever_time_com_poucos_jogos_gera_aviso_de_historico_curto(tmp_path):
     """Time recém promovido (poucos jogos na base) precisa de um aviso
     explícito — sem isso, o EV alto vindo de uma estimativa instável parece
     (mas não é) uma vantagem real contra o mercado."""
-    df = _dados_sinteticos_liga("brasileirao")
+    df = _dados_sinteticos_liga("mls")
     rng = np.random.default_rng(1)
     linhas_novo_time = []
     datas_recentes = pd.date_range("2021-11-01", periods=10, freq="3D")
     for d in datas_recentes:
         adversario = rng.choice(["A", "B", "C"])
         linhas_novo_time.append({
-            "liga": "brasileirao", "Date": d, "HomeTeam": "Novato", "AwayTeam": adversario,
+            "liga": "mls", "Date": d, "HomeTeam": "Novato", "AwayTeam": adversario,
             "FTHG": rng.poisson(1.4), "FTAG": rng.poisson(1.1),
             "FTR": "H", "HC": np.nan, "AC": np.nan, "HF": np.nan, "AF": np.nan,
             "HY": np.nan, "AY": np.nan, "HR": np.nan, "AR": np.nan, "Referee": None,
@@ -95,7 +98,7 @@ def test_prever_time_com_poucos_jogos_gera_aviso_de_historico_curto(tmp_path):
     df.to_csv(caminho_csv, index=False)
 
     resultado = prever(
-        "brasileirao", "Novato", "A",
+        "mls", "Novato", "A",
         caminho_dados=caminho_csv, data_corte="2022-01-01", gravar=False,
     )
     avisos_historico = [a for a in resultado["avisos"] if "Novato" in a]
@@ -103,6 +106,13 @@ def test_prever_time_com_poucos_jogos_gera_aviso_de_historico_curto(tmp_path):
     assert "10 jogo" in avisos_historico[0]
     # o adversário tem histórico de sobra (~130+ jogos) -> nenhum aviso pra ele
     assert not any("'A'" in a for a in resultado["avisos"])
+
+
+def test_prever_brasileirao_nao_esta_mais_em_ligas_sem_estatisticas():
+    """Confirma a mudança de comportamento: Brasileirão Série A saiu do
+    conjunto de ligas sem escanteios/cartões/faltas -- não é mais tratado
+    como MLS (a única liga que ainda não tem essa fonte)."""
+    assert "brasileirao" not in LIGAS_SEM_ESTATISTICAS_EXTRAS
 
 
 def test_prever_liga_com_estatisticas_nao_gera_aviso(tmp_path):

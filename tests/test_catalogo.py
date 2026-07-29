@@ -2,7 +2,7 @@
 """Testes do catálogo do dia (src/catalogo.py): agrupamento visual do card
 completo, ranking de maiores probabilidades e o card em si (com aviso
 explícito de "sem modelo" pra escanteios/cartões em ligas sem essas
-estatísticas na fonte, ex.: Brasileirão/MLS)."""
+estatísticas na fonte, ex.: MLS)."""
 import sys
 from pathlib import Path
 
@@ -132,7 +132,12 @@ def test_maiores_probabilidades_ordena_desc_e_respeita_top_n():
     assert top[1]["prob_modelo"] == 0.4
 
 
-def _dados_sinteticos_liga(liga: str, n: int = 400, seed: int = 0) -> pd.DataFrame:
+def _dados_sinteticos_liga(liga: str, n: int = 400, seed: int = 0, com_estatisticas_extras: bool = False) -> pd.DataFrame:
+    """com_estatisticas_extras=True preenche HC/AC/HF/AF/HY/AY/HR/AR/Referee
+    com valores plausíveis -- necessário pra testar uma liga que NÃO está em
+    LIGAS_SEM_ESTATISTICAS_EXTRAS (ex.: brasileirao, desde que passou a ter
+    escanteios/cartões/faltas via súmula da CBF + ge.globo.com), senão
+    ajustar_modelo_escanteios/cartoes/faltas quebra com dataframe vazio."""
     rng = np.random.default_rng(seed)
     times = ["A", "B", "C", "D", "E", "F"]
     linhas = []
@@ -142,8 +147,16 @@ def _dados_sinteticos_liga(liga: str, n: int = 400, seed: int = 0) -> pd.DataFra
         linhas.append({
             "liga": liga, "Date": d, "HomeTeam": casa, "AwayTeam": fora,
             "FTHG": rng.poisson(1.4), "FTAG": rng.poisson(1.1),
-            "FTR": "H", "HC": np.nan, "AC": np.nan, "HF": np.nan, "AF": np.nan,
-            "HY": np.nan, "AY": np.nan, "HR": np.nan, "AR": np.nan, "Referee": None,
+            "FTR": "H",
+            "HC": rng.poisson(5.5) if com_estatisticas_extras else np.nan,
+            "AC": rng.poisson(4.2) if com_estatisticas_extras else np.nan,
+            "HF": rng.poisson(12.0) if com_estatisticas_extras else np.nan,
+            "AF": rng.poisson(13.0) if com_estatisticas_extras else np.nan,
+            "HY": rng.poisson(1.8) if com_estatisticas_extras else np.nan,
+            "AY": rng.poisson(2.0) if com_estatisticas_extras else np.nan,
+            "HR": rng.poisson(0.1) if com_estatisticas_extras else np.nan,
+            "AR": rng.poisson(0.1) if com_estatisticas_extras else np.nan,
+            "Referee": "Arbitro Teste" if com_estatisticas_extras else None,
             "PSCH": np.nan, "PSCD": np.nan, "PSCA": np.nan,
         })
     df = pd.DataFrame(linhas)
@@ -152,14 +165,16 @@ def _dados_sinteticos_liga(liga: str, n: int = 400, seed: int = 0) -> pd.DataFra
 
 
 def test_card_completo_liga_sem_estatisticas_avisa_escanteios_e_cartoes(tmp_path, monkeypatch):
-    df = _dados_sinteticos_liga("brasileirao")
+    # mls: única liga que ainda não tem escanteios/cartões/faltas na fonte
+    # (Brasileirão Série A passou a ter, via súmula da CBF + ge.globo.com)
+    df = _dados_sinteticos_liga("mls")
     caminho_csv = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho_csv, index=False)
     monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
 
     caminho_db = tmp_path / "vazio.sqlite"  # sem odds_coletadas -> tem_odds_coletadas=False
 
-    card = card_completo("brasileirao", "A", "B", "2026-01-01", times_por_liga={}, caminho_db=caminho_db)
+    card = card_completo("mls", "A", "B", "2026-01-01", times_por_liga={}, caminho_db=caminho_db)
 
     assert card["tem_odds_coletadas"] is False
     assert set(card["avisos_grupo"].keys()) == {"Escanteios", "Cartões e faltas"}
@@ -187,11 +202,12 @@ def _criar_odds_coletadas(caminho, linhas):
 
 
 def test_descobrir_jogos_do_dia_completo_inclui_serie_b_e_esconde_fora_de_escopo(tmp_path):
-    """Jogo real de liga DE INTERESSE sem modelo treinado (Série B) precisa
-    aparecer marcado 'modelado: False' (nunca sumir em silêncio — senão o
-    painel dá a entender que não há jogo nenhum). Jogo de campeonato FORA
-    de escopo (nem modelado, nem Série B) não entra na lista nem como
-    placeholder — só polui, e o pedido foi focar nas ligas citadas."""
+    """Jogo real de liga DE INTERESSE (incluindo Série B, que passou a ter
+    modelo próprio via súmula da CBF + ge.globo.com) precisa aparecer
+    marcado 'modelado: True' (nunca sumir em silêncio — senão o painel dá a
+    entender que não há jogo nenhum). Jogo de campeonato FORA de escopo não
+    entra na lista nem como placeholder — só polui, e o pedido foi focar
+    nas ligas citadas."""
     import datetime
     caminho = tmp_path / "odds.sqlite"
     _criar_odds_coletadas(caminho, [
@@ -205,13 +221,11 @@ def test_descobrir_jogos_do_dia_completo_inclui_serie_b_e_esconde_fora_de_escopo
     }
     jogos = descobrir_jogos_do_dia_completo(datetime.date(2026, 7, 28), times, caminho)
     assert len(jogos) == 2  # o "Time Aleatorio XPTO" fora de escopo não entra
-    modelados = {j["casa"]: j for j in jogos if j["modelado"]}
-    serie_b = [j for j in jogos if not j["modelado"]]
-    assert "Flamengo RJ" in modelados and modelados["Flamengo RJ"]["liga"] == "brasileirao"
-    assert len(serie_b) == 1
-    assert serie_b[0]["casa"] == "Ponte Preta"
-    assert serie_b[0]["fora"] == "Athletic Club"
-    assert serie_b[0]["liga"] == "brasileirao_b"
+    assert all(j["modelado"] for j in jogos)
+    por_casa = {j["casa"]: j for j in jogos}
+    assert por_casa["Flamengo RJ"]["liga"] == "brasileirao"
+    assert por_casa["Ponte Preta"]["liga"] == "brasileirao_b"
+    assert por_casa["Ponte Preta"]["fora"] == "Athletic Club"
 
 
 def test_resolver_fixture_para_liga_desambigua_fortaleza_botafogo_sp():
@@ -244,19 +258,25 @@ def test_card_sem_modelo_mostra_odd_sem_prob_nem_ev(tmp_path):
     assert "ev" not in card["linhas"][0]
 
 
-def test_enriquecer_odds_externas_serie_b_fica_sem_prob_nem_ev():
-    """Nunca inventa número: Série B não tem modelo treinado, então o
-    cruzamento com odds externas (OddsPapi) tem que deixar prob/ev
-    explicitamente None, nunca calcular algo com um modelo que não existe."""
-    times = {LIGA_SERIE_B: ["Fortaleza", "Botafogo-SP"]}
+def test_enriquecer_odds_externas_serie_b_calcula_prob_e_ev(tmp_path, monkeypatch):
+    """Série B passou a ter modelo próprio (súmula da CBF + ge.globo.com,
+    ver ingest_cbf.py/ingest_geglobo.py) -- o cruzamento com odds externas
+    (OddsPapi) tem que calcular prob/ev de verdade pra ela, igual a
+    qualquer outra liga modelada, nunca mais deixar None por padrão."""
+    df = _dados_sinteticos_liga(LIGA_SERIE_B, com_estatisticas_extras=True)
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+    monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
+
+    times = {LIGA_SERIE_B: ["A", "B"]}
     jogos = [{
-        "liga": LIGA_SERIE_B, "casa": "Fortaleza EC CE", "fora": "Botafogo FC SP", "commence_time": "x",
+        "liga": LIGA_SERIE_B, "casa": "A", "fora": "B", "commence_time": "x",
         "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 1.87}],
     }]
     resultado = enriquecer_odds_externas_com_modelo(jogos, times)
-    assert resultado[0]["tem_modelo"] is False
-    assert resultado[0]["mercados"][0]["prob_modelo"] is None
-    assert resultado[0]["mercados"][0]["ev"] is None
+    assert resultado[0]["tem_modelo"] is True
+    assert resultado[0]["mercados"][0]["prob_modelo"] is not None
+    assert resultado[0]["mercados"][0]["ev"] is not None
 
 
 def test_enriquecer_odds_externas_time_nao_resolvido_fica_sem_modelo():
@@ -270,7 +290,7 @@ def test_enriquecer_odds_externas_time_nao_resolvido_fica_sem_modelo():
 
 
 def test_enriquecer_odds_externas_liga_modelada_calcula_prob_e_ev(tmp_path, monkeypatch):
-    df = _dados_sinteticos_liga("brasileirao")
+    df = _dados_sinteticos_liga("brasileirao", com_estatisticas_extras=True)
     caminho_csv = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho_csv, index=False)
     monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
@@ -296,7 +316,7 @@ def test_enriquecer_odds_externas_propaga_aviso_de_historico_curto(tmp_path, mon
     se perder ao passar pelo enriquecimento de odds externas — é o que
     explica pro usuário POR QUE um EV alto pode ser suspeito em vez de
     valor real, em vez de só marcar 'suspeito' sem dizer o motivo."""
-    df = _dados_sinteticos_liga("brasileirao")
+    df = _dados_sinteticos_liga("brasileirao", com_estatisticas_extras=True)
     rng = np.random.default_rng(1)
     linhas_novo_time = []
     datas_recentes = pd.date_range("2021-11-01", periods=10, freq="3D")
@@ -304,8 +324,10 @@ def test_enriquecer_odds_externas_propaga_aviso_de_historico_curto(tmp_path, mon
         linhas_novo_time.append({
             "liga": "brasileirao", "Date": d, "HomeTeam": "Novato", "AwayTeam": "A",
             "FTHG": rng.poisson(1.4), "FTAG": rng.poisson(1.1),
-            "FTR": "H", "HC": np.nan, "AC": np.nan, "HF": np.nan, "AF": np.nan,
-            "HY": np.nan, "AY": np.nan, "HR": np.nan, "AR": np.nan, "Referee": None,
+            "FTR": "H", "HC": rng.poisson(5.5), "AC": rng.poisson(4.2),
+            "HF": rng.poisson(12.0), "AF": rng.poisson(13.0),
+            "HY": rng.poisson(1.8), "AY": rng.poisson(2.0),
+            "HR": rng.poisson(0.1), "AR": rng.poisson(0.1), "Referee": "Arbitro Teste",
             "PSCH": np.nan, "PSCD": np.nan, "PSCA": np.nan,
         })
     df = pd.concat([df, pd.DataFrame(linhas_novo_time)], ignore_index=True)
@@ -324,7 +346,7 @@ def test_enriquecer_odds_externas_propaga_aviso_de_historico_curto(tmp_path, mon
 
 
 def test_enriquecer_odds_externas_monta_aposta_e_bilhete(tmp_path, monkeypatch):
-    df = _dados_sinteticos_liga("brasileirao")
+    df = _dados_sinteticos_liga("brasileirao", com_estatisticas_extras=True)
     caminho_csv = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho_csv, index=False)
     monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)

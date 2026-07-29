@@ -16539,36 +16539,36 @@ BRA,2025-12-07,Internacional,Bragantino,3.0,1.0,H,,,,,,,,,,,,,1.56,4.19,5.57,bra
 BRA,2025-12-07,Santos,Cruzeiro,3.0,0.0,H,,,,,,,,,,,,,1.35,4.8,9.47,brasileirao,2025
 BRA,2025-12-07,Sport Recife,Gremio,0.0,4.0,A,,,,,,,,,,,,,4.04,3.64,1.87,brasileirao,2025
 BRA,2025-12-07,Vitoria,Sao Paulo,1.0,0.0,H,,,,,,,,,,,,,2.47,3.08,3.1,brasileirao,2025
-BRA,2026-01-28,Atletico-MG,Palmeiras,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Coritiba,Bragantino,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Internacional,Athletico-PR,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Vitoria,Remo,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Fluminense,Gremio,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Chapecoense-SC,Santos,4.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-28,Corinthians,Bahia,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-29,Sao Paulo,Flamengo RJ,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-29,Mirassol,Vasco,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-01-30,Botafogo RJ,Cruzeiro,4.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-04,Bragantino,Atletico-MG,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-04,Flamengo RJ,Internacional,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-04,Remo,Mirassol,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-04,Santos,Sao Paulo,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-05,Gremio,Botafogo RJ,5.0,3.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-05,Palmeiras,Vitoria,5.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-05,Bahia,Fluminense,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-05,Vasco,Chapecoense-SC,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-06,Cruzeiro,Coritiba,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-11,Vitoria,Flamengo RJ,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-11,Chapecoense-SC,Coritiba,3.0,3.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-11,Mirassol,Cruzeiro,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-11,Atletico-MG,Remo,3.0,3.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-12,Sao Paulo,Gremio,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-12,Vasco,Bahia,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-12,Athletico-PR,Santos,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-12,Fluminense,Botafogo RJ,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-12,Corinthians,Bragantino,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-13,Internacional,Palmeiras,1.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-02-19,Athletico-PR,Corinthians,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
+BRA,2026-01-28,Atletico-MG,Palmeiras,2.0,2.0,D,5.0,7.0,14.0,20.0,3.0,2.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-01-28,Coritiba,Bragantino,0.0,1.0,A,1.0,5.0,9.0,19.0,1.0,6.0,1.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-01-28,Internacional,Athletico-PR,0.0,1.0,A,13.0,1.0,13.0,11.0,2.0,1.0,0.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-01-28,Vitoria,Remo,2.0,0.0,H,4.0,1.0,13.0,17.0,2.0,4.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-01-28,Fluminense,Gremio,2.0,1.0,H,3.0,6.0,13.0,13.0,1.0,2.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-01-28,Chapecoense-SC,Santos,4.0,2.0,H,1.0,14.0,10.0,4.0,3.0,3.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-01-28,Corinthians,Bahia,1.0,2.0,A,4.0,6.0,13.0,14.0,3.0,4.0,0.0,1.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-01-29,Sao Paulo,Flamengo RJ,2.0,1.0,H,2.0,6.0,14.0,11.0,0.0,0.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-01-29,Mirassol,Vasco,2.0,1.0,H,,,,,2.0,1.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-01-30,Botafogo RJ,Cruzeiro,4.0,0.0,H,3.0,7.0,10.0,12.0,1.0,2.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-02-04,Bragantino,Atletico-MG,1.0,0.0,H,,,,,3.0,2.0,0.0,0.0,Lucas Paulo Torezin,,,,,,,brasileirao,2026
+BRA,2026-02-04,Flamengo RJ,Internacional,1.0,1.0,D,4.0,3.0,20.0,17.0,4.0,3.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-02-04,Remo,Mirassol,2.0,2.0,D,4.0,4.0,15.0,9.0,2.0,2.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-02-04,Santos,Sao Paulo,1.0,1.0,D,,,,,5.0,1.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-02-05,Gremio,Botafogo RJ,5.0,3.0,H,4.0,2.0,13.0,15.0,0.0,3.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-02-05,Palmeiras,Vitoria,5.0,1.0,H,6.0,4.0,13.0,16.0,1.0,4.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-02-05,Bahia,Fluminense,1.0,1.0,D,6.0,4.0,12.0,13.0,0.0,3.0,1.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-02-05,Vasco,Chapecoense-SC,1.0,1.0,D,14.0,0.0,15.0,11.0,0.0,0.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-02-06,Cruzeiro,Coritiba,1.0,2.0,A,12.0,2.0,9.0,17.0,3.0,2.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-02-11,Vitoria,Flamengo RJ,1.0,2.0,A,7.0,2.0,12.0,20.0,3.0,4.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-02-11,Chapecoense-SC,Coritiba,3.0,3.0,D,6.0,5.0,4.0,8.0,2.0,1.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao,2026
+BRA,2026-02-11,Mirassol,Cruzeiro,2.0,2.0,D,,,,,3.0,2.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao,2026
+BRA,2026-02-11,Atletico-MG,Remo,3.0,3.0,D,6.0,5.0,10.0,14.0,0.0,2.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-02-12,Sao Paulo,Gremio,2.0,0.0,H,3.0,3.0,11.0,14.0,3.0,3.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-02-12,Vasco,Bahia,0.0,1.0,A,8.0,4.0,15.0,14.0,5.0,5.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-02-12,Athletico-PR,Santos,2.0,1.0,H,8.0,2.0,15.0,14.0,1.0,3.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-02-12,Fluminense,Botafogo RJ,1.0,0.0,H,4.0,0.0,18.0,11.0,5.0,3.0,1.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-02-12,Corinthians,Bragantino,2.0,0.0,H,3.0,3.0,16.0,24.0,4.0,4.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-02-13,Internacional,Palmeiras,1.0,3.0,A,16.0,4.0,13.0,8.0,1.0,1.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-02-19,Athletico-PR,Corinthians,0.0,1.0,A,8.0,0.0,15.0,9.0,3.0,4.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
 BRA,2026-02-25,Bragantino,Athletico-PR,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
 BRA,2026-02-25,Remo,Internacional,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
 BRA,2026-02-25,Coritiba,Sao Paulo,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
@@ -16585,149 +16585,149 @@ BRA,2026-03-12,Remo,Fluminense,0.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
 BRA,2026-03-12,Vasco,Palmeiras,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
 BRA,2026-03-12,Sao Paulo,Chapecoense-SC,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
 BRA,2026-03-13,Gremio,Bragantino,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-14,Vitoria,Atletico-MG,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-14,Botafogo RJ,Flamengo RJ,0.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Fluminense,Athletico-PR,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Internacional,Bahia,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Santos,Corinthians,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Coritiba,Remo,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Palmeiras,Mirassol,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Bragantino,Sao Paulo,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-15,Cruzeiro,Vasco,3.0,3.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-16,Chapecoense-SC,Gremio,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-18,Bahia,Bragantino,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-18,Palmeiras,Botafogo RJ,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-18,Athletico-PR,Cruzeiro,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-18,Atletico-MG,Sao Paulo,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-18,Mirassol,Coritiba,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-19,Santos,Internacional,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-19,Vasco,Fluminense,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-19,Gremio,Vitoria,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-19,Flamengo RJ,Remo,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-20,Chapecoense-SC,Corinthians,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-21,Bragantino,Botafogo RJ,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-21,Fluminense,Atletico-MG,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Sao Paulo,Palmeiras,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Athletico-PR,Coritiba,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Cruzeiro,Santos,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Remo,Bahia,4.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Vasco,Gremio,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Internacional,Chapecoense-SC,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Vitoria,Mirassol,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-03-22,Corinthians,Flamengo RJ,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
+BRA,2026-03-14,Vitoria,Atletico-MG,2.0,0.0,H,4.0,10.0,18.0,13.0,2.0,3.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao,2026
+BRA,2026-03-14,Botafogo RJ,Flamengo RJ,0.0,3.0,A,2.0,4.0,16.0,10.0,3.0,2.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-03-15,Fluminense,Athletico-PR,3.0,2.0,H,7.0,1.0,14.0,9.0,2.0,3.0,0.0,1.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-03-15,Internacional,Bahia,0.0,1.0,A,7.0,1.0,20.0,20.0,3.0,2.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-03-15,Santos,Corinthians,1.0,1.0,D,,,,,4.0,2.0,1.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-03-15,Coritiba,Remo,1.0,0.0,H,4.0,6.0,12.0,11.0,2.0,3.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-03-15,Palmeiras,Mirassol,1.0,0.0,H,2.0,4.0,14.0,17.0,1.0,3.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-03-15,Bragantino,Sao Paulo,1.0,2.0,A,,,,,4.0,4.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-03-15,Cruzeiro,Vasco,3.0,3.0,D,5.0,4.0,9.0,11.0,1.0,3.0,0.0,1.0,Lucas Paulo Torezin,,,,,,,brasileirao,2026
+BRA,2026-03-16,Chapecoense-SC,Gremio,1.0,1.0,D,4.0,5.0,16.0,10.0,3.0,3.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao,2026
+BRA,2026-03-18,Bahia,Bragantino,2.0,0.0,H,7.0,7.0,15.0,16.0,3.0,1.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-03-18,Palmeiras,Botafogo RJ,2.0,1.0,H,6.0,1.0,13.0,13.0,1.0,3.0,0.0,1.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-03-18,Athletico-PR,Cruzeiro,2.0,1.0,H,4.0,6.0,26.0,19.0,2.0,3.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-03-18,Atletico-MG,Sao Paulo,1.0,0.0,H,4.0,1.0,16.0,17.0,1.0,1.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-03-18,Mirassol,Coritiba,0.0,1.0,A,,,,,2.0,2.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-03-19,Santos,Internacional,1.0,2.0,A,,,,,4.0,3.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-03-19,Vasco,Fluminense,3.0,2.0,H,5.0,5.0,9.0,10.0,2.0,0.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-03-19,Gremio,Vitoria,2.0,0.0,H,4.0,5.0,15.0,17.0,1.0,3.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-03-19,Flamengo RJ,Remo,3.0,0.0,H,7.0,2.0,14.0,11.0,2.0,2.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-03-20,Chapecoense-SC,Corinthians,0.0,0.0,D,6.0,5.0,18.0,11.0,3.0,3.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-03-21,Bragantino,Botafogo RJ,1.0,2.0,A,,,,,2.0,3.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-03-21,Fluminense,Atletico-MG,1.0,0.0,H,3.0,2.0,18.0,15.0,5.0,5.0,0.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-03-22,Sao Paulo,Palmeiras,0.0,1.0,A,10.0,1.0,13.0,21.0,3.0,5.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-03-22,Athletico-PR,Coritiba,2.0,0.0,H,7.0,4.0,10.0,10.0,0.0,2.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-03-22,Cruzeiro,Santos,0.0,0.0,D,6.0,0.0,18.0,16.0,2.0,3.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-03-22,Remo,Bahia,4.0,1.0,H,6.0,9.0,14.0,10.0,3.0,1.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao,2026
+BRA,2026-03-22,Vasco,Gremio,2.0,1.0,H,0.0,2.0,11.0,4.0,3.0,1.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-03-22,Internacional,Chapecoense-SC,2.0,0.0,H,4.0,4.0,16.0,8.0,2.0,2.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-03-22,Vitoria,Mirassol,1.0,0.0,H,4.0,5.0,18.0,8.0,3.0,3.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao,2026
+BRA,2026-03-22,Corinthians,Flamengo RJ,1.0,1.0,D,6.0,2.0,20.0,12.0,2.0,3.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
 BRA,2026-03-29,Athletico-PR,Botafogo RJ,4.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-01,Botafogo RJ,Mirassol,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-01,Internacional,Sao Paulo,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Bahia,Athletico-PR,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Cruzeiro,Vitoria,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Coritiba,Vasco,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Fluminense,Corinthians,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Chapecoense-SC,Atletico-MG,0.0,4.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-02,Santos,Remo,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-03,Bragantino,Flamengo RJ,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-03,Palmeiras,Gremio,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-04,Sao Paulo,Cruzeiro,4.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Coritiba,Fluminense,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Vasco,Botafogo RJ,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Chapecoense-SC,Vitoria,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Atletico-MG,Athletico-PR,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Flamengo RJ,Santos,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Bahia,Palmeiras,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-05,Corinthians,Internacional,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-06,Mirassol,Bragantino,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-06,Gremio,Remo,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-11,Remo,Vasco,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-11,Vitoria,Sao Paulo,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-11,Mirassol,Bahia,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Santos,Atletico-MG,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Internacional,Gremio,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Athletico-PR,Chapecoense-SC,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Botafogo RJ,Coritiba,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Fluminense,Flamengo RJ,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Corinthians,Palmeiras,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-12,Cruzeiro,Bragantino,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-18,Chapecoense-SC,Botafogo RJ,1.0,4.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-18,Vasco,Sao Paulo,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Vitoria,Corinthians,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Cruzeiro,Gremio,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Internacional,Mirassol,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Coritiba,Atletico-MG,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Santos,Fluminense,2.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Bragantino,Remo,4.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Palmeiras,Athletico-PR,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-19,Flamengo RJ,Bahia,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-25,Bahia,Santos,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-25,Botafogo RJ,Internacional,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-25,Remo,Cruzeiro,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-26,Sao Paulo,Mirassol,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-26,Corinthians,Vasco,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-26,Gremio,Coritiba,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-26,Athletico-PR,Vitoria,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-26,Bragantino,Palmeiras,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-27,Atletico-MG,Flamengo RJ,0.0,4.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-04-27,Fluminense,Chapecoense-SC,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-02,Botafogo RJ,Remo,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-02,Palmeiras,Santos,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-02,Vitoria,Coritiba,4.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Athletico-PR,Gremio,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Cruzeiro,Atletico-MG,1.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Flamengo RJ,Vasco,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Sao Paulo,Bahia,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Chapecoense-SC,Bragantino,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-03,Internacional,Fluminense,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-04,Mirassol,Corinthians,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-09,Coritiba,Internacional,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-09,Fluminense,Vitoria,2.0,2.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Bahia,Cruzeiro,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Atletico-MG,Botafogo RJ,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Remo,Palmeiras,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Corinthians,Sao Paulo,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Mirassol,Chapecoense-SC,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Santos,Bragantino,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-10,Gremio,Flamengo RJ,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-11,Vasco,Athletico-PR,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-16,Atletico-MG,Mirassol,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-16,Internacional,Vasco,4.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-16,Fluminense,Sao Paulo,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Palmeiras,Cruzeiro,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Santos,Coritiba,0.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Bahia,Gremio,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Botafogo RJ,Corinthians,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Bragantino,Vitoria,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Chapecoense-SC,Remo,2.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-17,Athletico-PR,Flamengo RJ,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-23,Sao Paulo,Botafogo RJ,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-23,Vitoria,Internacional,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-23,Gremio,Santos,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-23,Mirassol,Fluminense,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-24,Flamengo RJ,Palmeiras,0.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-24,Cruzeiro,Chapecoense-SC,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-24,Remo,Athletico-PR,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-24,Corinthians,Atletico-MG,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-25,Vasco,Bragantino,0.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-26,Coritiba,Bahia,3.0,2.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-30,Athletico-PR,Mirassol,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-30,Flamengo RJ,Coritiba,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-30,Bahia,Botafogo RJ,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-30,Gremio,Corinthians,1.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-31,Santos,Vitoria,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-31,Bragantino,Internacional,3.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-31,Palmeiras,Chapecoense-SC,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-05-31,Vasco,Atletico-MG,0.0,1.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-06-01,Cruzeiro,Fluminense,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-06-01,Remo,Sao Paulo,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-16,Botafogo RJ,Santos,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-16,Vitoria,Vasco,1.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
+BRA,2026-04-01,Botafogo RJ,Mirassol,3.0,2.0,H,2.0,8.0,14.0,13.0,3.0,3.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-04-01,Internacional,Sao Paulo,1.0,1.0,D,2.0,11.0,18.0,15.0,1.0,1.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-04-02,Bahia,Athletico-PR,3.0,0.0,H,3.0,1.0,15.0,19.0,2.0,2.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao,2026
+BRA,2026-04-02,Cruzeiro,Vitoria,3.0,0.0,H,5.0,6.0,15.0,12.0,1.0,3.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao,2026
+BRA,2026-04-02,Coritiba,Vasco,1.0,1.0,D,3.0,4.0,11.0,11.0,2.0,1.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-04-02,Fluminense,Corinthians,3.0,1.0,H,8.0,10.0,10.0,13.0,1.0,4.0,0.0,1.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-04-02,Chapecoense-SC,Atletico-MG,0.0,4.0,A,7.0,3.0,19.0,5.0,1.0,0.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao,2026
+BRA,2026-04-02,Santos,Remo,2.0,0.0,H,,,,,4.0,2.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-04-03,Bragantino,Flamengo RJ,3.0,0.0,H,,,,,4.0,1.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-04-03,Palmeiras,Gremio,2.0,1.0,H,8.0,2.0,12.0,15.0,0.0,3.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-04-04,Sao Paulo,Cruzeiro,4.0,1.0,H,7.0,4.0,21.0,13.0,2.0,0.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-04-05,Coritiba,Fluminense,1.0,1.0,D,3.0,10.0,8.0,14.0,1.0,0.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-04-05,Vasco,Botafogo RJ,1.0,2.0,A,,,,,2.0,4.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao,2026
+BRA,2026-04-05,Chapecoense-SC,Vitoria,1.0,1.0,D,9.0,1.0,14.0,14.0,2.0,3.0,0.0,1.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao,2026
+BRA,2026-04-05,Atletico-MG,Athletico-PR,2.0,1.0,H,2.0,8.0,9.0,13.0,0.0,1.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-04-05,Flamengo RJ,Santos,3.0,1.0,H,2.0,7.0,2.0,11.0,0.0,2.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-04-05,Bahia,Palmeiras,1.0,2.0,A,7.0,5.0,18.0,17.0,2.0,4.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-04-05,Corinthians,Internacional,0.0,1.0,A,7.0,4.0,16.0,19.0,2.0,3.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-04-06,Mirassol,Bragantino,0.0,1.0,A,,,,,2.0,3.0,0.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-04-06,Gremio,Remo,0.0,0.0,D,8.0,3.0,6.0,9.0,2.0,2.0,0.0,1.0,Edina Alves Batista,,,,,,,brasileirao,2026
+BRA,2026-04-11,Remo,Vasco,1.0,1.0,D,3.0,5.0,12.0,10.0,0.0,2.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-04-11,Vitoria,Sao Paulo,2.0,0.0,H,2.0,6.0,11.0,11.0,2.0,3.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-04-11,Mirassol,Bahia,1.0,2.0,A,,,,,5.0,1.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-04-12,Santos,Atletico-MG,1.0,0.0,H,,,,,3.0,1.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-04-12,Internacional,Gremio,0.0,0.0,D,8.0,2.0,19.0,20.0,4.0,3.0,0.0,1.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-04-12,Athletico-PR,Chapecoense-SC,2.0,0.0,H,5.0,0.0,15.0,17.0,2.0,5.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao,2026
+BRA,2026-04-12,Botafogo RJ,Coritiba,2.0,2.0,D,8.0,4.0,13.0,7.0,2.0,4.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-04-12,Fluminense,Flamengo RJ,1.0,2.0,A,8.0,2.0,14.0,11.0,3.0,3.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-04-12,Corinthians,Palmeiras,0.0,0.0,D,2.0,7.0,17.0,16.0,2.0,1.0,2.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-04-12,Cruzeiro,Bragantino,2.0,1.0,H,2.0,7.0,16.0,21.0,0.0,2.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-04-18,Chapecoense-SC,Botafogo RJ,1.0,4.0,A,4.0,4.0,6.0,7.0,0.0,0.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-04-18,Vasco,Sao Paulo,2.0,1.0,H,6.0,5.0,14.0,19.0,1.0,2.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-04-19,Vitoria,Corinthians,0.0,0.0,D,4.0,2.0,13.0,14.0,1.0,2.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-04-19,Cruzeiro,Gremio,2.0,0.0,H,4.0,1.0,16.0,13.0,4.0,3.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-04-19,Internacional,Mirassol,1.0,2.0,A,11.0,2.0,6.0,15.0,0.0,4.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-04-19,Coritiba,Atletico-MG,2.0,0.0,H,2.0,8.0,18.0,10.0,2.0,1.0,1.0,1.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-04-19,Santos,Fluminense,2.0,3.0,A,,,,,5.0,3.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-04-19,Bragantino,Remo,4.0,2.0,H,,,,,1.0,1.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao,2026
+BRA,2026-04-19,Palmeiras,Athletico-PR,1.0,0.0,H,9.0,3.0,9.0,22.0,2.0,4.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-04-19,Flamengo RJ,Bahia,2.0,0.0,H,6.0,1.0,12.0,8.0,2.0,0.0,0.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-04-25,Bahia,Santos,2.0,2.0,D,5.0,3.0,14.0,17.0,3.0,4.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-04-25,Botafogo RJ,Internacional,2.0,2.0,D,3.0,5.0,16.0,14.0,2.0,3.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-04-25,Remo,Cruzeiro,0.0,1.0,A,4.0,1.0,15.0,22.0,1.0,3.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-04-26,Sao Paulo,Mirassol,1.0,0.0,H,12.0,5.0,11.0,14.0,1.0,1.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-04-26,Corinthians,Vasco,1.0,0.0,H,5.0,7.0,12.0,17.0,3.0,4.0,1.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-04-26,Gremio,Coritiba,1.0,0.0,H,5.0,2.0,20.0,11.0,3.0,2.0,0.0,1.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-04-26,Athletico-PR,Vitoria,3.0,1.0,H,4.0,4.0,16.0,14.0,6.0,4.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-04-26,Bragantino,Palmeiras,0.0,1.0,A,,,,,1.0,2.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao,2026
+BRA,2026-04-27,Atletico-MG,Flamengo RJ,0.0,4.0,A,8.0,1.0,10.0,13.0,1.0,2.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-04-27,Fluminense,Chapecoense-SC,2.0,1.0,H,7.0,1.0,6.0,15.0,1.0,4.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-02,Botafogo RJ,Remo,1.0,2.0,A,0.0,0.0,14.0,10.0,2.0,2.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-02,Palmeiras,Santos,1.0,1.0,D,0.0,0.0,9.0,5.0,0.0,1.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-05-02,Vitoria,Coritiba,4.0,1.0,H,0.0,0.0,13.0,10.0,3.0,1.0,0.0,1.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-05-03,Athletico-PR,Gremio,0.0,0.0,D,0.0,0.0,11.0,13.0,2.0,1.0,1.0,1.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-03,Cruzeiro,Atletico-MG,1.0,3.0,A,0.0,0.0,14.0,16.0,3.0,6.0,2.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-05-03,Flamengo RJ,Vasco,2.0,2.0,D,0.0,0.0,15.0,11.0,3.0,3.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-03,Sao Paulo,Bahia,2.0,2.0,D,0.0,0.0,12.0,12.0,3.0,3.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-05-03,Chapecoense-SC,Bragantino,1.0,2.0,A,0.0,0.0,8.0,10.0,2.0,2.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-05-03,Internacional,Fluminense,2.0,0.0,H,0.0,0.0,25.0,18.0,4.0,3.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-04,Mirassol,Corinthians,2.0,1.0,H,,,,,5.0,2.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
+BRA,2026-05-09,Coritiba,Internacional,2.0,2.0,D,3.0,8.0,11.0,10.0,1.0,3.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao,2026
+BRA,2026-05-09,Fluminense,Vitoria,2.0,2.0,D,0.0,0.0,14.0,7.0,4.0,2.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao,2026
+BRA,2026-05-10,Bahia,Cruzeiro,1.0,2.0,A,6.0,9.0,14.0,15.0,3.0,4.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-10,Atletico-MG,Botafogo RJ,1.0,1.0,D,0.0,0.0,8.0,12.0,0.0,2.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-05-10,Remo,Palmeiras,1.0,1.0,D,0.0,0.0,6.0,6.0,1.0,2.0,1.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-05-10,Corinthians,Sao Paulo,3.0,2.0,H,0.0,0.0,12.0,13.0,3.0,4.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-05-10,Mirassol,Chapecoense-SC,1.0,1.0,D,,,,,1.0,5.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-10,Santos,Bragantino,2.0,0.0,H,,,,,1.0,4.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-05-10,Gremio,Flamengo RJ,0.0,1.0,A,0.0,0.0,10.0,10.0,1.0,3.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-05-11,Vasco,Athletico-PR,1.0,0.0,H,0.0,0.0,6.0,9.0,4.0,1.0,0.0,0.0,Raphael Claus,,,,,,,brasileirao,2026
+BRA,2026-05-16,Atletico-MG,Mirassol,3.0,1.0,H,0.0,0.0,6.0,13.0,0.0,1.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-05-16,Internacional,Vasco,4.0,1.0,H,0.0,0.0,17.0,11.0,2.0,2.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao,2026
+BRA,2026-05-16,Fluminense,Sao Paulo,2.0,1.0,H,,,,,2.0,5.0,0.0,0.0,Wilton Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-17,Palmeiras,Cruzeiro,1.0,1.0,D,,,,,2.0,4.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-17,Santos,Coritiba,0.0,3.0,A,,,,,4.0,2.0,1.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao,2026
+BRA,2026-05-17,Bahia,Gremio,1.0,1.0,D,0.0,0.0,18.0,14.0,4.0,5.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-05-17,Botafogo RJ,Corinthians,3.0,1.0,H,0.0,0.0,22.0,8.0,6.0,1.0,0.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-17,Bragantino,Vitoria,2.0,0.0,H,,,,,4.0,2.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao,2026
+BRA,2026-05-17,Chapecoense-SC,Remo,2.0,3.0,A,0.0,0.0,10.0,6.0,2.0,1.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-05-17,Athletico-PR,Flamengo RJ,1.0,1.0,D,0.0,0.0,9.0,12.0,2.0,2.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-05-23,Sao Paulo,Botafogo RJ,1.0,1.0,D,4.0,3.0,20.0,19.0,4.0,4.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-05-23,Vitoria,Internacional,2.0,0.0,H,4.0,6.0,15.0,18.0,2.0,2.0,0.0,1.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-23,Gremio,Santos,3.0,2.0,H,8.0,5.0,12.0,12.0,1.0,2.0,0.0,1.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-05-23,Mirassol,Fluminense,1.0,0.0,H,,,,,3.0,2.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao,2026
+BRA,2026-05-24,Flamengo RJ,Palmeiras,0.0,3.0,A,8.0,4.0,9.0,19.0,6.0,6.0,1.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-05-24,Cruzeiro,Chapecoense-SC,2.0,1.0,H,9.0,2.0,13.0,14.0,1.0,2.0,0.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-05-24,Remo,Athletico-PR,1.0,2.0,A,3.0,10.0,9.0,14.0,1.0,4.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-24,Corinthians,Atletico-MG,1.0,0.0,H,3.0,0.0,15.0,14.0,1.0,2.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-05-25,Vasco,Bragantino,0.0,3.0,A,6.0,6.0,12.0,14.0,1.0,4.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-05-26,Coritiba,Bahia,3.0,2.0,H,3.0,6.0,11.0,17.0,0.0,3.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-05-30,Athletico-PR,Mirassol,1.0,0.0,H,6.0,4.0,11.0,11.0,2.0,3.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao,2026
+BRA,2026-05-30,Flamengo RJ,Coritiba,3.0,0.0,H,6.0,4.0,10.0,2.0,3.0,0.0,0.0,1.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-05-30,Bahia,Botafogo RJ,2.0,1.0,H,10.0,4.0,14.0,16.0,4.0,5.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-05-30,Gremio,Corinthians,1.0,3.0,A,4.0,8.0,23.0,20.0,3.0,2.0,1.0,0.0,Lucas Paulo Torezin,,,,,,,brasileirao,2026
+BRA,2026-05-31,Santos,Vitoria,3.0,1.0,H,,,,,3.0,4.0,1.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-05-31,Bragantino,Internacional,3.0,1.0,H,,,,,2.0,4.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
+BRA,2026-05-31,Palmeiras,Chapecoense-SC,1.0,0.0,H,3.0,2.0,8.0,9.0,1.0,1.0,1.0,0.0,Felipe Fernandes de Lima,,,,,,,brasileirao,2026
+BRA,2026-05-31,Vasco,Atletico-MG,0.0,1.0,A,3.0,4.0,20.0,17.0,1.0,1.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-06-01,Cruzeiro,Fluminense,1.0,1.0,D,5.0,4.0,12.0,15.0,2.0,2.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
+BRA,2026-06-01,Remo,Sao Paulo,1.0,0.0,H,6.0,8.0,7.0,14.0,1.0,2.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao,2026
+BRA,2026-07-16,Botafogo RJ,Santos,2.0,1.0,H,5.0,5.0,10.0,13.0,4.0,2.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao,2026
+BRA,2026-07-16,Vitoria,Vasco,1.0,0.0,H,3.0,2.0,12.0,15.0,0.0,0.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao,2026
 BRA,2026-07-17,Bahia,Chapecoense-SC,2.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-18,Fluminense,Bragantino,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-18,Mirassol,Gremio,2.0,1.0,H,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-21,Atletico-MG,Bahia,1.0,1.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-22,Coritiba,Palmeiras,1.0,3.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-23,Chapecoense-SC,Flamengo RJ,0.0,4.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-23,Internacional,Cruzeiro,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-23,Sao Paulo,Athletico-PR,1.0,2.0,A,,,,,,,,,,,,,,,,brasileirao,2026
+BRA,2026-07-18,Fluminense,Bragantino,1.0,1.0,D,11.0,4.0,6.0,9.0,2.0,4.0,0.0,1.0,Davi De Oliveira Lacerda,,,,,,,brasileirao,2026
+BRA,2026-07-18,Mirassol,Gremio,2.0,1.0,H,,,,,1.0,3.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao,2026
+BRA,2026-07-21,Atletico-MG,Bahia,1.0,1.0,D,6.0,4.0,4.0,12.0,0.0,2.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao,2026
+BRA,2026-07-22,Coritiba,Palmeiras,1.0,3.0,A,8.0,4.0,10.0,16.0,1.0,3.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao,2026
+BRA,2026-07-23,Chapecoense-SC,Flamengo RJ,0.0,4.0,A,5.0,3.0,9.0,7.0,1.0,0.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao,2026
+BRA,2026-07-23,Internacional,Cruzeiro,1.0,2.0,A,4.0,7.0,18.0,14.0,1.0,6.0,1.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao,2026
+BRA,2026-07-23,Sao Paulo,Athletico-PR,1.0,2.0,A,7.0,3.0,7.0,15.0,0.0,1.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao,2026
 BRA,2026-07-23,Botafogo RJ,Vitoria,0.0,0.0,D,,,,,,,,,,,,,,,,brasileirao,2026
-BRA,2026-07-23,Corinthians,Remo,3.0,0.0,H,,,,,,,,,,,,,,,,brasileirao,2026
+BRA,2026-07-23,Corinthians,Remo,3.0,0.0,H,3.0,4.0,12.0,9.0,1.0,1.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao,2026
 USA,2017-03-04,Portland Timbers,Minnesota United,5.0,1.0,H,,,,,,,,,,,,,1.53,4.63,6.36,mls,2017
 USA,2017-03-04,Columbus Crew,Chicago Fire,1.0,1.0,D,,,,,,,,,,,,,1.83,3.9,4.52,mls,2017
 USA,2017-03-04,Los Angeles Galaxy,FC Dallas,1.0,2.0,A,,,,,,,,,,,,,2.39,3.47,3.14,mls,2017
@@ -21054,3 +21054,150 @@ USA,2026-07-23,Los Angeles FC,Real Salt Lake,3.0,1.0,H,,,,,,,,,,,,,,,,mls,2026
 USA,2026-07-23,Los Angeles Galaxy,St. Louis City,1.0,3.0,A,,,,,,,,,,,,,,,,mls,2026
 USA,2026-07-23,Portland Timbers,FC Dallas,2.0,2.0,D,,,,,,,,,,,,,,,,mls,2026
 USA,2026-07-23,San Jose Earthquakes,Orlando City,0.0,4.0,A,,,,,,,,,,,,,,,,mls,2026
+BRB,2026-07-26,Sao Bernardo,Ceara,3.0,4.0,A,,,,,1.0,2.0,1.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao_b,2026
+BRB,2026-07-26,Criciuma,Nautico,0.0,0.0,D,7.0,4.0,18.0,18.0,0.0,4.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-07-26,America MG,Goias,1.0,0.0,H,,,,,2.0,1.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao_b,2026
+BRB,2026-07-26,Londrina,Novorizontino,1.0,4.0,A,5.0,10.0,10.0,11.0,1.0,2.0,0.0,0.0,Thaillan Azevedo Gomes,,,,,,,brasileirao_b,2026
+BRB,2026-07-27,Sport,Cuiaba,1.0,1.0,D,8.0,11.0,11.0,10.0,1.0,1.0,0.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-07-27,CRB,Vila Nova,2.0,0.0,H,6.0,5.0,12.0,14.0,0.0,2.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao_b,2026
+BRB,2026-07-27,Atletico GO,Operario Ferroviario,3.0,1.0,H,3.0,1.0,13.0,13.0,2.0,1.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-07-28,Ponte Preta,Athletic,1.0,1.0,D,,,,,4.0,5.0,0.0,0.0,Gustavo Ervino Bauermann,,,,,,,brasileirao_b,2026
+BRB,2026-07-28,Juventude,Avai,1.0,0.0,H,3.0,3.0,9.0,19.0,1.0,2.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao_b,2026
+BRB,2026-07-28,Fortaleza,Botafogo-SP,1.0,0.0,H,10.0,6.0,13.0,18.0,,,,,,,,,,,,brasileirao_b,2026
+BRB,2026-07-21,Novorizontino,Criciuma,0.0,1.0,A,,,,,3.0,1.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-07-21,Avai,America MG,2.0,1.0,H,3.0,3.0,12.0,18.0,0.0,5.0,0.0,0.0,Jefferson Ferreira de Moraes,,,,,,,brasileirao_b,2026
+BRB,2026-07-21,Vila Nova,Fortaleza,2.0,1.0,H,4.0,4.0,18.0,12.0,1.0,3.0,0.0,0.0,Daiane Muniz,,,,,,,brasileirao_b,2026
+BRB,2026-07-22,Operario Ferroviario,Ponte Preta,3.0,2.0,H,6.0,6.0,18.0,21.0,1.0,5.0,0.0,1.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-07-22,Ceara,CRB,0.0,1.0,A,7.0,1.0,17.0,14.0,4.0,3.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-07-22,Goias,Sport,1.0,1.0,D,9.0,2.0,15.0,11.0,3.0,0.0,0.0,0.0,Ramon Abatti Abel,,,,,,,brasileirao_b,2026
+BRB,2026-07-22,Nautico,Londrina,2.0,1.0,H,8.0,7.0,18.0,19.0,4.0,2.0,0.0,0.0,Bruno Mota Correia,,,,,,,brasileirao_b,2026
+BRB,2026-07-23,Athletic,Sao Bernardo,2.0,1.0,H,,,,,1.0,3.0,0.0,0.0,Leonardo Willers Lorenzatto,,,,,,,brasileirao_b,2026
+BRB,2026-07-23,Cuiaba,Atletico GO,0.0,1.0,A,8.0,2.0,10.0,17.0,3.0,3.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-07-23,Botafogo-SP,Juventude,4.0,2.0,H,4.0,9.0,20.0,16.0,2.0,1.0,1.0,0.0,Jose Mendonca da Silva Junior,,,,,,,brasileirao_b,2026
+BRB,2026-07-08,Ponte Preta,Criciuma,1.0,2.0,A,,,,,4.0,1.0,0.0,0.0,Wiomar Santana de Oliveira,,,,,,,brasileirao_b,2026
+BRB,2026-07-10,Juventude,Vila Nova,1.0,0.0,H,5.0,2.0,24.0,16.0,4.0,1.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-07-10,Sport,Botafogo-SP,3.0,3.0,D,7.0,2.0,16.0,21.0,2.0,4.0,0.0,0.0,Maguielson Lima Barbosa,,,,,,,brasileirao_b,2026
+BRB,2026-07-12,Operario Ferroviario,Novorizontino,2.0,1.0,H,10.0,2.0,21.0,19.0,2.0,1.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-07-12,Sao Bernardo,Cuiaba,2.0,2.0,D,,,,,2.0,2.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-07-12,Avai,Nautico,2.0,0.0,H,6.0,5.0,17.0,12.0,1.0,1.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-07-12,Atletico GO,Fortaleza,1.0,0.0,H,1.0,11.0,9.0,16.0,1.0,5.0,1.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-07-12,CRB,Goias,2.0,2.0,D,6.0,1.0,11.0,9.0,3.0,0.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-07-13,America MG,Londrina,1.0,1.0,D,,,,,1.0,3.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-07-13,Ceara,Athletic,0.0,0.0,D,,,,,1.0,4.0,0.0,0.0,Jose Mendonca da Silva Junior,,,,,,,brasileirao_b,2026
+BRB,2026-06-25,Cuiaba,Londrina,2.0,2.0,D,0.0,0.0,13.0,10.0,4.0,5.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao_b,2026
+BRB,2026-06-26,Novorizontino,Vila Nova,2.0,1.0,H,,,,,1.0,3.0,0.0,1.0,Lucas Paulo Torezin,,,,,,,brasileirao_b,2026
+BRB,2026-06-27,Operario Ferroviario,America MG,1.0,0.0,H,0.0,0.0,17.0,15.0,1.0,4.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao_b,2026
+BRB,2026-06-27,Criciuma,Sao Bernardo,1.0,0.0,H,0.0,0.0,15.0,9.0,2.0,5.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao_b,2026
+BRB,2026-06-28,Atletico GO,Ponte Preta,2.0,0.0,H,0.0,0.0,12.0,13.0,1.0,1.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao_b,2026
+BRB,2026-06-28,Athletic,Avai,1.0,0.0,H,,,,,1.0,1.0,0.0,0.0,Daiane Muniz,,,,,,,brasileirao_b,2026
+BRB,2026-06-28,Juventude,Ceara,2.0,0.0,H,0.0,0.0,16.0,15.0,0.0,1.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao_b,2026
+BRB,2026-06-28,Fortaleza,Sport,2.0,1.0,H,0.0,0.0,20.0,9.0,3.0,2.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao_b,2026
+BRB,2026-06-28,Nautico,Goias,0.0,1.0,A,6.0,3.0,11.0,12.0,1.0,1.0,0.0,0.0,Edina Alves Batista,,,,,,,brasileirao_b,2026
+BRB,2026-06-30,Botafogo-SP,CRB,0.0,1.0,A,11.0,6.0,17.0,16.0,1.0,3.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao_b,2026
+BRB,2026-06-18,Sport,Atletico GO,1.0,1.0,D,,,,,2.0,2.0,0.0,0.0,Rafael Rodrigo Klein,,,,,,,brasileirao_b,2026
+BRB,2026-06-20,Londrina,Athletic,2.0,0.0,H,,,,,1.0,2.0,0.0,0.0,Charly Wendy Straub Deretti,,,,,,,brasileirao_b,2026
+BRB,2026-06-20,Ceara,Botafogo-SP,0.0,1.0,A,7.0,5.0,18.0,17.0,2.0,2.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-06-20,Vila Nova,Nautico,4.0,3.0,H,0.0,0.0,14.0,12.0,2.0,2.0,0.0,0.0,Anderson Daronco,,,,,,,brasileirao_b,2026
+BRB,2026-06-21,Avai,Cuiaba,1.0,0.0,H,0.0,0.0,10.0,6.0,2.0,1.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-06-21,CRB,Fortaleza,1.0,1.0,D,0.0,0.0,4.0,11.0,1.0,1.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao_b,2026
+BRB,2026-06-21,Sao Bernardo,Juventude,0.0,1.0,A,,,,,3.0,4.0,0.0,0.0,Davi De Oliveira Lacerda,,,,,,,brasileirao_b,2026
+BRB,2026-06-21,Goias,Operario Ferroviario,0.0,3.0,A,0.0,0.0,13.0,19.0,1.0,2.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-06-22,Ponte Preta,Novorizontino,0.0,2.0,A,,,,,1.0,3.0,1.0,0.0,Maguielson Lima Barbosa,,,,,,,brasileirao_b,2026
+BRB,2026-06-23,America MG,Criciuma,0.0,1.0,A,,,,,2.0,3.0,0.0,0.0,Edina Alves Batista,,,,,,,brasileirao_b,2026
+BRB,2026-06-12,Atletico GO,CRB,3.0,3.0,D,13.0,3.0,11.0,9.0,3.0,4.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Sao Bernardo,Sport,0.0,0.0,D,,,,,1.0,2.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Juventude,Ponte Preta,3.0,0.0,H,7.0,2.0,18.0,15.0,1.0,1.0,0.0,1.0,Kleber Ariel Goncalves Silva,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Athletic,Goias,1.0,1.0,D,,,,,4.0,3.0,1.0,0.0,Alisson Sidnei Furtado,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Cuiaba,Vila Nova,1.0,0.0,H,5.0,2.0,12.0,10.0,1.0,1.0,0.0,0.0,Denis da Silva Ribeiro Serafim,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Botafogo-SP,Operario Ferroviario,2.0,1.0,H,2.0,3.0,14.0,15.0,4.0,3.0,0.0,0.0,Jefferson Ferreira de Moraes,,,,,,,brasileirao_b,2026
+BRB,2026-06-14,Novorizontino,Nautico,2.0,2.0,D,,,,,3.0,3.0,0.0,0.0,Gustavo Ervino Bauermann,,,,,,,brasileirao_b,2026
+BRB,2026-06-15,Criciuma,Ceara,1.0,1.0,D,4.0,3.0,14.0,14.0,0.0,0.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-06-15,Londrina,Avai,3.0,2.0,H,10.0,6.0,17.0,18.0,2.0,2.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao_b,2026
+BRB,2026-06-16,Fortaleza,America MG,0.0,3.0,A,0.0,0.0,10.0,11.0,1.0,2.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao_b,2026
+BRB,2026-06-05,Operario Ferroviario,Juventude,2.0,1.0,H,4.0,4.0,17.0,16.0,3.0,4.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-06-06,Criciuma,Londrina,1.0,0.0,H,8.0,5.0,14.0,11.0,2.0,2.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-06-07,CRB,Sao Bernardo,2.0,3.0,A,8.0,0.0,11.0,16.0,3.0,5.0,0.0,0.0,Jefferson Ferreira de Moraes,,,,,,,brasileirao_b,2026
+BRB,2026-06-08,Vila Nova,Botafogo-SP,1.0,0.0,H,9.0,9.0,13.0,15.0,1.0,4.0,0.0,0.0,Maguielson Lima Barbosa,,,,,,,brasileirao_b,2026
+BRB,2026-06-08,America MG,Atletico GO,1.0,2.0,A,,,,,0.0,1.0,0.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-06-09,Nautico,Fortaleza,0.0,1.0,A,11.0,4.0,7.0,16.0,3.0,4.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao_b,2026
+BRB,2026-06-09,Ponte Preta,Cuiaba,1.0,2.0,A,,,,,4.0,1.0,0.0,0.0,Marcelo de Lima Henrique,,,,,,,brasileirao_b,2026
+BRB,2026-06-10,Ceara,Avai,2.0,1.0,H,8.0,0.0,14.0,11.0,3.0,3.0,0.0,0.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao_b,2026
+BRB,2026-06-10,Goias,Novorizontino,0.0,4.0,A,9.0,4.0,5.0,12.0,2.0,1.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao_b,2026
+BRB,2026-06-10,Sport,Athletic,1.0,1.0,D,,,,,1.0,2.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-05-29,Juventude,America MG,3.0,0.0,H,5.0,5.0,14.0,14.0,0.0,2.0,0.0,0.0,Savio Pereira Sampaio,,,,,,,brasileirao_b,2026
+BRB,2026-05-30,Atletico GO,Goias,1.0,1.0,D,9.0,2.0,13.0,13.0,4.0,3.0,0.0,0.0,Bruno Arleu de Araujo,,,,,,,brasileirao_b,2026
+BRB,2026-05-30,Avai,Criciuma,1.0,2.0,A,3.0,9.0,16.0,24.0,2.0,2.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao_b,2026
+BRB,2026-05-30,Athletic,Fortaleza,1.0,0.0,H,,,,,0.0,1.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao_b,2026
+BRB,2026-05-30,Sport,Nautico,2.0,0.0,H,1.0,8.0,19.0,17.0,5.0,3.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao_b,2026
+BRB,2026-05-31,Londrina,Vila Nova,0.0,1.0,A,2.0,9.0,13.0,14.0,5.0,5.0,1.0,1.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-05-31,Sao Bernardo,Novorizontino,1.0,1.0,D,,,,,3.0,2.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-05-22,Nautico,Cuiaba,1.0,0.0,H,6.0,1.0,16.0,18.0,3.0,2.0,0.0,0.0,Edina Alves Batista,,,,,,,brasileirao_b,2026
+BRB,2026-05-23,Novorizontino,Ceara,2.0,1.0,H,,,,,1.0,3.0,0.0,1.0,Jonathan Benkenstein Pinheiro,,,,,,,brasileirao_b,2026
+BRB,2026-05-23,Fortaleza,Londrina,3.0,0.0,H,5.0,1.0,14.0,14.0,3.0,4.0,0.0,0.0,Braulio da Silva Machado,,,,,,,brasileirao_b,2026
+BRB,2026-05-23,Juventude,Sport,0.0,1.0,A,9.0,2.0,19.0,13.0,1.0,4.0,0.0,0.0,Lucas Paulo Torezin,,,,,,,brasileirao_b,2026
+BRB,2026-05-24,Atletico GO,Sao Bernardo,0.0,1.0,A,8.0,4.0,15.0,13.0,0.0,2.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao_b,2026
+BRB,2026-05-24,CRB,Ponte Preta,4.0,2.0,H,12.0,5.0,17.0,8.0,13.0,2.0,0.0,0.0,Wagner do Nascimento Magalhaes,,,,,,,brasileirao_b,2026
+BRB,2026-05-24,America MG,Vila Nova,1.0,2.0,A,,,,,3.0,3.0,0.0,0.0,Matheus Delgado Candançan,,,,,,,brasileirao_b,2026
+BRB,2026-05-24,Avai,Goias,0.0,2.0,A,1.0,6.0,15.0,18.0,1.0,2.0,1.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-05-24,Operario Ferroviario,Criciuma,1.0,1.0,D,8.0,6.0,13.0,18.0,2.0,3.0,0.0,0.0,Alex Gomes Stefano,,,,,,,brasileirao_b,2026
+BRB,2026-05-25,Botafogo-SP,Athletic,1.0,2.0,A,,,,,4.0,2.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-05-16,Sao Bernardo,America MG,1.0,1.0,D,,,,,3.0,5.0,0.0,0.0,Gustavo Ervino Bauermann,,,,,,,brasileirao_b,2026
+BRB,2026-05-16,Operario Ferroviario,Nautico,2.0,6.0,A,0.0,0.0,8.0,17.0,3.0,1.0,0.0,0.0,Arthur Gomes Rabelo,,,,,,,brasileirao_b,2026
+BRB,2026-05-16,Goias,Botafogo-SP,1.0,0.0,H,0.0,0.0,18.0,11.0,4.0,3.0,0.0,0.0,Denis da Silva Ribeiro Serafim,,,,,,,brasileirao_b,2026
+BRB,2026-05-16,Cuiaba,Novorizontino,0.0,0.0,D,0.0,0.0,14.0,12.0,3.0,2.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-05-17,Athletic,Juventude,1.0,1.0,D,,,,,2.0,3.0,0.0,0.0,Joao Vitor Gobi,,,,,,,brasileirao_b,2026
+BRB,2026-05-17,Vila Nova,Avai,2.0,0.0,H,0.0,0.0,21.0,16.0,4.0,3.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-05-17,Criciuma,Atletico GO,1.0,1.0,D,0.0,0.0,14.0,16.0,3.0,4.0,0.0,0.0,Leo Simao Holanda,,,,,,,brasileirao_b,2026
+BRB,2026-05-17,Ceara,Fortaleza,2.0,1.0,H,0.0,0.0,19.0,21.0,3.0,4.0,0.0,0.0,Rodrigo Jose Pereira de Lima,,,,,,,brasileirao_b,2026
+BRB,2026-05-17,Sport,CRB,1.0,2.0,A,0.0,0.0,14.0,13.0,2.0,4.0,0.0,0.0,Edina Alves Batista,,,,,,,brasileirao_b,2026
+BRB,2026-05-18,Ponte Preta,Londrina,1.0,4.0,A,,,,,6.0,0.0,0.0,1.0,Thaillan Azevedo Gomes,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,Goias,Vila Nova,1.0,0.0,H,0.0,0.0,15.0,10.0,5.0,2.0,1.0,0.0,Flavio Rodrigues de Souza,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,Athletic,Cuiaba,0.0,0.0,D,,,,,3.0,2.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,Ponte Preta,Sport,1.0,3.0,A,,,,,5.0,3.0,0.0,1.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,Ceara,Atletico GO,0.0,1.0,A,0.0,0.0,13.0,15.0,2.0,2.0,0.0,1.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,CRB,Operario Ferroviario,3.0,0.0,H,0.0,0.0,15.0,14.0,2.0,4.0,0.0,0.0,Leo Simao Holanda,,,,,,,brasileirao_b,2026
+BRB,2026-05-09,Juventude,Criciuma,0.0,0.0,D,0.0,0.0,14.0,18.0,2.0,4.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-05-10,Nautico,America MG,4.0,0.0,H,0.0,0.0,19.0,16.0,2.0,3.0,0.0,1.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-05-10,Avai,Fortaleza,0.0,0.0,D,0.0,0.0,19.0,17.0,3.0,2.0,0.0,0.0,Paulo Cesar Zanovelli da Silva,,,,,,,brasileirao_b,2026
+BRB,2026-05-10,Novorizontino,Botafogo-SP,1.0,0.0,H,,,,,4.0,2.0,0.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-05-12,Londrina,Sao Bernardo,1.0,3.0,A,0.0,0.0,13.0,6.0,3.0,1.0,0.0,0.0,Maguielson Lima Barbosa,,,,,,,brasileirao_b,2026
+BRB,2026-04-22,Cuiaba,Botafogo-SP,1.0,1.0,D,6.0,4.0,19.0,7.0,4.0,3.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-04-24,Ponte Preta,America MG,1.0,0.0,H,,,,,4.0,2.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao_b,2026
+BRB,2026-04-25,Sport,Novorizontino,1.0,0.0,H,3.0,5.0,13.0,21.0,4.0,5.0,0.0,0.0,Lucas Guimaraes Rechatiko Horn,,,,,,,brasileirao_b,2026
+BRB,2026-04-25,Juventude,Londrina,1.0,0.0,H,3.0,8.0,22.0,16.0,3.0,3.0,0.0,0.0,Gustavo Ervino Bauermann,,,,,,,brasileirao_b,2026
+BRB,2026-04-26,Sao Bernardo,Goias,1.0,0.0,H,,,,,3.0,1.0,0.0,0.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-04-26,Operario Ferroviario,Fortaleza,0.0,0.0,D,11.0,7.0,9.0,12.0,1.0,3.0,0.0,0.0,Jefferson Ferreira de Moraes,,,,,,,brasileirao_b,2026
+BRB,2026-04-26,Ceara,Vila Nova,3.0,3.0,D,3.0,4.0,15.0,12.0,1.0,3.0,0.0,0.0,Yuri Elino Ferreira da Cruz,,,,,,,brasileirao_b,2026
+BRB,2026-04-26,Atletico GO,Avai,2.0,1.0,H,6.0,1.0,22.0,9.0,5.0,4.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-04-26,Criciuma,CRB,3.0,1.0,H,9.0,5.0,13.0,11.0,1.0,2.0,0.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-04-27,Athletic,Nautico,0.0,1.0,A,,,,,3.0,4.0,0.0,0.0,Lucas Paulo Torezin,,,,,,,brasileirao_b,2026
+BRB,2026-04-18,America MG,Sport,0.0,0.0,D,,,,,1.0,4.0,0.0,0.0,Gustavo Ervino Bauermann,,,,,,,brasileirao_b,2026
+BRB,2026-04-18,Nautico,Sao Bernardo,0.0,3.0,A,10.0,2.0,15.0,14.0,2.0,6.0,0.0,0.0,Alisson Sidnei Furtado,,,,,,,brasileirao_b,2026
+BRB,2026-04-18,Vila Nova,Operario Ferroviario,2.0,1.0,H,3.0,6.0,22.0,7.0,7.0,2.0,0.0,0.0,Jodis Nascimento de Souza,,,,,,,brasileirao_b,2026
+BRB,2026-04-18,Avai,Ponte Preta,1.0,2.0,A,5.0,4.0,14.0,15.0,4.0,2.0,0.0,0.0,Marcelo de Lima Henrique,,,,,,,brasileirao_b,2026
+BRB,2026-04-18,CRB,Juventude,0.0,1.0,A,5.0,2.0,15.0,19.0,4.0,2.0,1.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-04-19,Londrina,Ceara,0.0,0.0,D,14.0,4.0,18.0,9.0,1.0,0.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-04-19,Botafogo-SP,Atletico GO,1.0,1.0,D,7.0,5.0,12.0,14.0,2.0,3.0,0.0,0.0,Arthur Gomes Rabelo,,,,,,,brasileirao_b,2026
+BRB,2026-04-19,Goias,Cuiaba,0.0,2.0,A,4.0,4.0,15.0,26.0,2.0,2.0,0.0,0.0,Bruno Mota Correia,,,,,,,brasileirao_b,2026
+BRB,2026-04-19,Novorizontino,Athletic,2.0,1.0,H,,,,,1.0,3.0,0.0,2.0,Jefferson Ferreira de Moraes,,,,,,,brasileirao_b,2026
+BRB,2026-04-19,Fortaleza,Criciuma,3.0,2.0,H,4.0,3.0,18.0,16.0,3.0,2.0,0.0,0.0,Lucas Casagrande,,,,,,,brasileirao_b,2026
+BRB,2026-03-31,Juventude,Novorizontino,0.0,0.0,D,4.0,8.0,13.0,15.0,4.0,3.0,0.0,0.0,Paulo Henrique Schleich Vollkopf,,,,,,,brasileirao_b,2026
+BRB,2026-03-31,Fortaleza,Cuiaba,0.0,0.0,D,4.0,0.0,20.0,18.0,1.0,2.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,America MG,Botafogo-SP,1.0,2.0,A,,,,,2.0,4.0,0.0,0.0,Diego da Costa Cidral,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,Londrina,Goias,2.0,2.0,D,6.0,6.0,16.0,18.0,4.0,5.0,0.0,0.0,Pierry Dias dos Santos,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,Atletico GO,Nautico,1.0,2.0,A,7.0,1.0,21.0,18.0,1.0,4.0,0.0,1.0,Lucas Guimaraes Rechatiko Horn,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,Sport,Vila Nova,1.0,1.0,D,6.0,3.0,11.0,12.0,2.0,4.0,0.0,0.0,Jose Mendonca da Silva Junior,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,Ponte Preta,Ceara,1.0,1.0,D,,,,,2.0,2.0,0.0,1.0,Kleber Ariel Goncalves Silva,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,CRB,Avai,0.0,1.0,A,5.0,5.0,10.0,14.0,1.0,6.0,0.0,0.0,Afro Rocha De Carvalho Filho,,,,,,,brasileirao_b,2026
+BRB,2026-04-01,Criciuma,Athletic,1.0,1.0,D,,,,,3.0,5.0,0.0,1.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-04-02,Sao Bernardo,Operario Ferroviario,1.0,2.0,A,,,,,1.0,3.0,0.0,0.0,Leo Simao Holanda,,,,,,,brasileirao_b,2026
+BRB,2026-03-21,Vila Nova,CRB,2.0,2.0,D,3.0,4.0,22.0,15.0,4.0,4.0,1.0,1.0,Bruno Pereira Vasconcelos,,,,,,,brasileirao_b,2026
+BRB,2026-03-21,Ceara,Sao Bernardo,1.0,1.0,D,7.0,3.0,8.0,17.0,2.0,0.0,0.0,0.0,Lucas Guimaraes Rechatiko Horn,,,,,,,brasileirao_b,2026
+BRB,2026-03-21,Operario Ferroviario,Atletico GO,1.0,0.0,H,,,,,2.0,2.0,0.0,0.0,Lucas Canetto Bellote,,,,,,,brasileirao_b,2026
+BRB,2026-03-21,Botafogo-SP,Fortaleza,4.0,0.0,H,8.0,5.0,12.0,18.0,2.0,5.0,0.0,1.0,Felipe Fernandes de Lima,,,,,,,brasileirao_b,2026
+BRB,2026-03-21,Cuiaba,Sport,0.0,0.0,D,0.0,1.0,20.0,21.0,1.0,2.0,0.0,0.0,Maguielson Lima Barbosa,,,,,,,brasileirao_b,2026
+BRB,2026-03-22,Avai,Juventude,2.0,0.0,H,3.0,3.0,15.0,14.0,3.0,0.0,0.0,0.0,Kleber Ariel Goncalves Silva,,,,,,,brasileirao_b,2026
+BRB,2026-03-22,Nautico,Criciuma,0.0,1.0,A,12.0,8.0,17.0,18.0,3.0,3.0,0.0,0.0,Andre Luiz Skettino Policarpo Bento,,,,,,,brasileirao_b,2026
+BRB,2026-03-22,Goias,America MG,3.0,1.0,H,3.0,8.0,10.0,4.0,1.0,1.0,1.0,0.0,Marcelo de Lima Henrique,,,,,,,brasileirao_b,2026
+BRB,2026-03-22,Athletic,Ponte Preta,2.0,1.0,H,,,,,3.0,3.0,0.0,0.0,Fernando Antonio Mendes de Salles Nascimento Filho,,,,,,,brasileirao_b,2026
+BRB,2026-03-22,Novorizontino,Londrina,1.0,3.0,A,,,,,0.0,3.0,0.0,0.0,Jodis Nascimento de Souza,,,,,,,brasileirao_b,2026

@@ -81,3 +81,22 @@ def test_carregar_times_por_liga_inclui_serie_b(tmp_path):
     resultado = carregar_times_por_liga(caminho)
     assert LIGA_SERIE_B in resultado
     assert "Botafogo-SP" in resultado[LIGA_SERIE_B]
+
+
+def test_carregar_times_por_liga_uniao_historico_e_roster_atual_da_serie_b(tmp_path):
+    """LIGA_SERIE_B tem que combinar (união) o histórico real de
+    partidas.csv (temporadas passadas, ver criar_linhas_brasileirao_b.py)
+    com o roster atual estático -- nunca um SUBSTITUINDO o outro, senão um
+    time rebaixado antes de 2026 desaparece da resolução, ou um time novo
+    de 2026 sem histórico suficiente ainda não resolve fixture ao vivo."""
+    import pandas as pd
+    df = pd.DataFrame([
+        {"liga": "brasileirao_b", "HomeTeam": "Time Historico Antigo", "AwayTeam": "Vila Nova"},
+    ])
+    caminho = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho, index=False)
+    resultado = carregar_times_por_liga(caminho)
+    # time só do histórico (não está mais no roster 2026) continua presente
+    assert "Time Historico Antigo" in resultado[LIGA_SERIE_B]
+    # time do roster atual continua presente mesmo sem aparecer no histórico
+    assert "Botafogo-SP" in resultado[LIGA_SERIE_B]

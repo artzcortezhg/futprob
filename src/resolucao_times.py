@@ -41,12 +41,18 @@ def normalizar_texto(s: str) -> str:
 
 
 def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO) -> dict[str, list[str]]:
+    """LIGA_SERIE_B combina o roster ATUAL (TIMES_SERIE_B_2026, estático —
+    garante que os 20 times de 2026 sempre resolvem fixture ao vivo, mesmo
+    que a base histórica ainda não tenha colhido dados suficientes de algum
+    deles) com qualquer time histórico já presente em partidas.csv (temporadas
+    passadas, ver scripts/criar_linhas_brasileirao_b.py) — união, nunca
+    substituição, pra não perder nenhum dos dois."""
     df = pd.read_csv(caminho_partidas, usecols=["liga", "HomeTeam", "AwayTeam"])
     resultado = {}
     for liga in df["liga"].unique():
         d = df[df["liga"] == liga]
         resultado[liga] = sorted(set(d["HomeTeam"]) | set(d["AwayTeam"]))
-    resultado[LIGA_SERIE_B] = list(TIMES_SERIE_B_2026)
+    resultado[LIGA_SERIE_B] = sorted(set(resultado.get(LIGA_SERIE_B, [])) | set(TIMES_SERIE_B_2026))
     return resultado
 
 

@@ -530,6 +530,8 @@ async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     for j in jogos:
         rotulo = "" if j["tem_modelo"] else " ⚠️ sem modelo (Série B) — só a odd"
         linhas.append(f"{j['casa']} x {j['fora']} ({j['liga']}){rotulo} — {j['commence_time']}")
+        for aviso in j.get("avisos_modelo") or []:
+            linhas.append(f"  ⚠️ {aviso}")
         mercados_ordenados = sorted(j["mercados"], key=lambda m: m["ev"] if m["ev"] is not None else -99, reverse=True)
         for m in mercados_ordenados:
             if m["ev"] is not None:

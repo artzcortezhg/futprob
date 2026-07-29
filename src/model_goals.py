@@ -255,6 +255,19 @@ def ajustar_modelo(
     )
 
 
+def contar_jogos_por_time(df: pd.DataFrame, liga: str, data_corte) -> dict[str, int]:
+    """Quantos jogos (mandante ou visitante) cada time da liga tem na base
+    ANTES de data_corte — mesmo filtro usado por ajustar_modelo() pra treinar.
+    Usado pra sinalizar times com histórico curto demais (ex.: recém
+    promovidos): sem esse aviso, um ataque/defesa ajustado com poucos jogos
+    pode gerar probabilidades instáveis que parecem (mas não são) uma
+    vantagem real contra o mercado."""
+    data_corte = pd.Timestamp(data_corte)
+    df_liga = df[(df["liga"] == liga) & (df["Date"] < data_corte)]
+    contagem = df_liga["HomeTeam"].value_counts().add(df_liga["AwayTeam"].value_counts(), fill_value=0)
+    return contagem.astype(int).to_dict()
+
+
 def matriz_placares(
     modelo: ModeloDixonColes,
     time_casa: str,

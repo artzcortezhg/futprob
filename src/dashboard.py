@@ -477,6 +477,9 @@ function renderizarCard(j, gruposOrdem) {
   }
   const rotuloOdds = j.tem_odds_coletadas ? '' : ' — odds ainda não coletadas hoje';
   let html = `<details class="jogo-card"><summary>${j.time_casa} x ${j.time_fora} (${j.liga})${rotuloOdds}</summary><div class="card-conteudo">`;
+  for (const aviso of (j.avisos_modelo || [])) {
+    html += `<p class="etiqueta-sem-edge">⚠️ ${aviso}</p>`;
+  }
   for (const grupo of gruposOrdem) {
     const linhas = (j.grupos && j.grupos[grupo]) || [];
     const aviso = j.avisos_grupo && j.avisos_grupo[grupo];
@@ -595,8 +598,11 @@ async function buscarOddspapi() {
   for (const j of d.jogos) {
     const rotuloModelo = j.tem_modelo ? '' : ' — <span class="etiqueta-sem-edge">⚠️ sem modelo (Série B) — só a odd</span>';
     const mercados = [...j.mercados].sort((a, b) => (b.ev ?? -99) - (a.ev ?? -99));
-    html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}${rotuloModelo}`
-      + '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th><th>Prob. modelo</th><th>EV</th></tr>';
+    html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}${rotuloModelo}`;
+    for (const aviso of (j.avisos_modelo || [])) {
+      html += `<p class="etiqueta-sem-edge">⚠️ ${aviso}</p>`;
+    }
+    html += '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th><th>Prob. modelo</th><th>EV</th></tr>';
     for (const m of mercados) {
       const evClasse = m.ev > 0 ? 'positivo' : (m.ev < 0 ? 'negativo' : '');
       const evTxto = m.suspeito ? `${fmtPct(m.ev)} ⚠️ suspeito` : fmtPct(m.ev);

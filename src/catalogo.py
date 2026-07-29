@@ -540,7 +540,7 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
     não escondido. Cacheia por confronto (não por linha) pra não refazer
     o ajuste do modelo várias vezes pro mesmo jogo."""
     resultado = []
-    cache: dict[tuple[str, str, str], tuple[dict, object] | None] = {}
+    cache: dict[tuple[str, str, str], tuple[dict, object, list[str]] | None] = {}
 
     for jogo in jogos:
         j = dict(jogo)
@@ -552,7 +552,7 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
             and jogo["liga"] != LIGA_SERIE_B
         )
 
-        probs, matriz = None, None
+        probs, matriz, avisos_modelo = None, None, []
         if tem_modelo:
             liga, time_casa = casa_resolvido
             _, time_fora = fora_resolvido
@@ -561,12 +561,12 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
                 try:
                     resultado_pred = prever(liga, time_casa, time_fora, gravar=False)
                     probs_calc = probs_modelo_de_linhas(resultado_pred["linhas_mercados"])
-                    cache[chave] = (probs_calc, resultado_pred["matriz"])
+                    cache[chave] = (probs_calc, resultado_pred["matriz"], resultado_pred["avisos"])
                 except Exception:
                     logger_catalogo.exception(f"falha ao prever {time_casa} x {time_fora} pra enriquecer odds externas")
                     cache[chave] = None
             if cache[chave] is not None:
-                probs, matriz = cache[chave]
+                probs, matriz, avisos_modelo = cache[chave]
 
         mercados_enriquecidos = []
         for m in jogo["mercados"]:
@@ -577,12 +577,14 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
             # pequena, time recém-promovido etc.), não de aposta de valor
             # de verdade — nunca deixar isso passar sem aviso só porque
             # veio de uma fonte de odds diferente (OddsPapi em vez de
-            # Betano).
+            # Betano). O motivo concreto (ex.: "só 19 jogos no histórico")
+            # vem de prever() em avisos_modelo, nunca duplicado aqui.
             suspeito = ev is not None and ev > LIMIAR_EV_SUSPEITO_PADRAO
             mercados_enriquecidos.append({**m, "prob_modelo": prob, "ev": ev, "suspeito": suspeito})
 
         j["mercados"] = mercados_enriquecidos
         j["tem_modelo"] = tem_modelo
+        j["avisos_modelo"] = avisos_modelo
         j.update(montar_aposta_e_bilhete(mercados_enriquecidos, matriz))
         resultado.append(j)
 

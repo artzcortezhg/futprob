@@ -23,7 +23,7 @@ from markets import (
     mercado_escanteios, mercado_cartoes, mercado_faltas,
     para_linhas_tabela_escanteios, para_linhas_tabela_cartoes, para_linhas_tabela_faltas,
 )
-from model_goals import XI_PADRAO, ajustar_modelo, matriz_placares
+from model_goals import XI_PADRAO, ajustar_modelo, matriz_placares, contar_jogos_por_time
 from model_corners import ajustar_modelo_escanteios, matriz_escanteios
 from model_cards import ajustar_modelo_cartoes, ajustar_modelo_faltas, matriz_contagem
 from ingest import LIGAS_EXTRA
@@ -40,6 +40,12 @@ LIGAS_SEM_ESTATISTICAS_EXTRAS = set(LIGAS_EXTRA.values())
 # ligas com xG disponível (src/ingest_xg.py): recebem alpha_xg=0.5 por padrão
 LIGAS_COM_XG = {"Premier League", "La Liga"}
 ALPHA_XG_PADRAO_COM_XG = 0.5
+
+# abaixo disso (~1 temporada), o ataque/defesa ajustado pra um time (ex.:
+# recém promovido) tem poucos jogos de sustentação e fica instável — o
+# modelo não erra por bug, mas o EV alto contra um mercado como a Pinnacle
+# tem mais chance de refletir essa instabilidade do que uma vantagem real
+LIMIAR_JOGOS_HISTORICO_PADRAO = 30
 
 SQL_CRIAR_TABELAS = """
 CREATE TABLE IF NOT EXISTS previsoes (
@@ -162,6 +168,15 @@ def prever(
     linhas_mercados = para_linhas_tabela(mercados)
 
     avisos = []
+    contagens = contar_jogos_por_time(df, liga, data_corte)
+    for time in (time_casa, time_fora):
+        n = contagens.get(time, 0)
+        if n < LIMIAR_JOGOS_HISTORICO_PADRAO:
+            avisos.append(
+                f"'{time}' tem só {n} jogo(s) no histórico desta liga (provável promovido recente) — "
+                "estimativas menos confiáveis, EVs altos podem refletir isso em vez de uma vantagem real."
+            )
+
     if liga in LIGAS_SEM_ESTATISTICAS_EXTRAS:
         avisos.append(
             f"Liga '{liga}': a fonte não tem escanteios/cartões/faltas/árbitro — "

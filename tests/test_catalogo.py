@@ -291,6 +291,38 @@ def test_enriquecer_odds_externas_liga_modelada_calcula_prob_e_ev(tmp_path, monk
     assert m_desconhecido["suspeito"] is False  # sem ev, nunca marca suspeito
 
 
+def test_enriquecer_odds_externas_propaga_aviso_de_historico_curto(tmp_path, monkeypatch):
+    """O aviso de 'poucos jogos no histórico' (prever(), predict.py) não pode
+    se perder ao passar pelo enriquecimento de odds externas — é o que
+    explica pro usuário POR QUE um EV alto pode ser suspeito em vez de
+    valor real, em vez de só marcar 'suspeito' sem dizer o motivo."""
+    df = _dados_sinteticos_liga("brasileirao")
+    rng = np.random.default_rng(1)
+    linhas_novo_time = []
+    datas_recentes = pd.date_range("2021-11-01", periods=10, freq="3D")
+    for d in datas_recentes:
+        linhas_novo_time.append({
+            "liga": "brasileirao", "Date": d, "HomeTeam": "Novato", "AwayTeam": "A",
+            "FTHG": rng.poisson(1.4), "FTAG": rng.poisson(1.1),
+            "FTR": "H", "HC": np.nan, "AC": np.nan, "HF": np.nan, "AF": np.nan,
+            "HY": np.nan, "AY": np.nan, "HR": np.nan, "AR": np.nan, "Referee": None,
+            "PSCH": np.nan, "PSCD": np.nan, "PSCA": np.nan,
+        })
+    df = pd.concat([df, pd.DataFrame(linhas_novo_time)], ignore_index=True)
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+    monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
+
+    times = {"brasileirao": ["Novato", "A"]}
+    jogos = [{
+        "liga": "brasileirao", "casa": "Novato", "fora": "A", "commence_time": "x",
+        "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 2.0}],
+    }]
+    resultado = enriquecer_odds_externas_com_modelo(jogos, times)
+    avisos = resultado[0]["avisos_modelo"]
+    assert any("Novato" in a and "10 jogo" in a for a in avisos)
+
+
 def test_enriquecer_odds_externas_monta_aposta_e_bilhete(tmp_path, monkeypatch):
     df = _dados_sinteticos_liga("brasileirao")
     caminho_csv = tmp_path / "partidas_teste.csv"
@@ -343,7 +375,7 @@ def test_enriquecer_odds_externas_marca_ev_suspeito_acima_de_15_por_cento():
     import predict as predict_mod
 
     def _prever_falso(liga, casa, fora, gravar=False):
-        return {"linhas_mercados": [("1X2", "Casa", 0.9)], "matriz": None}  # prob bem alta -> ev bem alto com odd 3.0
+        return {"linhas_mercados": [("1X2", "Casa", 0.9)], "matriz": None, "avisos": []}  # prob bem alta -> ev bem alto com odd 3.0
 
     import catalogo as mod
     original = mod.prever

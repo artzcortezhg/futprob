@@ -73,6 +73,38 @@ def test_prever_liga_sem_estatisticas_gera_aviso_e_pula_mercados_extras(tmp_path
     assert any(m == "1X2" for m in mercados_presentes)  # mercados de gols continuam presentes
 
 
+def test_prever_time_com_poucos_jogos_gera_aviso_de_historico_curto(tmp_path):
+    """Time recém promovido (poucos jogos na base) precisa de um aviso
+    explícito — sem isso, o EV alto vindo de uma estimativa instável parece
+    (mas não é) uma vantagem real contra o mercado."""
+    df = _dados_sinteticos_liga("brasileirao")
+    rng = np.random.default_rng(1)
+    linhas_novo_time = []
+    datas_recentes = pd.date_range("2021-11-01", periods=10, freq="3D")
+    for d in datas_recentes:
+        adversario = rng.choice(["A", "B", "C"])
+        linhas_novo_time.append({
+            "liga": "brasileirao", "Date": d, "HomeTeam": "Novato", "AwayTeam": adversario,
+            "FTHG": rng.poisson(1.4), "FTAG": rng.poisson(1.1),
+            "FTR": "H", "HC": np.nan, "AC": np.nan, "HF": np.nan, "AF": np.nan,
+            "HY": np.nan, "AY": np.nan, "HR": np.nan, "AR": np.nan, "Referee": None,
+            "PSCH": np.nan, "PSCD": np.nan, "PSCA": np.nan,
+        })
+    df = pd.concat([df, pd.DataFrame(linhas_novo_time)], ignore_index=True)
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+
+    resultado = prever(
+        "brasileirao", "Novato", "A",
+        caminho_dados=caminho_csv, data_corte="2022-01-01", gravar=False,
+    )
+    avisos_historico = [a for a in resultado["avisos"] if "Novato" in a]
+    assert len(avisos_historico) == 1
+    assert "10 jogo" in avisos_historico[0]
+    # o adversário tem histórico de sobra (~130+ jogos) -> nenhum aviso pra ele
+    assert not any("'A'" in a for a in resultado["avisos"])
+
+
 def test_prever_liga_com_estatisticas_nao_gera_aviso(tmp_path):
     df = _dados_sinteticos_liga("Teste")
     df["HC"] = 5.0

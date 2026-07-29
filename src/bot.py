@@ -537,6 +537,16 @@ async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f} | prob. {m['prob_modelo']*100:.1f}% | EV {m['ev']*100:+.1f}%{aviso}")
             else:
                 linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f}")
+
+        aposta = j.get("melhor_aposta")
+        if aposta:
+            linhas.append(f"  🎯 Melhor aposta: {aposta['mercado']}/{aposta['selecao']} — odd {aposta['odd']:.2f} | prob. {aposta['prob_modelo']*100:.1f}% | EV {aposta['ev']*100:+.1f}%")
+
+        bilhete = j.get("melhor_bilhete")
+        if bilhete:
+            pernas_txt = " + ".join(f"{p['mercado']}/{p['selecao']} (odd {p['odd']:.2f})" for p in bilhete["pernas"])
+            linhas.append(f"  🎟️ Melhor bilhete: {pernas_txt} — odd combinada {bilhete['odd_combinada']:.2f} | prob. conjunta {bilhete['prob_conjunta']*100:.1f}% | EV {bilhete['ev_combinado']*100:+.1f}%")
+
         linhas.append("")
     texto = "\n".join(linhas)
     if len(texto) > 4000:

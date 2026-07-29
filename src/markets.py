@@ -210,3 +210,65 @@ def para_linhas_tabela_faltas(mercados: dict) -> list[tuple[str, str, float]]:
         linhas.append((f"Faltas Over/Under {linha}", "Over", probs["over"]))
         linhas.append((f"Faltas Over/Under {linha}", "Under", probs["under"]))
     return linhas
+
+
+def mascara_selecao(mercado: str, selecao: str, matriz: np.ndarray) -> np.ndarray | None:
+    """Máscara booleana (mesmo shape da matriz de placares) marcando as
+    células em que a seleção (mercado, selecao) se realiza — usada pra
+    calcular a probabilidade CONJUNTA de combinar seleções do MESMO jogo
+    num bilhete, em vez de multiplicar probabilidades marginais (que
+    ignoraria a correlação real entre placar e cada mercado: um time que
+    vence tende a marcar mais gols também, por exemplo). Só cobre os
+    mercados de gols usados no bilhete (1X2, dupla chance, ambas marcam,
+    over/under) — retorna None pra qualquer outro (escanteios/cartões
+    vêm de outra matriz, não dá pra combinar aqui)."""
+    n = matriz.shape[0]
+    i, j = np.meshgrid(np.arange(n), np.arange(n), indexing="ij")
+
+    if mercado == "1X2":
+        if selecao == "Casa":
+            return i > j
+        if selecao == "Empate":
+            return i == j
+        if selecao == "Fora":
+            return i < j
+        return None
+
+    if mercado == "Dupla chance":
+        if selecao.startswith("1X"):
+            return i >= j
+        if selecao.startswith("12"):
+            return i != j
+        if selecao.startswith("X2"):
+            return i <= j
+        return None
+
+    if mercado == "Ambas marcam":
+        ambas = (i >= 1) & (j >= 1)
+        return ambas if selecao == "Sim" else ~ambas
+
+    if mercado.startswith("Over/Under"):
+        try:
+            linha = float(mercado.rsplit(maxsplit=1)[-1])
+        except ValueError:
+            return None
+        total = i + j
+        acima = total > linha
+        return acima if selecao == "Over" else ~acima
+
+    return None
+
+
+def prob_conjunta(matriz: np.ndarray, selecoes: list[tuple[str, str]]) -> float | None:
+    """Probabilidade de TODAS as seleções acontecerem juntas no mesmo
+    jogo — soma a matriz de placares na interseção das máscaras de cada
+    seleção. None se alguma seleção não tiver máscara suportada."""
+    mascara_conjunta = None
+    for mercado, selecao in selecoes:
+        m = mascara_selecao(mercado, selecao, matriz)
+        if m is None:
+            return None
+        mascara_conjunta = m if mascara_conjunta is None else (mascara_conjunta & m)
+    if mascara_conjunta is None:
+        return None
+    return float(matriz[mascara_conjunta].sum())

@@ -25,7 +25,8 @@ logger_catalogo = logging.getLogger("futprob.catalogo")
 
 from resolucao_times import resolver_time, resolver_time_todas_ligas, score_nomes, LIGA_SERIE_B
 from predict import prever, probs_modelo_de_linhas, LIGAS_SEM_ESTATISTICAS_EXTRAS
-from guardrails import LIMIAR_EV_SUSPEITO_PADRAO
+from guardrails import LIMIAR_EV_SUSPEITO_PADRAO, aplicar_guardrails
+from markets import prob_conjunta
 
 # ligas "de interesse" do projeto — tudo fora dessa lista é considerado
 # fora de escopo e não aparece em "jogos do dia" (nem como card, nem como
@@ -474,19 +475,72 @@ def maiores_probabilidades(cards: list[dict], top_n: int = 10) -> list[dict]:
     return todos[:top_n]
 
 
+def montar_aposta_e_bilhete(mercados: list[dict], matriz) -> dict:
+    """A partir das linhas já enriquecidas (prob_modelo/ev/suspeito) de UM
+    jogo, monta:
+    - melhor_aposta: a MELHOR seleção sozinha — reaproveita
+      aplicar_guardrails (guardrails.py), a MESMA regra usada em todo o
+      resto do sistema (nunca placar exato, nunca prob<8%, nunca suspeita).
+    - melhor_bilhete: as 2 melhores seleções de FAMÍLIAS DIFERENTES (nunca
+      duas do mesmo grupo — ex. duas linhas de over/under, ou 1X2 e dupla
+      chance juntos, que são o mesmo evento e tornariam a combinação
+      redundante), com a probabilidade CONJUNTA calculada na matriz de
+      placares de verdade (ver markets.prob_conjunta) — não o produto das
+      marginais, que ignoraria a correlação real entre gols e resultado.
+    Ambos None quando não há candidatos suficientes (sem modelo, ou só uma
+    família disponível pro bilhete)."""
+    candidatos = [m for m in mercados if m.get("prob_modelo") is not None]
+    if not candidatos:
+        return {"melhor_aposta": None, "melhor_bilhete": None}
+
+    ranking = aplicar_guardrails(candidatos)
+    melhor_aposta = next((r for r in ranking if r["apostaria"]), None)
+
+    melhor_bilhete = None
+    if matriz is not None:
+        por_grupo: dict[str, dict] = {}
+        for item in ranking:
+            if item["suspeito"]:
+                continue
+            grupo = _grupo_exibicao(item["mercado"])
+            if grupo is None:
+                continue
+            atual = por_grupo.get(grupo)
+            if atual is None or item["ev"] > atual["ev"]:
+                por_grupo[grupo] = item
+
+        melhores_por_grupo = sorted(por_grupo.values(), key=lambda x: -x["ev"])
+        if len(melhores_por_grupo) >= 2:
+            pernas = melhores_por_grupo[:2]
+            conjunta = prob_conjunta(matriz, [(p["mercado"], p["selecao"]) for p in pernas])
+            if conjunta is not None and conjunta > 0:
+                odd_combinada = pernas[0]["odd"] * pernas[1]["odd"]
+                ev_combinado = conjunta * odd_combinada - 1.0
+                melhor_bilhete = {
+                    "pernas": [{"mercado": p["mercado"], "selecao": p["selecao"], "odd": p["odd"]} for p in pernas],
+                    "prob_conjunta": conjunta,
+                    "odd_combinada": odd_combinada,
+                    "ev_combinado": ev_combinado,
+                    "suspeito": ev_combinado > LIMIAR_EV_SUSPEITO_PADRAO,
+                }
+
+    return {"melhor_aposta": melhor_aposta, "melhor_bilhete": melhor_bilhete}
+
+
 def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[str, list[str]]) -> list[dict]:
     """Cruza jogos de uma fonte EXTERNA de odds (ex.: OddsPapi) com o
     modelo do futprob — o coração do projeto não pode ficar de fora só
     porque a odd veio de outro lugar. Resolve os nomes de time, roda
     prever() pras ligas que TÊM modelo (nunca pra Série B — sem histórico
     treinável) e adiciona prob_modelo/ev em cada linha de mercado que
-    bater com o que o modelo calcula. Nunca inventa número: quando não dá
-    pra prever (liga sem modelo, nome não resolvido, ou o mercado/seleção
+    bater com o que o modelo calcula, mais a melhor aposta/bilhete do jogo
+    (ver montar_aposta_e_bilhete). Nunca inventa número: quando não dá pra
+    prever (liga sem modelo, nome não resolvido, ou o mercado/seleção
     específico não existe no modelo), os campos ficam None — explícito,
     não escondido. Cacheia por confronto (não por linha) pra não refazer
     o ajuste do modelo várias vezes pro mesmo jogo."""
     resultado = []
-    cache_probs: dict[tuple[str, str, str], dict | None] = {}
+    cache: dict[tuple[str, str, str], tuple[dict, object] | None] = {}
 
     for jogo in jogos:
         j = dict(jogo)
@@ -498,19 +552,21 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
             and jogo["liga"] != LIGA_SERIE_B
         )
 
-        probs = None
+        probs, matriz = None, None
         if tem_modelo:
             liga, time_casa = casa_resolvido
             _, time_fora = fora_resolvido
             chave = (liga, time_casa, time_fora)
-            if chave not in cache_probs:
+            if chave not in cache:
                 try:
                     resultado_pred = prever(liga, time_casa, time_fora, gravar=False)
-                    cache_probs[chave] = probs_modelo_de_linhas(resultado_pred["linhas_mercados"])
+                    probs_calc = probs_modelo_de_linhas(resultado_pred["linhas_mercados"])
+                    cache[chave] = (probs_calc, resultado_pred["matriz"])
                 except Exception:
                     logger_catalogo.exception(f"falha ao prever {time_casa} x {time_fora} pra enriquecer odds externas")
-                    cache_probs[chave] = None
-            probs = cache_probs[chave]
+                    cache[chave] = None
+            if cache[chave] is not None:
+                probs, matriz = cache[chave]
 
         mercados_enriquecidos = []
         for m in jogo["mercados"]:
@@ -527,6 +583,7 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
 
         j["mercados"] = mercados_enriquecidos
         j["tem_modelo"] = tem_modelo
+        j.update(montar_aposta_e_bilhete(mercados_enriquecidos, matriz))
         resultado.append(j)
 
     return resultado

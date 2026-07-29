@@ -291,6 +291,46 @@ def test_enriquecer_odds_externas_liga_modelada_calcula_prob_e_ev(tmp_path, monk
     assert m_desconhecido["suspeito"] is False  # sem ev, nunca marca suspeito
 
 
+def test_enriquecer_odds_externas_monta_aposta_e_bilhete(tmp_path, monkeypatch):
+    df = _dados_sinteticos_liga("brasileirao")
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+    monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
+
+    times = {"brasileirao": ["A", "B"]}
+    jogos = [{
+        "liga": "brasileirao", "casa": "A", "fora": "B", "commence_time": "x",
+        "mercados": [
+            {"mercado": "1X2", "selecao": "Casa", "odd": 2.0},
+            {"mercado": "1X2", "selecao": "Empate", "odd": 3.2},
+            {"mercado": "Over/Under 1.5", "selecao": "Over", "odd": 1.6},
+            {"mercado": "Over/Under 1.5", "selecao": "Under", "odd": 2.3},
+        ],
+    }]
+    resultado = enriquecer_odds_externas_com_modelo(jogos, times)
+    jogo = resultado[0]
+
+    # bilhete: 2 pernas de famílias DIFERENTES (nunca duas de 1X2 juntas)
+    bilhete = jogo["melhor_bilhete"]
+    assert bilhete is not None
+    assert len(bilhete["pernas"]) == 2
+    grupos_das_pernas = {_grupo_exibicao(p["mercado"]) for p in bilhete["pernas"]}
+    assert len(grupos_das_pernas) == 2  # duas famílias diferentes, nunca a mesma
+
+    odd_combinada_esperada = bilhete["pernas"][0]["odd"] * bilhete["pernas"][1]["odd"]
+    assert bilhete["odd_combinada"] == pytest.approx(odd_combinada_esperada)
+    assert bilhete["ev_combinado"] == pytest.approx(bilhete["prob_conjunta"] * bilhete["odd_combinada"] - 1.0)
+
+    # a probabilidade conjunta calculada na matriz NUNCA pode ser o produto
+    # ingênuo das marginais (isso ignoraria a correlação real gols/resultado)
+    prob_marginal_perna1 = next(m["prob_modelo"] for m in jogo["mercados"]
+                                 if m["mercado"] == bilhete["pernas"][0]["mercado"] and m["selecao"] == bilhete["pernas"][0]["selecao"])
+    prob_marginal_perna2 = next(m["prob_modelo"] for m in jogo["mercados"]
+                                 if m["mercado"] == bilhete["pernas"][1]["mercado"] and m["selecao"] == bilhete["pernas"][1]["selecao"])
+    produto_ingenuo = prob_marginal_perna1 * prob_marginal_perna2
+    assert abs(bilhete["prob_conjunta"] - produto_ingenuo) > 1e-9
+
+
 def test_enriquecer_odds_externas_marca_ev_suspeito_acima_de_15_por_cento():
     """MESMA regra do resto do sistema (guardrails.py): EV > 15% é mais
     provável ser instabilidade do modelo do que valor real — não pode
@@ -303,7 +343,7 @@ def test_enriquecer_odds_externas_marca_ev_suspeito_acima_de_15_por_cento():
     import predict as predict_mod
 
     def _prever_falso(liga, casa, fora, gravar=False):
-        return {"linhas_mercados": [("1X2", "Casa", 0.9)]}  # prob bem alta -> ev bem alto com odd 3.0
+        return {"linhas_mercados": [("1X2", "Casa", 0.9)], "matriz": None}  # prob bem alta -> ev bem alto com odd 3.0
 
     import catalogo as mod
     original = mod.prever

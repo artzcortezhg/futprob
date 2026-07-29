@@ -340,6 +340,10 @@ PAGINA_HTML = """<!doctype html>
   .card-conteudo { margin-top: 0.5rem; }
   .etiqueta-sem-edge { display: block; font-size: 0.75rem; opacity: 0.75; }
   .filtros { margin: 0.5rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .destaque-aposta, .destaque-bilhete { font-size: 0.85rem; border-radius: 0.4rem; padding: 0.4rem 0.7rem; margin-top: 0.5rem; }
+  .destaque-aposta { background: #0d2e1a; border: 1px solid #2ea043; }
+  .destaque-bilhete { background: #1a2340; border: 1px solid #4c6fdb; margin-bottom: 0.3rem; }
+  @media (prefers-color-scheme: light) { .destaque-aposta { background: #e6f6ea; } .destaque-bilhete { background: #e8ecfb; } }
 </style>
 </head>
 <body>
@@ -599,7 +603,17 @@ async function buscarOddspapi() {
       html += `<tr><td>${m.mercado}</td><td>${m.selecao}</td><td>${fmtOdd(m.odd)}</td>`
         + `<td>${fmtPct(m.prob_modelo)}</td><td class="${evClasse}">${evTxto}</td></tr>`;
     }
-    html += '</table></div>';
+    html += '</table>';
+    if (j.melhor_aposta) {
+      const a = j.melhor_aposta;
+      html += `<div class="destaque-aposta">🎯 <b>Melhor aposta:</b> ${a.mercado}/${a.selecao} — odd ${fmtOdd(a.odd)} | prob. ${fmtPct(a.prob_modelo)} | EV ${fmtPct(a.ev)}</div>`;
+    }
+    if (j.melhor_bilhete) {
+      const b = j.melhor_bilhete;
+      const pernasTxt = b.pernas.map(p => `${p.mercado}/${p.selecao} (odd ${fmtOdd(p.odd)})`).join(' + ');
+      html += `<div class="destaque-bilhete">🎟️ <b>Melhor bilhete:</b> ${pernasTxt} — odd combinada ${fmtOdd(b.odd_combinada)} | prob. conjunta ${fmtPct(b.prob_conjunta)} | EV ${fmtPct(b.ev_combinado)}</div>`;
+    }
+    html += '</div>';
   }
   el.innerHTML = html;
 }

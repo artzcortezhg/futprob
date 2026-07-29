@@ -288,3 +288,34 @@ def test_enriquecer_odds_externas_liga_modelada_calcula_prob_e_ev(tmp_path, monk
     assert m_1x2["ev"] == pytest.approx(m_1x2["prob_modelo"] * 2.0 - 1.0)
     m_desconhecido = resultado[0]["mercados"][1]
     assert m_desconhecido["prob_modelo"] is None  # mercado que o modelo não calcula
+    assert m_desconhecido["suspeito"] is False  # sem ev, nunca marca suspeito
+
+
+def test_enriquecer_odds_externas_marca_ev_suspeito_acima_de_15_por_cento():
+    """MESMA regra do resto do sistema (guardrails.py): EV > 15% é mais
+    provável ser instabilidade do modelo do que valor real — não pode
+    passar sem aviso só porque veio de uma fonte de odds diferente."""
+    from catalogo import LIMIAR_EV_SUSPEITO_PADRAO
+    times = {LIGA_SERIE_B: ["Fortaleza", "Botafogo-SP"]}  # sem modelo -> ev fica None de qualquer forma
+    # usa Série B só pra testar sem depender de fit real; testa a regra
+    # suspeito=ev>limiar diretamente via a lógica de enriquecimento com um
+    # jogo modelado sintético
+    import predict as predict_mod
+
+    def _prever_falso(liga, casa, fora, gravar=False):
+        return {"linhas_mercados": [("1X2", "Casa", 0.9)]}  # prob bem alta -> ev bem alto com odd 3.0
+
+    import catalogo as mod
+    original = mod.prever
+    mod.prever = _prever_falso
+    try:
+        jogos = [{
+            "liga": "brasileirao", "casa": "A", "fora": "B", "commence_time": "x",
+            "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 3.0}],
+        }]
+        resultado = mod.enriquecer_odds_externas_com_modelo(jogos, {"brasileirao": ["A", "B"]})
+    finally:
+        mod.prever = original
+    m = resultado[0]["mercados"][0]
+    assert m["ev"] > LIMIAR_EV_SUSPEITO_PADRAO
+    assert m["suspeito"] is True

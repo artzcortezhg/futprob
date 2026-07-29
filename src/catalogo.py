@@ -25,6 +25,7 @@ logger_catalogo = logging.getLogger("futprob.catalogo")
 
 from resolucao_times import resolver_time, resolver_time_todas_ligas, score_nomes, LIGA_SERIE_B
 from predict import prever, probs_modelo_de_linhas, LIGAS_SEM_ESTATISTICAS_EXTRAS
+from guardrails import LIMIAR_EV_SUSPEITO_PADRAO
 
 # ligas "de interesse" do projeto — tudo fora dessa lista é considerado
 # fora de escopo e não aparece em "jogos do dia" (nem como card, nem como
@@ -515,7 +516,14 @@ def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[
         for m in jogo["mercados"]:
             prob = probs.get(m["mercado"], {}).get(m["selecao"]) if probs else None
             ev = (prob * m["odd"] - 1.0) if prob is not None else None
-            mercados_enriquecidos.append({**m, "prob_modelo": prob, "ev": ev})
+            # MESMO guarda-corpo do resto do sistema (guardrails.py): EV
+            # muito alto é sinal de erro/instabilidade do modelo (amostra
+            # pequena, time recém-promovido etc.), não de aposta de valor
+            # de verdade — nunca deixar isso passar sem aviso só porque
+            # veio de uma fonte de odds diferente (OddsPapi em vez de
+            # Betano).
+            suspeito = ev is not None and ev > LIMIAR_EV_SUSPEITO_PADRAO
+            mercados_enriquecidos.append({**m, "prob_modelo": prob, "ev": ev, "suspeito": suspeito})
 
         j["mercados"] = mercados_enriquecidos
         j["tem_modelo"] = tem_modelo

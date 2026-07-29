@@ -533,7 +533,8 @@ async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         mercados_ordenados = sorted(j["mercados"], key=lambda m: m["ev"] if m["ev"] is not None else -99, reverse=True)
         for m in mercados_ordenados:
             if m["ev"] is not None:
-                linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f} | prob. {m['prob_modelo']*100:.1f}% | EV {m['ev']*100:+.1f}%")
+                aviso = " ⚠️ suspeito: provável erro do modelo" if m.get("suspeito") else ""
+                linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f} | prob. {m['prob_modelo']*100:.1f}% | EV {m['ev']*100:+.1f}%{aviso}")
             else:
                 linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f}")
         linhas.append("")

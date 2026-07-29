@@ -389,7 +389,10 @@ PAGINA_HTML = """<!doctype html>
 <h2>OddsPapi (Pinnacle) — sob demanda</h2>
 <div class="card">
   <p style="font-size:0.85rem;opacity:0.85">Fonte independente de odds (Brasileirão Série A/B e MLS). Nunca busca sozinho —
-  só quando você aperta o botão, porque cada busca gasta 1 uso da cota gratuita (250 no total).</p>
+  só quando você aperta o botão, porque cada busca gasta 1 uso da cota gratuita (250 no total).
+  Prob./EV vêm do MESMO modelo Dixon-Coles do resto do painel, ajustado na hora com o histórico real —
+  mas EV acima de 15% é marcado "suspeito" (mesma regra do resto do sistema: mais provável ser
+  instabilidade do modelo — pouco histórico do time, por exemplo — do que valor real).</p>
   <div id="oddspapi-status" style="font-size:0.85rem;margin-bottom:0.5rem">carregando cota…</div>
   <button onclick="buscarOddspapi()">Buscar odds agora</button>
   <div id="oddspapi-resultado" style="margin-top:0.7rem">Ainda não buscado nesta sessão.</div>
@@ -589,8 +592,9 @@ async function buscarOddspapi() {
       + '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th><th>Prob. modelo</th><th>EV</th></tr>';
     for (const m of mercados) {
       const evClasse = m.ev > 0 ? 'positivo' : (m.ev < 0 ? 'negativo' : '');
+      const evTxto = m.suspeito ? `${fmtPct(m.ev)} ⚠️ suspeito` : fmtPct(m.ev);
       html += `<tr><td>${m.mercado}</td><td>${m.selecao}</td><td>${fmtOdd(m.odd)}</td>`
-        + `<td>${fmtPct(m.prob_modelo)}</td><td class="${evClasse}">${fmtPct(m.ev)}</td></tr>`;
+        + `<td>${fmtPct(m.prob_modelo)}</td><td class="${evClasse}">${evTxto}</td></tr>`;
     }
     html += '</table></div>';
   }

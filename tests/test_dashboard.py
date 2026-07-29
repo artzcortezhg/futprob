@@ -179,6 +179,24 @@ def test_registros_filtra_por_familia(cliente):
     assert dados[0]["mercado"] == "Ambas marcam"
 
 
+def test_registros_secao_ao_vivo_exclui_backtest_por_padrao(cliente):
+    client, caminho_db = cliente
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05, origem="bot")
+    inserir_registro(caminho_db, "Premier League", "C", "D", "1X2", "Fora", 0.4, 2.5, 0.05, origem="backtest")
+    dados = client.get("/api/registros").json()["registros"]
+    assert len(dados) == 1
+    assert dados[0]["time_casa"] == "A"
+
+
+def test_registros_secao_backtest_so_traz_backtest(cliente):
+    client, caminho_db = cliente
+    inserir_registro(caminho_db, "Premier League", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05, origem="bot")
+    inserir_registro(caminho_db, "Premier League", "C", "D", "1X2", "Fora", 0.4, 2.5, 0.05, origem="backtest")
+    dados = client.get("/api/registros?secao=backtest").json()["registros"]
+    assert len(dados) == 1
+    assert dados[0]["time_casa"] == "C"
+
+
 def test_registros_elimina_duplicatas_exatas(cliente):
     client, caminho_db = cliente
     for _ in range(2):

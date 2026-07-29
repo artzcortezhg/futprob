@@ -189,7 +189,15 @@ def apostarias_hoje():
 
 
 @app.get("/api/registros")
-def registros(status: str | None = None, liga: str | None = None, familia: str | None = None):
+def registros(status: str | None = None, liga: str | None = None, familia: str | None = None,
+              secao: str = "ao_vivo"):
+    """secao='ao_vivo' (padrão): registros gerados pelo bot de verdade
+    (origem != 'backtest'). secao='backtest': as ~2400 linhas de estudo
+    (Bloco 1.2, popular_registros_backtest.py) usadas pra dar substância ao
+    gráfico de CLV/ROI antes do bot acumular histórico real — nunca
+    misturadas com as apostas ao vivo na mesma lista, mas nenhuma delas é
+    escondida nem apagada (o usuário pediu explicitamente pra manter, servem
+    de análise do próprio algoritmo)."""
     with _conectar() as conn:
         # substr(...,1,10) normaliza data_jogo pra só a parte YYYY-MM-DD antes
         # de agrupar — registros antigos (antes de uma correção de formato)
@@ -202,6 +210,10 @@ def registros(status: str | None = None, liga: str | None = None, familia: str |
                      substr(COALESCE(data_jogo, criado_em), 1, 10), status
         )"""
         params: list = []
+        if secao == "backtest":
+            query += " AND origem='backtest'"
+        else:
+            query += " AND origem!='backtest'"
         if status in ("aberto", "fechado"):
             query += " AND status=?"
             params.append(status)
@@ -380,6 +392,9 @@ PAGINA_HTML = """<!doctype html>
 <p style="font-size:0.8rem;opacity:0.7">Auditoria/estudo — não é algo pra conferir todo dia, por isso fica no final.
 "Aberto" = ainda não sabemos o resultado; "Fechado" = já sabemos e o CLV foi calculado. Só 1X2 fecha sozinho
 hoje — Ambas marcam e Over/Under ficam abertos até você marcar ganhou/perdeu na mão.</p>
+
+<h3>Registros ao vivo</h3>
+<p style="font-size:0.8rem;opacity:0.7">Só o que o bot registrou de verdade (coleta automática, /jogo, odds coladas).</p>
 <div class="filtros">
   <select id="filtro-liga" onchange="carregarRegistros()">
     <option value="">Todas as ligas</option>
@@ -401,6 +416,20 @@ hoje — Ambas marcam e Over/Under ficam abertos até você marcar ganhou/perdeu
   </select>
 </div>
 <div id="registros" class="card">carregando…</div>
+
+<h3>Histórico de backtest (análise do algoritmo)</h3>
+<p style="font-size:0.8rem;opacity:0.7">~2400 partidas históricas (Premier League/La Liga/Championship) usadas pra validar o modelo
+antes do bot existir — resultado e CLV já conhecidos. Fica separado da lista acima só pra não confundir com
+apostas ao vivo; continua aqui porque serve de análise do próprio algoritmo.</p>
+<div class="filtros">
+  <select id="filtro-liga-backtest" onchange="carregarRegistrosBacktest()">
+    <option value="">Todas as ligas</option>
+    <option>Premier League</option>
+    <option>La Liga</option>
+    <option>Championship</option>
+  </select>
+</div>
+<div id="registros-backtest" class="card">carregando…</div>
 
 <h3>Evolução do CLV médio e ROI de papel (com IC 95%)</h3>
 <div id="grafico" class="card">carregando…</div>
@@ -519,17 +548,10 @@ async function carregarJogosAmanha() {
   el.innerHTML = html + '</table>';
 }
 
-async function carregarRegistros() {
-  const liga = document.getElementById('filtro-liga').value;
-  const familia = document.getElementById('filtro-familia').value;
-  const params = new URLSearchParams();
-  if (liga) params.set('liga', liga);
-  if (familia) params.set('familia', familia);
-  const d = await buscar('/api/registros?' + params.toString());
-  const el = document.getElementById('registros');
-  if (!d.registros.length) { el.innerHTML = '<i>Nenhum registro ainda.</i>'; return; }
+function renderizarTabelaRegistros(lista) {
+  if (!lista.length) { return '<i>Nenhum registro ainda.</i>'; }
   let html = '<table><tr><th>Data</th><th>Liga</th><th>Jogo</th><th>Mercado/Seleção</th><th>Odd</th><th>EV</th><th>Status</th><th>CLV</th><th>Resultado</th><th></th></tr>';
-  for (const r of d.registros) {
+  for (const r of lista) {
     const clvClasse = r.clv > 0 ? 'positivo' : (r.clv < 0 ? 'negativo' : '');
     const clvTxt = r.clv != null ? fmtPct(r.clv) : '-';
     const acao = (r.status === 'aberto')
@@ -539,7 +561,25 @@ async function carregarRegistros() {
       + `<td>${r.mercado}/${r.selecao}</td><td>${fmtOdd(r.odd_registrada)}</td><td>${fmtPct(r.ev)}</td>`
       + `<td>${r.status}</td><td class="${clvClasse}">${clvTxt}</td><td>${r.resultado||'-'}</td><td>${acao}</td></tr>`;
   }
-  el.innerHTML = html + '</table>';
+  return html + '</table>';
+}
+
+async function carregarRegistros() {
+  const liga = document.getElementById('filtro-liga').value;
+  const familia = document.getElementById('filtro-familia').value;
+  const params = new URLSearchParams({ secao: 'ao_vivo' });
+  if (liga) params.set('liga', liga);
+  if (familia) params.set('familia', familia);
+  const d = await buscar('/api/registros?' + params.toString());
+  document.getElementById('registros').innerHTML = renderizarTabelaRegistros(d.registros);
+}
+
+async function carregarRegistrosBacktest() {
+  const liga = document.getElementById('filtro-liga-backtest').value;
+  const params = new URLSearchParams({ secao: 'backtest' });
+  if (liga) params.set('liga', liga);
+  const d = await buscar('/api/registros?' + params.toString());
+  document.getElementById('registros-backtest').innerHTML = renderizarTabelaRegistros(d.registros);
 }
 
 async function marcarResultado(id, resultado) {

@@ -13,12 +13,15 @@ Premier League fora de temporada) como se fossem "jogos de hoje".
 """
 from __future__ import annotations
 
+import logging
 import sqlite3
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
+
+logger_catalogo = logging.getLogger("futprob.catalogo")
 
 from resolucao_times import resolver_time, resolver_time_todas_ligas, score_nomes, LIGA_SERIE_B
 from predict import prever, probs_modelo_de_linhas, LIGAS_SEM_ESTATISTICAS_EXTRAS
@@ -468,3 +471,54 @@ def maiores_probabilidades(cards: list[dict], top_n: int = 10) -> list[dict]:
                 })
     todos.sort(key=lambda x: -x["prob_modelo"])
     return todos[:top_n]
+
+
+def enriquecer_odds_externas_com_modelo(jogos: list[dict], times_por_liga: dict[str, list[str]]) -> list[dict]:
+    """Cruza jogos de uma fonte EXTERNA de odds (ex.: OddsPapi) com o
+    modelo do futprob — o coração do projeto não pode ficar de fora só
+    porque a odd veio de outro lugar. Resolve os nomes de time, roda
+    prever() pras ligas que TÊM modelo (nunca pra Série B — sem histórico
+    treinável) e adiciona prob_modelo/ev em cada linha de mercado que
+    bater com o que o modelo calcula. Nunca inventa número: quando não dá
+    pra prever (liga sem modelo, nome não resolvido, ou o mercado/seleção
+    específico não existe no modelo), os campos ficam None — explícito,
+    não escondido. Cacheia por confronto (não por linha) pra não refazer
+    o ajuste do modelo várias vezes pro mesmo jogo."""
+    resultado = []
+    cache_probs: dict[tuple[str, str, str], dict | None] = {}
+
+    for jogo in jogos:
+        j = dict(jogo)
+        casa_resolvido = resolver_time(jogo["casa"], times_por_liga)
+        fora_resolvido = resolver_time(jogo["fora"], times_por_liga)
+        tem_modelo = bool(
+            casa_resolvido and fora_resolvido
+            and casa_resolvido[0] == fora_resolvido[0] == jogo["liga"]
+            and jogo["liga"] != LIGA_SERIE_B
+        )
+
+        probs = None
+        if tem_modelo:
+            liga, time_casa = casa_resolvido
+            _, time_fora = fora_resolvido
+            chave = (liga, time_casa, time_fora)
+            if chave not in cache_probs:
+                try:
+                    resultado_pred = prever(liga, time_casa, time_fora, gravar=False)
+                    cache_probs[chave] = probs_modelo_de_linhas(resultado_pred["linhas_mercados"])
+                except Exception:
+                    logger_catalogo.exception(f"falha ao prever {time_casa} x {time_fora} pra enriquecer odds externas")
+                    cache_probs[chave] = None
+            probs = cache_probs[chave]
+
+        mercados_enriquecidos = []
+        for m in jogo["mercados"]:
+            prob = probs.get(m["mercado"], {}).get(m["selecao"]) if probs else None
+            ev = (prob * m["odd"] - 1.0) if prob is not None else None
+            mercados_enriquecidos.append({**m, "prob_modelo": prob, "ev": ev})
+
+        j["mercados"] = mercados_enriquecidos
+        j["tem_modelo"] = tem_modelo
+        resultado.append(j)
+
+    return resultado

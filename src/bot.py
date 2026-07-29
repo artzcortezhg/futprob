@@ -88,7 +88,7 @@ from integracao_manha import processar_foto_manha_async  # noqa: E402
 from catalogo import (  # noqa: E402
     _mercados_para_jogo, buscar_fixture_real, resolver_fixture_para_liga, buscar_odds_coletadas_para_fixture,
     combinar_modelo_e_odds, descobrir_jogos_do_dia, familia_mercado, hoje_br,
-    card_completo, card_sem_modelo, maiores_probabilidades, GRUPOS_CARD,
+    card_completo, card_sem_modelo, maiores_probabilidades, GRUPOS_CARD, enriquecer_odds_externas_com_modelo,
 )
 import oddspapi  # noqa: E402
 
@@ -509,9 +509,10 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Busca manual (NUNCA automática) das odds Pinnacle atuais via OddsPapi
-    — Brasileirão Série A/B e MLS. Cada chamada gasta 1 uso da cota
+    — Brasileirão Série A/B e MLS — e cruza com o MODELO do futprob (prob.
+    e EV) nas ligas que têm modelo. Cada chamada gasta 1 uso da cota
     gratuita (250 no total), por isso só roda quando pedido."""
-    await update.message.reply_text("Buscando na OddsPapi (gasta 1 uso da cota)…")
+    await update.message.reply_text("Buscando na OddsPapi e cruzando com o modelo (alguns segundos por jogo)…")
     resumo = await asyncio.to_thread(oddspapi.buscar_melhores_odds, CAMINHO_DB)
     status = oddspapi.uso_atual(CAMINHO_DB)
 
@@ -522,11 +523,19 @@ async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.message.reply_text(f"Nenhum jogo com odds Pinnacle no momento (cota usada: {status}/{oddspapi.LIMITE_USOS}).")
         return
 
-    linhas = [f"🎲 OddsPapi (Pinnacle) — {len(resumo['jogos'])} jogo(s), cota {status}/{oddspapi.LIMITE_USOS}:\n"]
-    for j in resumo["jogos"]:
-        linhas.append(f"{j['casa']} x {j['fora']} ({j['liga']}) — {j['commence_time']}")
-        for m in j["mercados"]:
-            linhas.append(f"  {m['mercado']}/{m['selecao']}: {m['odd']:.2f}")
+    times_por_liga = carregar_times_por_liga()
+    jogos = await asyncio.to_thread(enriquecer_odds_externas_com_modelo, resumo["jogos"], times_por_liga)
+
+    linhas = [f"🎲 OddsPapi (Pinnacle) — {len(jogos)} jogo(s), cota {status}/{oddspapi.LIMITE_USOS}:\n"]
+    for j in jogos:
+        rotulo = "" if j["tem_modelo"] else " ⚠️ sem modelo (Série B) — só a odd"
+        linhas.append(f"{j['casa']} x {j['fora']} ({j['liga']}){rotulo} — {j['commence_time']}")
+        mercados_ordenados = sorted(j["mercados"], key=lambda m: m["ev"] if m["ev"] is not None else -99, reverse=True)
+        for m in mercados_ordenados:
+            if m["ev"] is not None:
+                linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f} | prob. {m['prob_modelo']*100:.1f}% | EV {m['ev']*100:+.1f}%")
+            else:
+                linhas.append(f"  {m['mercado']}/{m['selecao']}: odd {m['odd']:.2f}")
         linhas.append("")
     texto = "\n".join(linhas)
     if len(texto) > 4000:

@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
@@ -15,7 +16,7 @@ import predict
 from catalogo import (
     _grupo_exibicao, maiores_probabilidades, card_completo, card_sem_modelo, GRUPOS_CARD,
     _mercados_para_jogo, combinar_modelo_e_odds, _selecao_h2h, _selecao_over_under,
-    descobrir_jogos_do_dia_completo, resolver_fixture_para_liga,
+    descobrir_jogos_do_dia_completo, resolver_fixture_para_liga, enriquecer_odds_externas_com_modelo,
 )
 from resolucao_times import LIGA_SERIE_B
 
@@ -241,3 +242,49 @@ def test_card_sem_modelo_mostra_odd_sem_prob_nem_ev(tmp_path):
     assert mercados[("1X2", "Fora")] == 3.2
     assert "prob_modelo" not in card["linhas"][0]
     assert "ev" not in card["linhas"][0]
+
+
+def test_enriquecer_odds_externas_serie_b_fica_sem_prob_nem_ev():
+    """Nunca inventa número: Série B não tem modelo treinado, então o
+    cruzamento com odds externas (OddsPapi) tem que deixar prob/ev
+    explicitamente None, nunca calcular algo com um modelo que não existe."""
+    times = {LIGA_SERIE_B: ["Fortaleza", "Botafogo-SP"]}
+    jogos = [{
+        "liga": LIGA_SERIE_B, "casa": "Fortaleza EC CE", "fora": "Botafogo FC SP", "commence_time": "x",
+        "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 1.87}],
+    }]
+    resultado = enriquecer_odds_externas_com_modelo(jogos, times)
+    assert resultado[0]["tem_modelo"] is False
+    assert resultado[0]["mercados"][0]["prob_modelo"] is None
+    assert resultado[0]["mercados"][0]["ev"] is None
+
+
+def test_enriquecer_odds_externas_time_nao_resolvido_fica_sem_modelo():
+    times = {"brasileirao": ["Flamengo RJ", "Palmeiras"]}
+    jogos = [{
+        "liga": "brasileirao", "casa": "Time Que Nao Existe XPTO", "fora": "Palmeiras", "commence_time": "x",
+        "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 2.0}],
+    }]
+    resultado = enriquecer_odds_externas_com_modelo(jogos, times)
+    assert resultado[0]["tem_modelo"] is False
+
+
+def test_enriquecer_odds_externas_liga_modelada_calcula_prob_e_ev(tmp_path, monkeypatch):
+    df = _dados_sinteticos_liga("brasileirao")
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+    monkeypatch.setattr(predict, "CAMINHO_DADOS_PADRAO", caminho_csv)
+
+    times = {"brasileirao": ["A", "B"]}
+    jogos = [{
+        "liga": "brasileirao", "casa": "A", "fora": "B", "commence_time": "x",
+        "mercados": [{"mercado": "1X2", "selecao": "Casa", "odd": 2.0},
+                     {"mercado": "Mercado Que Nao Existe", "selecao": "X", "odd": 1.5}],
+    }]
+    resultado = enriquecer_odds_externas_com_modelo(jogos, times)
+    assert resultado[0]["tem_modelo"] is True
+    m_1x2 = resultado[0]["mercados"][0]
+    assert m_1x2["prob_modelo"] is not None
+    assert m_1x2["ev"] == pytest.approx(m_1x2["prob_modelo"] * 2.0 - 1.0)
+    m_desconhecido = resultado[0]["mercados"][1]
+    assert m_desconhecido["prob_modelo"] is None  # mercado que o modelo não calcula

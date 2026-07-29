@@ -67,7 +67,7 @@ from predict import inicializar_db as inicializar_db_previsoes  # noqa: E402
 from resolucao_times import carregar_times_por_liga  # noqa: E402
 from catalogo import (  # noqa: E402
     descobrir_jogos_do_dia_completo, card_completo, card_sem_modelo, maiores_probabilidades,
-    hoje_br, familia_mercado, GRUPOS_CARD,
+    hoje_br, familia_mercado, GRUPOS_CARD, enriquecer_odds_externas_com_modelo,
 )
 from saude_sistema import calcular_status_sistema  # noqa: E402
 import oddspapi  # noqa: E402
@@ -288,9 +288,15 @@ def oddspapi_status():
 @app.post("/api/oddspapi/buscar")
 def oddspapi_buscar():
     """Botão manual (nunca automático/agendado) — busca as odds Pinnacle
-    atuais pra Brasileirão A/B e MLS. Gasta 1 uso da cota da OddsPapi
-    (+1 na primeiríssima vez, pra resolver nomes de time)."""
-    return oddspapi.buscar_melhores_odds(CAMINHO_DB)
+    atuais pra Brasileirão A/B e MLS, cruza com o MODELO do futprob (prob.
+    e EV) nas ligas que têm modelo (Série B fica só com a odd, sem
+    modelo). Gasta 1 uso da cota da OddsPapi (+1 na primeiríssima vez, pra
+    resolver nomes de time)."""
+    resultado = oddspapi.buscar_melhores_odds(CAMINHO_DB)
+    if resultado["sucesso"]:
+        times_por_liga = carregar_times_por_liga()
+        resultado["jogos"] = _sem_nan(enriquecer_odds_externas_com_modelo(resultado["jogos"], times_por_liga))
+    return resultado
 
 
 @app.post("/api/registros/{registro_id}/resultado")
@@ -570,17 +576,21 @@ async function carregarStatusOddspapi() {
 
 async function buscarOddspapi() {
   const el = document.getElementById('oddspapi-resultado');
-  el.innerHTML = 'Buscando na OddsPapi (gasta 1 uso da cota)…';
+  el.innerHTML = 'Buscando na OddsPapi e cruzando com o modelo (o ajuste do modelo demora alguns segundos por jogo)…';
   const d = await buscar('/api/oddspapi/buscar', { method: 'POST' });
   await carregarStatusOddspapi();
   if (!d.sucesso) { el.innerHTML = `⚠️ ${d.erro}`; return; }
   if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo com odds Pinnacle no momento pra essas ligas.</i>'; return; }
   let html = '';
   for (const j of d.jogos) {
-    html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}`
-      + '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th></tr>';
-    for (const m of j.mercados) {
-      html += `<tr><td>${m.mercado}</td><td>${m.selecao}</td><td>${fmtOdd(m.odd)}</td></tr>`;
+    const rotuloModelo = j.tem_modelo ? '' : ' — <span class="etiqueta-sem-edge">⚠️ sem modelo (Série B) — só a odd</span>';
+    const mercados = [...j.mercados].sort((a, b) => (b.ev ?? -99) - (a.ev ?? -99));
+    html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}${rotuloModelo}`
+      + '<table><tr><th>Mercado</th><th>Seleção</th><th>Odd</th><th>Prob. modelo</th><th>EV</th></tr>';
+    for (const m of mercados) {
+      const evClasse = m.ev > 0 ? 'positivo' : (m.ev < 0 ? 'negativo' : '');
+      html += `<tr><td>${m.mercado}</td><td>${m.selecao}</td><td>${fmtOdd(m.odd)}</td>`
+        + `<td>${fmtPct(m.prob_modelo)}</td><td class="${evClasse}">${fmtPct(m.ev)}</td></tr>`;
     }
     html += '</table></div>';
   }

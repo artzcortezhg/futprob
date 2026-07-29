@@ -360,7 +360,22 @@ PAGINA_HTML = """<!doctype html>
 <h2>Jogos de amanhã</h2>
 <div id="jogos-amanha" class="card">carregando…</div>
 
-<h2>Registros — abertos e fechados</h2>
+<h2>OddsPapi (Pinnacle) — sob demanda</h2>
+<div class="card">
+  <p style="font-size:0.85rem;opacity:0.85">Fonte independente de odds (Brasileirão Série A/B e MLS). Nunca busca sozinho —
+  só quando você aperta o botão, porque cada busca gasta 1 uso da cota gratuita (250 no total).
+  Prob./EV vêm do MESMO modelo Dixon-Coles do resto do painel, ajustado na hora com o histórico real —
+  mas EV acima de 15% é marcado "suspeito" (mesma regra do resto do sistema: mais provável ser
+  instabilidade do modelo — pouco histórico do time, por exemplo — do que valor real).</p>
+  <div id="oddspapi-status" style="font-size:0.85rem;margin-bottom:0.5rem">carregando cota…</div>
+  <button onclick="buscarOddspapi()">Buscar odds agora</button>
+  <div id="oddspapi-resultado" style="margin-top:0.7rem">Ainda não buscado nesta sessão.</div>
+</div>
+
+<h2>Histórico (registros e evolução de CLV/ROI)</h2>
+<p style="font-size:0.8rem;opacity:0.7">Auditoria/estudo — não é algo pra conferir todo dia, por isso fica no final.
+"Aberto" = ainda não sabemos o resultado; "Fechado" = já sabemos e o CLV foi calculado. Só 1X2 fecha sozinho
+hoje — Ambas marcam e Over/Under ficam abertos até você marcar ganhou/perdeu na mão.</p>
 <div class="filtros">
   <select id="filtro-liga" onchange="carregarRegistros()">
     <option value="">Todas as ligas</option>
@@ -383,20 +398,8 @@ PAGINA_HTML = """<!doctype html>
 </div>
 <div id="registros" class="card">carregando…</div>
 
-<h2>Evolução do CLV médio e ROI de papel (com IC 95%)</h2>
+<h3>Evolução do CLV médio e ROI de papel (com IC 95%)</h3>
 <div id="grafico" class="card">carregando…</div>
-
-<h2>OddsPapi (Pinnacle) — sob demanda</h2>
-<div class="card">
-  <p style="font-size:0.85rem;opacity:0.85">Fonte independente de odds (Brasileirão Série A/B e MLS). Nunca busca sozinho —
-  só quando você aperta o botão, porque cada busca gasta 1 uso da cota gratuita (250 no total).
-  Prob./EV vêm do MESMO modelo Dixon-Coles do resto do painel, ajustado na hora com o histórico real —
-  mas EV acima de 15% é marcado "suspeito" (mesma regra do resto do sistema: mais provável ser
-  instabilidade do modelo — pouco histórico do time, por exemplo — do que valor real).</p>
-  <div id="oddspapi-status" style="font-size:0.85rem;margin-bottom:0.5rem">carregando cota…</div>
-  <button onclick="buscarOddspapi()">Buscar odds agora</button>
-  <div id="oddspapi-resultado" style="margin-top:0.7rem">Ainda não buscado nesta sessão.</div>
-</div>
 
 <script>
 async function buscar(url, opts) {

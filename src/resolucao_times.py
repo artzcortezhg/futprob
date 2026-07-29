@@ -76,10 +76,28 @@ def candidatos_time(nome: str, times_por_liga: dict[str, list[str]], top_n: int 
     return candidatos[:top_n]
 
 
+# abreviações MUITO comuns de nome de clube — conservador de propósito
+# (só entradas inequívocas no contexto de futebol), pra não perder matches
+# legítimos só por causa de abreviação: 'Atlanta United FC' (nome cru da
+# OddsPapi) x 'Atlanta Utd' (nome no nosso roster) são o MESMO clube, só
+# que a comparação por palavra inteira rejeitava 'utd' != 'united'.
+_ALIASES_TOKEN = {"utd": "united", "st": "saint"}
+
+
+def _tokens(texto: str) -> set[str]:
+    """Tokeniza pra comparação por palavra inteira: sem acento/maiúsculas,
+    sem pontuação (pra 'St.' virar o token 'st', não 'st.'), com
+    abreviações comuns canonicalizadas (ver _ALIASES_TOKEN)."""
+    norm = normalizar_texto(texto).replace(".", "")
+    tokens = {t for t in re.split(r"[\s\-]+", norm) if t}
+    return {_ALIASES_TOKEN.get(t, t) for t in tokens}
+
+
 def _aceitavel(nome: str, candidato: str, score: float, limiar: float) -> bool:
     """Um candidato só é aceito se, além do score mínimo, TODAS as palavras
     de um dos nomes existirem como palavra INTEIRA no outro (após
-    normalizar) OU o score for bem alto (>=0.90).
+    normalizar, sem pontuação, com abreviações comuns canonicalizadas) OU
+    o score for bem alto (>=0.90).
 
     Precisa ser por palavra inteira, não por trecho dentro de uma palavra:
     'Botafogo-SP' x 'Botafogo RJ' (dois clubes DISTINTOS que só
@@ -92,8 +110,8 @@ def _aceitavel(nome: str, candidato: str, score: float, limiar: float) -> bool:
     palavra inteira em ['ca','paranaense','pr'], então é rejeitado."""
     if score < limiar:
         return False
-    alvo_tokens = set(re.split(r"[\s\-]+", normalizar_texto(nome)))
-    cand_tokens = set(re.split(r"[\s\-]+", normalizar_texto(candidato)))
+    alvo_tokens = _tokens(nome)
+    cand_tokens = _tokens(candidato)
     eh_substring_por_palavra = alvo_tokens <= cand_tokens or cand_tokens <= alvo_tokens
     return eh_substring_por_palavra or score >= 0.90
 

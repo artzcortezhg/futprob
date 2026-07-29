@@ -40,6 +40,17 @@ def test_ainda_resolve_variacoes_legitimas_do_mesmo_clube():
     assert resolver_time("Internacional", TIMES_POR_LIGA) == ("brasileirao", "Internacional")
 
 
+def test_resolve_abreviacoes_comuns_de_clube():
+    """Achado testando com nomes reais da OddsPapi: 'Atlanta United FC' e
+    'Atlanta Utd' são o MESMO clube (329 jogos de histórico!), só que a
+    checagem por palavra inteira rejeitava 'utd' != 'united' — mesma coisa
+    pra 'Saint'/'St.'. Sem esse alias, o cruzamento com odds externas
+    perdia jogos que na verdade têm histórico completo."""
+    times = {"mls": ["Atlanta Utd", "St. Louis City", "Real Salt Lake"]}
+    assert resolver_time("Atlanta United FC", times) == ("mls", "Atlanta Utd")
+    assert resolver_time("Saint Louis City SC", times) == ("mls", "St. Louis City")
+
+
 def test_ambiguo_tambem_rejeita_match_de_palavra_em_comum():
     resultado = resolver_time_ambiguo("Botafogo-SP", TIMES_POR_LIGA)
     assert resultado["status"] == "nao_encontrado"

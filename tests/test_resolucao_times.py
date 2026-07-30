@@ -27,11 +27,15 @@ def test_nao_confunde_clubes_diferentes_com_palavra_em_comum():
 def test_nao_confunde_substring_dentro_de_uma_so_palavra():
     """Regressão achada testando com nomes reais da OddsPapi: 'Parana'
     (Paraná Clube) é literalmente um TRECHO de 'Paranaense' (Athletico
-    Paranaense, clube diferente) — 'parana' in 'ca paranaense pr' é True,
-    mas não é a mesma palavra. O substring só pode valer por PALAVRA
-    inteira, não por pedaço dentro de uma palavra maior."""
+    Paranaense, clube diferente) — 'parana' in 'paranaense fc' é True, mas
+    não é a mesma palavra. O substring só pode valer por PALAVRA inteira,
+    não por pedaço dentro de uma palavra maior. ('CA Paranaense PR'
+    especificamente virou um alias de nome inteiro pro Athletico-PR, ver
+    test_resolve_apelido_de_nome_inteiro_sem_token_em_comum -- aqui uso um
+    nome parecido mas sem alias, só pra isolar a proteção contra
+    substring)."""
     times = {"brasileirao": ["Parana", "Athletico-PR"]}
-    assert resolver_time("CA Paranaense PR", times) is None
+    assert resolver_time("Paranaense FC", times) is None
 
 
 def test_ainda_resolve_variacoes_legitimas_do_mesmo_clube():
@@ -49,6 +53,20 @@ def test_resolve_abreviacoes_comuns_de_clube():
     times = {"mls": ["Atlanta Utd", "St. Louis City", "Real Salt Lake"]}
     assert resolver_time("Atlanta United FC", times) == ("mls", "Atlanta Utd")
     assert resolver_time("Saint Louis City SC", times) == ("mls", "St. Louis City")
+
+
+def test_resolve_apelido_de_nome_inteiro_sem_token_em_comum():
+    """Bug real encontrado ao vivo: a OddsPapi chama o Athletico-PR de 'CA
+    Paranaense PR' (Clube Atlético Paranaense) -- não tem NENHUM token em
+    comum com 'Athletico-PR' ('ca'/'paranaense' vs 'athletico'/'pr'), então
+    nem abreviação de palavra resolve (não é a mesma palavra abreviada, é
+    um nome diferente pro mesmo clube). 'Corinthians x Athletico-PR', jogo
+    real da Série A, aparecia como 'sem modelo' por causa disso."""
+    times = {"brasileirao": ["Corinthians", "Athletico-PR"]}
+    assert resolver_time("CA Paranaense PR", times) == ("brasileirao", "Athletico-PR")
+    # variante com espaço duplo, vista de verdade no cache da OddsPapi
+    assert resolver_time("CA  Paranaense PR", times) == ("brasileirao", "Athletico-PR")
+    assert resolver_time_todas_ligas("CA Paranaense PR", times) == [("brasileirao", "Athletico-PR")]
 
 
 def test_ambiguo_tambem_rejeita_match_de_palavra_em_comum():

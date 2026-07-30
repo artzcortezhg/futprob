@@ -467,11 +467,20 @@ def card_sem_modelo(liga: str, time_casa: str, time_fora: str, data_jogo: str | 
 def maiores_probabilidades(cards: list[dict], top_n: int = 10) -> list[dict]:
     """Os `top_n` desfechos mais prováveis do dia entre TODOS os jogos e
     mercados dos cards já calculados (ver `card_completo`) — nunca refaz o
-    ajuste do modelo, só reordena o que já foi calculado."""
+    ajuste do modelo, só reordena o que já foi calculado.
+
+    Só considera linhas com odd REALMENTE coletada (odd is not None). Sem
+    esse filtro, uma linha extrema sem mercado de verdade (ex.: "Faltas
+    Over/Under 24.5", que a Betano nunca oferece) sempre tem probabilidade
+    trivialmente alta (~90%+) só por estar bem longe da média — isso
+    lotava a lista com "maiores probabilidades" sem odd nem EV nenhum,
+    escondendo os palpites que de fato têm mercado real por trás."""
     todos = []
     for card in cards:
         for grupo, linhas in card["grupos"].items():
             for item in linhas:
+                if item["odd"] is None:
+                    continue
                 todos.append({
                     "liga": card["liga"], "time_casa": card["time_casa"], "time_fora": card["time_fora"],
                     "mercado": item["mercado"], "selecao": item["selecao"],

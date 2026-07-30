@@ -122,7 +122,7 @@ def test_maiores_probabilidades_ordena_desc_e_respeita_top_n():
          ]}},
         {"liga": "brasileirao", "time_casa": "C", "time_fora": "D",
          "grupos": {"Ambas marcam": [
-             {"mercado": "Ambas marcam", "selecao": "Sim", "prob_modelo": 0.85, "odd": None, "ev": None},
+             {"mercado": "Ambas marcam", "selecao": "Sim", "prob_modelo": 0.85, "odd": 1.5, "ev": 0.2},
          ]}},
     ]
     top = maiores_probabilidades(cards, top_n=2)
@@ -130,6 +130,24 @@ def test_maiores_probabilidades_ordena_desc_e_respeita_top_n():
     assert top[0]["selecao"] == "Sim"  # 0.85 é a maior prob
     assert top[0]["prob_modelo"] == 0.85
     assert top[1]["prob_modelo"] == 0.4
+
+
+def test_maiores_probabilidades_ignora_linha_sem_odd_coletada():
+    """Sem esse filtro, uma linha extrema sem mercado real (ex.: 'Faltas
+    Over/Under 24.5', que a Betano nunca oferece) sempre tem probabilidade
+    trivialmente alta e lota a lista sem odd nem EV nenhum -- escondendo
+    palpites que de fato têm mercado real por trás."""
+    cards = [
+        {"liga": "brasileirao", "time_casa": "A", "time_fora": "B",
+         "grupos": {"1X2 e dupla chance": [
+             {"mercado": "1X2", "selecao": "Casa", "prob_modelo": 0.4, "odd": 2.0, "ev": 0.1},
+         ], "Cartões e faltas": [
+             {"mercado": "Faltas Over/Under 24.5", "selecao": "Under", "prob_modelo": 0.97, "odd": None, "ev": None},
+         ]}},
+    ]
+    top = maiores_probabilidades(cards, top_n=10)
+    assert len(top) == 1
+    assert top[0]["mercado"] == "1X2"  # a linha de 97% sem odd nunca entra
 
 
 def _dados_sinteticos_liga(liga: str, n: int = 400, seed: int = 0, com_estatisticas_extras: bool = False) -> pd.DataFrame:

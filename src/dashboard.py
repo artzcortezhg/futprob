@@ -636,7 +636,7 @@ async function buscarOddspapi() {
   if (!d.jogos.length) { el.innerHTML = '<i>Nenhum jogo com odds Pinnacle no momento pra essas ligas.</i>'; return; }
   let html = '';
   for (const j of d.jogos) {
-    const rotuloModelo = j.tem_modelo ? '' : ' — <span class="etiqueta-sem-edge">⚠️ sem modelo (Série B) — só a odd</span>';
+    const rotuloModelo = j.tem_modelo ? '' : ' — <span class="etiqueta-sem-edge">⚠️ sem modelo para este confronto (nome de time não reconhecido, ou liga sem modelo) — só a odd</span>';
     const mercados = [...j.mercados].sort((a, b) => (b.ev ?? -99) - (a.ev ?? -99));
     html += `<div class="jogo-card"><b>${j.casa} x ${j.fora}</b> (${j.liga}) — ${j.commence_time}${rotuloModelo}`;
     for (const aviso of (j.avisos_modelo || [])) {

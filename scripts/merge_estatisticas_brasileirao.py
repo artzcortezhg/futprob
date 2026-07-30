@@ -15,6 +15,9 @@ from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from resolucao_times import NOMES_HISTORICOS_CBF  # noqa: E402
+
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_PARTIDAS = RAIZ / "data" / "processed" / "partidas.csv"
 CAMINHO_COLETA = RAIZ / "data" / "raw" / "cbf_geglobo_brasileirao.csv"
@@ -23,31 +26,25 @@ CAMINHO_COLETA = RAIZ / "data" / "raw" / "cbf_geglobo_brasileirao.csv"
 # depois de tirar o sufixo -saf) -> nome canônico usado em partidas.csv
 # (nomenclatura football-data.co.uk, ver ingest.py). Lista de times
 # conferida diretamente contra os valores reais de HomeTeam/AwayTeam da
-# liga 'brasileirao' em partidas.csv.
+# liga 'brasileirao' em partidas.csv. NOMES_HISTORICOS_CBF (compartilhado
+# com criar_linhas_brasileirao_b.py, ver resolucao_times.py) cobre os slugs
+# de nome completo que a CBF usava em temporadas mais antigas pro MESMO
+# clube que também jogou a Série B -- nunca duplicar essas entradas aqui.
 SLUG_PARA_CANONICO: dict[str, str] = {
-    "america": "America MG", "athletico-paranaense": "Athletico-PR",
+    **NOMES_HISTORICOS_CBF,
+    "america": "America MG",
     "atletico-goianiense": "Atletico GO", "atletico-mineiro": "Atletico-MG",
     "avai": "Avai", "bahia": "Bahia", "botafogo": "Botafogo RJ",
-    "red-bull-bragantino": "Bragantino", "csa": "CSA", "ceara": "Ceara",
-    "chapecoense": "Chapecoense-SC", "corinthians": "Corinthians",
+    "red-bull-bragantino": "Bragantino", "ceara": "Ceara",
+    "corinthians": "Corinthians",
     "coritiba": "Coritiba", "criciuma": "Criciuma", "cruzeiro": "Cruzeiro",
     "cuiaba": "Cuiaba", "flamengo": "Flamengo RJ", "fluminense": "Fluminense",
     "fortaleza": "Fortaleza", "goias": "Goias", "gremio": "Gremio",
     "internacional": "Internacional", "juventude": "Juventude",
     "mirassol": "Mirassol", "palmeiras": "Palmeiras", "parana": "Parana",
-    "ponte-preta": "Ponte Preta", "remo": "Remo", "santos-fc": "Santos",
+    "ponte-preta": "Ponte Preta", "remo": "Remo",
     "santos": "Santos", "sao-paulo": "Sao Paulo", "sport-recife": "Sport Recife",
-    "sport": "Sport Recife", "vasco-da-gama": "Vasco", "vitoria": "Vitoria",
-    # slugs de nome completo que a CBF usava em temporadas mais antigas
-    # (2018-2022) pro MESMO clube -- confirmado conferindo o calendário de
-    # jogos (ex.: "atletico" nunca joga contra "atletico-mineiro" nem
-    # aparece fora das rodadas 2020-2022 da Série A, exatamente o período
-    # em que o Atlético-GO disputou a Série A)
-    "atletico": "Atletico GO",
-    "botafogo-de-futebol-e-regatas": "Botafogo RJ",
-    "cruzeiro-esporte-clube": "Cruzeiro",
-    "esporte-clube-bahia": "Bahia",
-    "fortaleza-esporte-clube": "Fortaleza",
+    "sport": "Sport Recife", "vitoria": "Vitoria",
 }
 
 

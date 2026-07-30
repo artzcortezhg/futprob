@@ -32,6 +32,39 @@ TIMES_SERIE_B_2026 = [
     "Sao Bernardo", "Sport", "Vila Nova",
 ]
 
+# Nome canônico ÚNICO por clube, pro slug de nome completo/antigo que a CBF
+# usava em algumas temporadas -- usado tanto no merge da Série A
+# (scripts/merge_estatisticas_brasileirao.py) quanto na criação de linhas da
+# Série B (scripts/criar_linhas_brasileirao_b.py). Manter num só lugar
+# importa de verdade aqui: um clube com spells nas duas divisões (ex.:
+# Athletico-PR, Cruzeiro, Bahia, Chapecoense, Fortaleza, Bragantino, Vasco,
+# CSA) precisa ter EXATAMENTE o mesmo nome nos dois datasets, senão
+# resolver_time_todas_ligas nunca reconhece que é o mesmo time -- foi
+# exatamente isso que causou "Corinthians x Athletico-PR" (jogo real da
+# Série A) aparecer marcado "sem modelo (Série B)": a passagem antiga do
+# Athletico-PR pela Série B tinha virado "Athletico Paranaense" (derivado
+# do slug bruto), uma string diferente da usada na Série A, e o resolver só
+# achava essa segunda. "botafogo" fica de fora por ser ambíguo de verdade
+# (Botafogo/RJ e Botafogo-SP são clubes DIFERENTES, nunca o mesmo) -- cada
+# script trata esse caso separadamente, sabendo sua própria liga.
+NOMES_HISTORICOS_CBF: dict[str, str] = {
+    "atletico": "Atletico GO",
+    "athletico-paranaense": "Athletico-PR",
+    "cruzeiro-esporte-clube": "Cruzeiro",
+    "esporte-clube-bahia": "Bahia",
+    "fortaleza-esporte-clube": "Fortaleza",
+    "chapecoense": "Chapecoense-SC",
+    "red-bull-bragantino": "Bragantino",
+    "santos-fc": "Santos",
+    "vasco-da-gama": "Vasco",
+    "csa": "CSA",
+    # "botafogo-de-futebol-e-regatas" é o nome completo específico do
+    # Botafogo/RJ (o sufixo é só dele) -- diferente do slug bare "botafogo",
+    # que É ambíguo (também usado pro Botafogo-SP na Série B) e por isso
+    # fica de fora daqui, tratado liga a liga em cada script.
+    "botafogo-de-futebol-e-regatas": "Botafogo RJ",
+}
+
 
 def normalizar_texto(s: str) -> str:
     """minúsculo, sem acento — pra casar 'Grêmio' com 'Gremio' etc."""
@@ -71,6 +104,28 @@ def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO,
     return resultado
 
 
+# Apelidos/abreviações de NOME INTEIRO que fontes externas usam e que não
+# compartilham NENHUM token com o nome canônico do nosso roster -- não dá
+# pra resolver por fuzzy/token matching (ver _aceitavel), porque não é uma
+# abreviação de palavra (tipo "utd"->"united"), é um nome diferente pro
+# mesmo clube. Bug real: a OddsPapi chama o Athletico-PR de "CA Paranaense
+# PR" (Clube Atlético Paranaense) -- "ca"/"paranaense" não tem nenhuma
+# palavra em comum com "athletico"/"pr", então o jogo aparecia como "sem
+# modelo" mesmo sendo um confronto real e modelado da Série A. Chave
+# normalizada (sem acento, minúsculo) -> nome canônico do roster.
+_ALIASES_NOME_INTEIRO: dict[str, str] = {
+    "ca paranaense pr": "Athletico-PR",
+    "ca paranaense": "Athletico-PR",
+}
+
+
+def _aplicar_alias_nome_inteiro(nome: str) -> str:
+    # colapsa espaço duplo (a OddsPapi já mandou "CA  Paranaense PR", com
+    # dois espaços, numa das variantes cacheadas) antes de bater no dict
+    chave = re.sub(r"\s+", " ", normalizar_texto(nome))
+    return _ALIASES_NOME_INTEIRO.get(chave, nome)
+
+
 def score_nomes(a: str, b: str) -> float:
     """Similaridade entre dois nomes de time (sem acento, com bônus de
     substring parcial) — usado tanto pra casar contra o roster do modelo
@@ -86,6 +141,7 @@ def score_nomes(a: str, b: str) -> float:
 def candidatos_time(nome: str, times_por_liga: dict[str, list[str]], top_n: int = 5) -> list[tuple[str, str, float]]:
     """Retorna até top_n (liga, time, score) ordenados por score desc,
     usando busca aproximada sem acento e por substring parcial."""
+    nome = _aplicar_alias_nome_inteiro(nome)
     alvo = normalizar_texto(nome)
     if not alvo:
         return []
@@ -144,6 +200,7 @@ def resolver_time_todas_ligas(nome: str, times_por_liga: dict[str, list[str]]) -
     Série A no histórico E está na Série B 2026). Decidir qual liga vale
     pro CONFRONTO cabe a quem cruza os dois lados de um jogo (ver
     resolver_fixture_para_liga em catalogo.py), não a essa função."""
+    nome = _aplicar_alias_nome_inteiro(nome)
     resultado = []
     for liga, times in times_por_liga.items():
         melhor_time, melhor_score = None, 0.0

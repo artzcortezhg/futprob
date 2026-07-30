@@ -515,7 +515,7 @@ async def cmd_oddspapi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
     linhas = [f"🎲 OddsPapi (Pinnacle) — {len(jogos)} jogo(s), cota {status}/{oddspapi.LIMITE_USOS}:\n"]
     for j in jogos:
-        rotulo = "" if j["tem_modelo"] else " ⚠️ sem modelo (Série B) — só a odd"
+        rotulo = "" if j["tem_modelo"] else " ⚠️ sem modelo pra este confronto (nome não reconhecido, ou liga sem modelo) — só a odd"
         linhas.append(f"{j['casa']} x {j['fora']} ({j['liga']}){rotulo} — {j['commence_time']}")
         for aviso in j.get("avisos_modelo") or []:
             linhas.append(f"  ⚠️ {aviso}")

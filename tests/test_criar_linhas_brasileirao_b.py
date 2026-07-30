@@ -73,6 +73,25 @@ def test_cria_linhas_deriva_nome_pra_time_fora_do_roster_atual():
     assert criar._nome_canonico("time-generico-xyz") == "Time Generico Xyz"
 
 
+def test_cria_linhas_usa_mesmo_nome_da_serie_a_pra_clube_com_spell_nas_duas_ligas():
+    """Bug real encontrado ao vivo: Athletico-PR já jogou a Série B em
+    temporada passada, e o slug de nome completo da CBF pra ele
+    ('athletico-paranaense') virava um nome DIFERENTE do usado na Série A
+    ('Athletico-PR') -- o resolver nunca reconhecia que era o mesmo time, e
+    'Corinthians x Athletico-PR' (jogo real da Série A) aparecia marcado
+    'sem modelo (Série B)'. NOMES_HISTORICOS_CBF (resolucao_times.py) é
+    compartilhado com o merge da Série A justamente pra nunca mais divergir."""
+    assert criar._nome_canonico("athletico-paranaense") == "Athletico-PR"
+    assert criar._nome_canonico("cruzeiro-esporte-clube") == "Cruzeiro"
+    assert criar._nome_canonico("esporte-clube-bahia") == "Bahia"
+    assert criar._nome_canonico("fortaleza-esporte-clube") == "Fortaleza"
+    assert criar._nome_canonico("chapecoense") == "Chapecoense-SC"
+    assert criar._nome_canonico("red-bull-bragantino") == "Bragantino"
+    assert criar._nome_canonico("santos-fc") == "Santos"
+    assert criar._nome_canonico("vasco-da-gama") == "Vasco"
+    assert criar._nome_canonico("csa") == "CSA"
+
+
 def test_rodar_de_novo_nao_duplica_linhas_ja_existentes(tmp_path, monkeypatch):
     monkeypatch.setattr(criar, "CAMINHO_PARTIDAS", _partidas_vazia(tmp_path))
     monkeypatch.setattr(criar, "CAMINHO_COLETA", _coleta_exemplo(tmp_path))

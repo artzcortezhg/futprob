@@ -23,6 +23,9 @@ from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from resolucao_times import NOMES_HISTORICOS_CBF  # noqa: E402
+
 RAIZ = Path(__file__).resolve().parent.parent
 CAMINHO_PARTIDAS = RAIZ / "data" / "processed" / "partidas.csv"
 CAMINHO_COLETA = RAIZ / "data" / "raw" / "cbf_geglobo_brasileirao_b.csv"
@@ -50,9 +53,17 @@ def _normalizar_slug(slug: str) -> str:
 
 
 def _nome_canonico(slug: str) -> str:
+    """Ordem de prioridade: roster ATUAL (nomes que têm que bater com
+    TIMES_SERIE_B_2026 pra resolução ao vivo funcionar) -> identidade
+    histórica compartilhada com a Série A (NOMES_HISTORICOS_CBF -- um clube
+    com spells nas duas divisões precisa ter o MESMO nome nos dois
+    datasets, senão resolver_time_todas_ligas nunca reconhece que é o
+    mesmo time) -> nome derivado do slug como último recurso."""
     slug_norm = _normalizar_slug(slug)
     if slug_norm in SLUG_PARA_CANONICO_ATUAL:
         return SLUG_PARA_CANONICO_ATUAL[slug_norm]
+    if slug_norm in NOMES_HISTORICOS_CBF:
+        return NOMES_HISTORICOS_CBF[slug_norm]
     return slug_norm.replace("-", " ").title()
 
 

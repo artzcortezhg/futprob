@@ -141,6 +141,22 @@ def marcar_resultado_manual(caminho_db: Path, registro_id: int, resultado: str) 
         conn.commit()
 
 
+def fechar_registro_com_resultado_real(caminho_db: Path, registro_id: int, resultado: str) -> None:
+    """Usado por scripts/fechar_resultados_reais.py (fechamento a partir do
+    placar real da partida, pesquisado -- ver resolucao_resultados.py):
+    marca resultado E status='fechado', diferente de marcar_resultado_manual
+    (que só marca resultado, deixando status como estava -- por isso os
+    registros de mercados fora do 1X2 nunca apareciam no gráfico de CLV/ROI
+    mesmo depois de marcados manualmente). Nunca mexe em odd_fechamento/clv
+    (não temos odd de fechamento pra esses mercados) -- só resultado+status."""
+    if resultado not in ("ganhou", "perdeu"):
+        raise ValueError("resultado deve ser 'ganhou' ou 'perdeu'.")
+    inicializar_db_painel(caminho_db)
+    with sqlite3.connect(caminho_db) as conn:
+        conn.execute("UPDATE registros SET resultado=?, status='fechado' WHERE id=?", (resultado, registro_id))
+        conn.commit()
+
+
 def registrar_coleta(
     caminho_db: Path, fonte: str, sucesso: bool, mensagem: str = "",
     tipo: str | None = None, n_jogos_capturados: int = 0, n_mercados_capturados: int = 0,

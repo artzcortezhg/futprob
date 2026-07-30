@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from painel_db import (
     inicializar_db_painel, inserir_registro, fechar_registro,
-    marcar_resultado_manual, registrar_coleta, registrar_uso_oddspapi,
+    marcar_resultado_manual, fechar_registro_com_resultado_real, registrar_coleta, registrar_uso_oddspapi,
     salvar_estado_bot, carregar_estado_bot, salvar_mensagem_jogo, carregar_mensagem_jogo,
 )
 
@@ -90,6 +90,19 @@ def test_marcar_resultado_invalido_gera_erro(tmp_path):
     rid = inserir_registro(caminho, "La Liga", "A", "B", "1X2", "Casa", 0.5, 2.0, 0.05)
     with pytest.raises(ValueError):
         marcar_resultado_manual(caminho, rid, "empatou")
+
+
+def test_fechar_registro_com_resultado_real_marca_status_fechado(tmp_path):
+    """Diferente de marcar_resultado_manual (só marca resultado, deixa
+    status como estava -- por isso mercados fora do 1X2 nunca apareciam no
+    gráfico de CLV/ROI mesmo já resolvidos): esta função fecha de vez."""
+    caminho = tmp_path / "teste.sqlite"
+    rid = inserir_registro(caminho, "brasileirao", "A", "B", "Ambas marcam", "Sim", 0.5, 1.9, 0.05)
+    fechar_registro_com_resultado_real(caminho, rid, "ganhou")
+    with sqlite3.connect(caminho) as conn:
+        status, resultado = conn.execute("SELECT status, resultado FROM registros WHERE id=?", (rid,)).fetchone()
+    assert status == "fechado"
+    assert resultado == "ganhou"
 
 
 def test_registrar_coleta_e_uso_oddspapi(tmp_path):

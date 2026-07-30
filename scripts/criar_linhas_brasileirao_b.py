@@ -47,6 +47,16 @@ SLUG_PARA_CANONICO_ATUAL: dict[str, str] = {
     "sao-bernardo": "Sao Bernardo", "sport-recife": "Sport", "vila-nova": "Vila Nova",
 }
 
+# Times que NUNCA jogaram a Série A (não entram em NOMES_HISTORICOS_CBF,
+# que é só pra identidade compartilhada entre as duas ligas), mas cuja CBF
+# usou slugs diferentes em temporadas diferentes pro MESMO clube dentro da
+# própria Série B -- achado auditando: "amazonas-fc" (2024) e "amazonas-saf"
+# (2025, normaliza pra "amazonas") viravam DOIS nomes internos diferentes
+# ("Amazonas Fc" e "Amazonas"), fragmentando o histórico do mesmo time.
+_VARIANTES_MESMO_CLUBE_SERIE_B: dict[str, str] = {
+    "amazonas-fc": "Amazonas",
+}
+
 
 def _normalizar_slug(slug: str) -> str:
     return slug[:-4] if slug.endswith("-saf") else slug
@@ -58,12 +68,16 @@ def _nome_canonico(slug: str) -> str:
     histórica compartilhada com a Série A (NOMES_HISTORICOS_CBF -- um clube
     com spells nas duas divisões precisa ter o MESMO nome nos dois
     datasets, senão resolver_time_todas_ligas nunca reconhece que é o
-    mesmo time) -> nome derivado do slug como último recurso."""
+    mesmo time) -> variante de slug do mesmo clube só dentro da Série B
+    (_VARIANTES_MESMO_CLUBE_SERIE_B) -> nome derivado do slug como último
+    recurso."""
     slug_norm = _normalizar_slug(slug)
     if slug_norm in SLUG_PARA_CANONICO_ATUAL:
         return SLUG_PARA_CANONICO_ATUAL[slug_norm]
     if slug_norm in NOMES_HISTORICOS_CBF:
         return NOMES_HISTORICOS_CBF[slug_norm]
+    if slug_norm in _VARIANTES_MESMO_CLUBE_SERIE_B:
+        return _VARIANTES_MESMO_CLUBE_SERIE_B[slug_norm]
     return slug_norm.replace("-", " ").title()
 
 

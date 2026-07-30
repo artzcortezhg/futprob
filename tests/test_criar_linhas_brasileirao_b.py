@@ -92,6 +92,16 @@ def test_cria_linhas_usa_mesmo_nome_da_serie_a_pra_clube_com_spell_nas_duas_liga
     assert criar._nome_canonico("csa") == "CSA"
 
 
+def test_cria_linhas_unifica_variantes_do_mesmo_clube_dentro_da_serie_b():
+    """Achado auditando: 'amazonas-fc' (temporada 2024) e 'amazonas-saf'
+    (2025, normaliza pra 'amazonas') viravam DOIS nomes internos diferentes
+    ('Amazonas Fc' e 'Amazonas') pro MESMO clube, que nunca jogou a Série
+    A -- fragmentando o histórico dele em dois times distintos pro
+    modelo."""
+    assert criar._nome_canonico("amazonas-fc") == "Amazonas"
+    assert criar._nome_canonico("amazonas-saf") == "Amazonas"
+
+
 def test_rodar_de_novo_nao_duplica_linhas_ja_existentes(tmp_path, monkeypatch):
     monkeypatch.setattr(criar, "CAMINHO_PARTIDAS", _partidas_vazia(tmp_path))
     monkeypatch.setattr(criar, "CAMINHO_COLETA", _coleta_exemplo(tmp_path))

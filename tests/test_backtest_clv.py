@@ -8,7 +8,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from backtest_clv import calcular_ev, calcular_clv, simular_backtest_clv, resumo_backtest
+from backtest_clv import (
+    calcular_ev, calcular_clv, simular_backtest_clv, resumo_backtest,
+    calibracao_apostas_selecionadas, varredura_limiar_ev,
+)
 
 
 def test_calcular_ev():
@@ -83,3 +86,38 @@ def test_resumo_backtest_calcula_metricas():
     assert resumo["clv_medio"] == pytest.approx(0.025)
     assert resumo["clv_pct_positivo"] == pytest.approx(0.5)
     assert resumo["roi_papel"] == pytest.approx(0.25)
+
+
+def test_calibracao_apostas_selecionadas_vazio():
+    tabela = calibracao_apostas_selecionadas(pd.DataFrame(columns=["prob_modelo", "ganhou"]))
+    assert tabela.empty
+
+
+def test_calibracao_apostas_selecionadas_agrupa_por_faixa_de_probabilidade():
+    df = pd.DataFrame([
+        {"prob_modelo": 0.55, "ganhou": True},
+        {"prob_modelo": 0.58, "ganhou": False},
+        {"prob_modelo": 0.20, "ganhou": False},
+    ])
+    tabela = calibracao_apostas_selecionadas(df, n_bins=5)
+    # as duas primeiras (0.55, 0.58) caem na mesma faixa (0.4-0.6)
+    linha_alta = tabela[tabela["prob_media_prevista"] > 0.5].iloc[0]
+    assert linha_alta["n"] == 2
+    assert linha_alta["taxa_real_acerto"] == pytest.approx(0.5)  # 1 de 2 ganhou
+
+
+def test_varredura_limiar_ev_reporta_roi_por_limiar():
+    # jogo com EV bem alto na casa (bem acima de todos os limiares testados)
+    df = pd.DataFrame([_jogo_exemplo(prob_casa_modelo=0.9, psh=3.0, psch=2.3, ftr="H")])
+    resultado = varredura_limiar_ev(df, limiares=[0.05, 0.50])
+    assert list(resultado["limiar_ev"]) == [0.05, 0.50]
+    assert (resultado["n_apostas"] == 1).all()  # o mesmo jogo passa nos dois limiares
+    for valor in resultado["roi_papel"]:
+        assert valor == pytest.approx(2.0)  # ganhou com odd 3.0 -> retorno 2.0
+
+
+def test_varredura_limiar_ev_sem_apostas_no_limiar_retorna_none():
+    df = pd.DataFrame([_jogo_exemplo(prob_casa_modelo=0.3, psh=1.5, psch=1.5, ftr="A")])
+    resultado = varredura_limiar_ev(df, limiares=[0.05])
+    assert resultado.iloc[0]["n_apostas"] == 0
+    assert resultado.iloc[0]["roi_papel"] is None

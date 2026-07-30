@@ -93,6 +93,53 @@ def simular_backtest_clv(df_avaliacao: pd.DataFrame, limiar_ev: float = LIMIAR_E
     return pd.DataFrame(registros)
 
 
+def calibracao_apostas_selecionadas(df_apostas: pd.DataFrame, n_bins: int = 8) -> pd.DataFrame:
+    """Tabela de calibração (prob. prevista x taxa real de acerto) SÓ das
+    apostas que passaram do limiar de EV -- ver diagnóstico da "maldição do
+    vencedor" (winner's curse): mesmo um modelo bem calibrado no geral fica
+    parecendo superconfiante quando você olha só a seleção de maior EV por
+    jogo, porque esse filtro favorece justamente os casos em que o RUÍDO de
+    estimativa empurrou a previsão pra cima por acaso. Comparar esta tabela
+    com a calibração de TODAS as previsões (ver evaluate.tabela_calibracao)
+    é o jeito de distinguir "modelo com viés de verdade" de "efeito
+    estatístico de selecionar o maior valor entre várias estimativas"."""
+    if df_apostas.empty:
+        return pd.DataFrame(columns=["faixa", "n", "prob_media_prevista", "taxa_real_acerto"])
+    df = df_apostas.copy()
+    df["ganhou_num"] = df["ganhou"].astype(float)
+    bordas = np.linspace(0, 1, n_bins + 1)
+    df["faixa"] = pd.cut(df["prob_modelo"], bordas, include_lowest=True)
+    tabela = df.groupby("faixa", observed=True).agg(
+        n=("ganhou_num", "size"),
+        prob_media_prevista=("prob_modelo", "mean"),
+        taxa_real_acerto=("ganhou_num", "mean"),
+    ).reset_index()
+    return tabela
+
+
+def varredura_limiar_ev(df_avaliacao: pd.DataFrame, limiares: list[float] | None = None) -> pd.DataFrame:
+    """Roda simular_backtest_clv em vários limiares de EV e reporta o
+    retorno de papel REAL de cada um. Um sinal de vantagem genuína mostraria
+    retorno estável ou crescente conforme o limiar sobe (só sobram as
+    apostas mais "certas"); retorno PIORANDO com limiar mais alto é sinal
+    de que o "EV alto" é sobretudo ruído de estimativa (maldição do
+    vencedor), não uma vantagem real contra o mercado -- nesse caso, subir
+    o limiar não filtra ruído, filtra pra dentro dele."""
+    limiares = limiares if limiares is not None else [0.05, 0.10, 0.15, 0.20, 0.30]
+    linhas = []
+    for limiar in limiares:
+        apostas = simular_backtest_clv(df_avaliacao, limiar_ev=limiar)
+        if apostas.empty:
+            linhas.append({"limiar_ev": limiar, "n_apostas": 0, "roi_papel": None, "taxa_acerto": None})
+            continue
+        linhas.append({
+            "limiar_ev": limiar, "n_apostas": len(apostas),
+            "roi_papel": float(apostas["retorno_papel"].mean()),
+            "taxa_acerto": float(apostas["ganhou"].mean()),
+        })
+    return pd.DataFrame(linhas)
+
+
 def resumo_backtest(df_apostas: pd.DataFrame) -> dict:
     """Resumo agregado: nº apostas, taxa de acerto, CLV médio/mediano, %
     positivo, ROI de papel (retorno/aposta, unidade de stake=1)."""

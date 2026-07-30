@@ -38,6 +38,17 @@ def test_construir_urls_desambigua_botafogo_por_liga():
     assert "botafogo-sp-juventude" in url_serie_b[0]
 
 
+def test_construir_urls_times_historicos_da_serie_b_confirmados_ao_vivo():
+    """Confirmado com jogos reais (ver investigação de cobertura de
+    escanteios/faltas da Série B: metade dos jogos falhava simplesmente
+    porque o time nem estava no mapa, nunca tentava buscar)."""
+    urls = construir_urls_candidatas("brasileirao_b", "2018-11-17", "brasil", "guarani")
+    assert urls == ["https://ge.globo.com/rs/futebol/brasileirao-serie-b/jogo/17-11-2018/brasil-de-pelotas-guarani.ghtml"]
+
+    urls = construir_urls_candidatas("brasileirao_b", "2018-11-13", "figueirense", "paysandu")
+    assert urls == ["https://ge.globo.com/sc/futebol/brasileirao-serie-b/jogo/13-11-2018/figueirense-paysandu.ghtml"]
+
+
 def test_construir_urls_time_desconhecido_retorna_lista_vazia():
     """Nunca inventa estado/slug pra time fora do mapa -- lista vazia é o
     sinal de 'não sei', não um palpite não verificado."""

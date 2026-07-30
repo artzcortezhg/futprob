@@ -90,6 +90,30 @@ TIME_CBF_PARA_GLOBO: dict[str, dict[str, str]] = {
     "operario": {"estado": "pr", "slug": "operario-pr"},
     "sao-bernardo": {"estado": "sp", "slug": "sao-bernardo"},
     "vila-nova": {"estado": "go", "slug": "vila-nova"},
+    # times de temporadas passadas da Série B (2018-2025) que não estão no
+    # roster 2026 -- mesmos slugs de nome completo tratados no merge da
+    # Série A (ver scripts/merge_estatisticas_brasileirao.py)
+    "guarani": {"estado": "sp", "slug": "guarani"},
+    "sampaio-correa": {"estado": "ma", "slug": "sampaio-correa"},
+    "brasil": {"estado": "rs", "slug": "brasil-de-pelotas"},
+    "atletico": {"estado": "go", "slug": "atletico-go"},
+    "figueirense": {"estado": "sc", "slug": "figueirense"},
+    "paysandu": {"estado": "pa", "slug": "paysandu"},
+    "ituano": {"estado": "sp", "slug": "ituano"},
+    "brusque": {"estado": "sc", "slug": "brusque"},
+    "sao-bento": {"estado": "sp", "slug": "sao-bento"},
+    "confianca": {"estado": "se", "slug": "confianca"},
+    "cruzeiro-esporte-clube": {"estado": "mg", "slug": "cruzeiro"},
+    "tombense": {"estado": "mg", "slug": "tombense"},
+    "fortaleza-esporte-clube": {"estado": "ce", "slug": "fortaleza"},
+    "boa": {"estado": "mg", "slug": "boa-esporte"},
+    "abc-f-c": {"estado": "rn", "slug": "abc"},
+    "volta-redonda": {"estado": "rj", "slug": "volta-redonda"},
+    "ferroviaria": {"estado": "sp", "slug": "ferroviaria"},
+    "amazonas-saf": {"estado": "am", "slug": "amazonas"},
+    "amazonas-fc": {"estado": "am", "slug": "amazonas"},
+    "botafogo-de-futebol-e-regatas": {"estado": "rj", "slug": "botafogo"},
+    "esporte-clube-bahia": {"estado": "ba", "slug": "bahia"},
 }
 
 # Sufixos de reorganização societária que a CBF adiciona ao slug em algumas

@@ -168,10 +168,17 @@ def buscar_estatisticas_jogo(page, liga: str, data_iso: str, time_casa: str, tim
     combinações plausíveis — nunca inventa números."""
     urls = construir_urls_candidatas(liga, data_iso, time_casa, time_fora)
     for url in urls:
-        try:
-            resp = page.goto(url, timeout=20000, wait_until="domcontentloaded")
-        except Exception:
-            continue
+        resp = None
+        for tentativa in range(3):
+            try:
+                resp = page.goto(url, timeout=20000, wait_until="domcontentloaded")
+                break
+            except Exception:
+                # falha transitória (timeout, rede) -- tenta de novo antes
+                # de desistir; um 404 de verdade nunca cai aqui (não é
+                # exceção, é resposta com status 404, tratado abaixo)
+                if tentativa < 2:
+                    time.sleep(3)
         if resp is None or resp.status == 404:
             continue
         for espera in tentativas_espera:

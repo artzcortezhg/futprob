@@ -38,6 +38,16 @@ SLUG_PARA_CANONICO: dict[str, str] = {
     "ponte-preta": "Ponte Preta", "remo": "Remo", "santos-fc": "Santos",
     "santos": "Santos", "sao-paulo": "Sao Paulo", "sport-recife": "Sport Recife",
     "sport": "Sport Recife", "vasco-da-gama": "Vasco", "vitoria": "Vitoria",
+    # slugs de nome completo que a CBF usava em temporadas mais antigas
+    # (2018-2022) pro MESMO clube -- confirmado conferindo o calendário de
+    # jogos (ex.: "atletico" nunca joga contra "atletico-mineiro" nem
+    # aparece fora das rodadas 2020-2022 da Série A, exatamente o período
+    # em que o Atlético-GO disputou a Série A)
+    "atletico": "Atletico GO",
+    "botafogo-de-futebol-e-regatas": "Botafogo RJ",
+    "cruzeiro-esporte-clube": "Cruzeiro",
+    "esporte-clube-bahia": "Bahia",
+    "fortaleza-esporte-clube": "Fortaleza",
 }
 
 

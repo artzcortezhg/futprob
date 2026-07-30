@@ -115,6 +115,40 @@ def test_prever_brasileirao_nao_esta_mais_em_ligas_sem_estatisticas():
     assert "brasileirao" not in LIGAS_SEM_ESTATISTICAS_EXTRAS
 
 
+def test_prever_reaproveita_modelo_ja_ajustado_pra_mesma_liga_e_data(tmp_path, monkeypatch):
+    """ajustar_modelo/escanteios/cartoes/faltas não dependem dos dois times
+    do confronto, só de (liga, data_corte, xi, alpha_xg) -- refazer o fit
+    (scipy.optimize, bem mais lento que o resto) pra CADA jogo do dia da
+    MESMA liga é puro desperdício. Sem cache, isso já travou o processo do
+    bot por horas com várias ligas modeladas ao mesmo tempo."""
+    import model_goals
+    df = _dados_sinteticos_liga("Teste")
+    df["HC"] = 5.0
+    df["AC"] = 4.0
+    df["HY"] = 1.5
+    df["AY"] = 2.0
+    df["HF"] = 10.0
+    df["AF"] = 11.0
+    caminho_csv = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho_csv, index=False)
+
+    chamadas = []
+    original = model_goals.ajustar_modelo
+
+    def _ajustar_contando(*args, **kwargs):
+        chamadas.append(1)
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr("predict.ajustar_modelo", _ajustar_contando)
+
+    prever("Teste", "A", "B", caminho_dados=caminho_csv, data_corte="2022-01-01", gravar=False)
+    prever("Teste", "C", "D", caminho_dados=caminho_csv, data_corte="2022-01-01", gravar=False)
+    assert len(chamadas) == 1  # segundo confronto reaproveitou o mesmo fit
+
+    prever("Teste", "A", "B", caminho_dados=caminho_csv, data_corte="2022-06-01", gravar=False)
+    assert len(chamadas) == 2  # data_corte diferente -> precisa ajustar de novo
+
+
 def test_prever_liga_com_estatisticas_nao_gera_aviso(tmp_path):
     df = _dados_sinteticos_liga("Teste")
     df["HC"] = 5.0

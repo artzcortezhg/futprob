@@ -40,14 +40,29 @@ def normalizar_texto(s: str) -> str:
     return sem_acento.lower().strip()
 
 
-def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO) -> dict[str, list[str]]:
-    """LIGA_SERIE_B combina o roster ATUAL (TIMES_SERIE_B_2026, estático —
-    garante que os 20 times de 2026 sempre resolvem fixture ao vivo, mesmo
-    que a base histórica ainda não tenha colhido dados suficientes de algum
-    deles) com qualquer time histórico já presente em partidas.csv (temporadas
-    passadas, ver scripts/criar_linhas_brasileirao_b.py) — união, nunca
-    substituição, pra não perder nenhum dos dois."""
-    df = pd.read_csv(caminho_partidas, usecols=["liga", "HomeTeam", "AwayTeam"])
+JANELA_PERTENCIMENTO_DIAS = 730  # ~2 temporadas -- ver carregar_times_por_liga
+
+
+def carregar_times_por_liga(caminho_partidas: Path = CAMINHO_PARTIDAS_PADRAO,
+                             janela_dias: int = JANELA_PERTENCIMENTO_DIAS,
+                             hoje: pd.Timestamp | None = None) -> dict[str, list[str]]:
+    """Só considera um time "pertencente" a uma liga se ele jogou nela nos
+    últimos `janela_dias` -- sem isso, um time que subiu de divisão anos
+    atrás continua "pertencendo" à liga antiga pra sempre, e uma partida
+    AMISTOSA contra um adversário de outra divisão (comum em pré-temporada)
+    pode ser aceita como jogo real dessa liga antiga. Bug real encontrado
+    ao vivo: 'Bristol City x Newcastle' (amistoso de pré-temporada, não
+    Championship) foi tratado como jogo do Championship porque Newcastle
+    aparece no roster histórico -- só que o último jogo dele lá foi em
+    2017 (9 anos atrás; ele está na Premier League desde então). LIGA_SERIE_B
+    combina o roster ATUAL (TIMES_SERIE_B_2026, estático — garante que os 20
+    times de 2026 sempre resolvem fixture ao vivo, mesmo que a base
+    histórica ainda não tenha colhido dados suficientes de algum deles) com
+    o histórico recente — união, nunca substituição."""
+    hoje = hoje if hoje is not None else pd.Timestamp.now()
+    corte = hoje - pd.Timedelta(days=janela_dias)
+    df = pd.read_csv(caminho_partidas, usecols=["liga", "Date", "HomeTeam", "AwayTeam"], parse_dates=["Date"])
+    df = df[df["Date"] >= corte]
     resultado = {}
     for liga in df["liga"].unique():
         d = df[df["liga"] == liga]

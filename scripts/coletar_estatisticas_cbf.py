@@ -70,11 +70,21 @@ def coletar(liga: str, temporadas: list[int]) -> None:
                 if jogo["id_jogo_cbf"] in ja_feitos:
                     continue
 
-                sumula = icbf.obter_sumula_com_cache(page_cbf, liga, temporada, jogo)
-                stats_globo = igg.obter_estatisticas_com_cache(
-                    page_globo, liga, jogo["data_iso"],
-                    jogo["time_casa_slug"], jogo["time_fora_slug"],
-                )
+                try:
+                    sumula = icbf.obter_sumula_com_cache(page_cbf, liga, temporada, jogo)
+                    stats_globo = igg.obter_estatisticas_com_cache(
+                        page_globo, liga, jogo["data_iso"],
+                        jogo["time_casa_slug"], jogo["time_fora_slug"],
+                    )
+                except Exception as exc:
+                    # falha persistente (esgotou os retries internos) NUM
+                    # jogo -- não escreve linha nenhuma pra ele (assim ele
+                    # não entra em ja_feitos e é retomado na próxima vez que
+                    # o script rodar) e segue pro próximo, sem derrubar
+                    # horas de coleta por causa de UM jogo problemático
+                    print(f"[{liga}] {temporada}: falhou em {jogo['id_jogo_cbf']} ({exc.__class__.__name__}), pulando -- será retomado numa próxima rodada", flush=True)
+                    time.sleep(2.0)
+                    continue
 
                 linha = {
                     "id_jogo_cbf": jogo["id_jogo_cbf"], "liga": liga, "temporada": temporada,
@@ -96,7 +106,7 @@ def coletar(liga: str, temporadas: list[int]) -> None:
 
                 if (i + 1) % 20 == 0:
                     print(f"[{liga}] {temporada}: {i+1}/{len(jogos_jogados)} processados", flush=True)
-                time.sleep(0.3)
+                time.sleep(1.0)
 
         browser.close()
     print(f"[{liga}] concluído.", flush=True)

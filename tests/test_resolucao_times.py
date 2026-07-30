@@ -75,7 +75,7 @@ def test_resolver_time_todas_ligas_time_exclusivo_de_uma_lista():
 
 def test_carregar_times_por_liga_inclui_serie_b(tmp_path):
     import pandas as pd
-    df = pd.DataFrame([{"liga": "brasileirao", "HomeTeam": "Fortaleza", "AwayTeam": "Ceara"}])
+    df = pd.DataFrame([{"liga": "brasileirao", "Date": "2026-06-01", "HomeTeam": "Fortaleza", "AwayTeam": "Ceara"}])
     caminho = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho, index=False)
     resultado = carregar_times_por_liga(caminho)
@@ -91,12 +91,30 @@ def test_carregar_times_por_liga_uniao_historico_e_roster_atual_da_serie_b(tmp_p
     de 2026 sem histórico suficiente ainda não resolve fixture ao vivo."""
     import pandas as pd
     df = pd.DataFrame([
-        {"liga": "brasileirao_b", "HomeTeam": "Time Historico Antigo", "AwayTeam": "Vila Nova"},
+        {"liga": "brasileirao_b", "Date": "2025-06-01", "HomeTeam": "Time Historico Antigo", "AwayTeam": "Vila Nova"},
     ])
     caminho = tmp_path / "partidas_teste.csv"
     df.to_csv(caminho, index=False)
     resultado = carregar_times_por_liga(caminho)
     # time só do histórico (não está mais no roster 2026) continua presente
     assert "Time Historico Antigo" in resultado[LIGA_SERIE_B]
+
+
+def test_carregar_times_por_liga_ignora_time_com_ultimo_jogo_muito_antigo(tmp_path):
+    """Bug real encontrado ao vivo: Newcastle jogou o Championship pela
+    última vez em 2017 (está na Premier League desde então) -- um amistoso
+    de pré-temporada 'Bristol City x Newcastle' foi tratado como jogo REAL
+    do Championship porque Newcastle ainda 'pertencia' ao roster histórico
+    pra sempre. Um time só pertence a uma liga se jogou nela recentemente."""
+    import pandas as pd
+    df = pd.DataFrame([
+        {"liga": "Championship", "Date": "2017-05-07", "HomeTeam": "Newcastle", "AwayTeam": "Barnsley"},
+        {"liga": "Championship", "Date": "2026-06-01", "HomeTeam": "Bristol City", "AwayTeam": "Norwich"},
+    ])
+    caminho = tmp_path / "partidas_teste.csv"
+    df.to_csv(caminho, index=False)
+    resultado = carregar_times_por_liga(caminho, hoje=pd.Timestamp("2026-07-29"))
+    assert "Newcastle" not in resultado["Championship"]
+    assert "Bristol City" in resultado["Championship"]
     # time do roster atual continua presente mesmo sem aparecer no histórico
     assert "Botafogo-SP" in resultado[LIGA_SERIE_B]

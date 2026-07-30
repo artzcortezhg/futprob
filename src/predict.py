@@ -33,6 +33,24 @@ CAMINHO_DADOS_PADRAO = RAIZ / "data" / "processed" / "partidas.csv"
 CAMINHO_DADOS_XG_PADRAO = RAIZ / "data" / "processed" / "partidas_xg.csv"
 CAMINHO_DB_PADRAO = RAIZ / "db" / "previsoes.sqlite"
 
+# Cache em processo dos modelos AJUSTADOS (não das previsões finais) --
+# ajustar_modelo/escanteios/cartoes/faltas não dependem dos dois times do
+# confronto, só de (liga, data_corte, xi, alpha_xg), então o MESMO fit
+# serve qualquer par de times daquela liga no mesmo dia. Sem isso, cada
+# jogo do dia refazia os 4 ajustes (~1min no total por liga, escanteios/
+# cartões/faltas usam otimização bem mais lenta que a de gols) do zero --
+# com várias ligas modeladas simultâneas (ver histórico de Série A/B), a
+# rotina da manhã e o painel chegaram a travar o processo por horas.
+# Limpa sozinho quando o processo reinicia (dado do dia muda, e o bot/
+# painel já reiniciam rotineiramente após qualquer atualização de dados).
+_CACHE_MODELOS_AJUSTADOS: dict[tuple, object] = {}
+
+
+def _com_cache(chave: tuple, func, *args, **kwargs):
+    if chave not in _CACHE_MODELOS_AJUSTADOS:
+        _CACHE_MODELOS_AJUSTADOS[chave] = func(*args, **kwargs)
+    return _CACHE_MODELOS_AJUSTADOS[chave]
+
 # ligas cuja fonte não tem escanteios/cartões/faltas/árbitro. O Brasileirão
 # (Série A) tinha esse problema só porque football-data.co.uk (ingest.py)
 # não trazia essas colunas — agora vêm de outra fonte (súmula da CBF +
@@ -165,7 +183,7 @@ def prever(
         raise ValueError(f"Liga '{liga}' não encontrada na base. Ligas disponíveis: {sorted(df['liga'].unique())}")
 
     data_corte = data_corte or datetime.now().date().isoformat()
-    modelo = ajustar_modelo(df, liga, data_corte, xi=xi, alpha_xg=alpha_xg)
+    modelo = _com_cache(("goals", liga, data_corte, xi, alpha_xg, str(caminho_dados)), ajustar_modelo, df, liga, data_corte, xi=xi, alpha_xg=alpha_xg)
 
     matriz = matriz_placares(modelo, time_casa, time_fora, max_gols=max_gols)
     mercados = calcular_mercados(matriz)
@@ -190,17 +208,19 @@ def prever(
         # escanteios/cartões/faltas sempre a partir dos gols observados (não
         # dependem de alpha_xg, que só se aplica ao modelo de gols). Se
         # --dados já é a base padrão, reaproveita o mesmo df.
-        df_padrao = df if alpha_xg == 0.0 else pd.read_csv(CAMINHO_DADOS_PADRAO, parse_dates=["Date"])
-
-        modelo_escanteios = ajustar_modelo_escanteios(df_padrao, liga, data_corte, xi=xi)
+        if alpha_xg == 0.0:
+            df_padrao, chave_padrao = df, str(caminho_dados)
+        else:
+            df_padrao, chave_padrao = pd.read_csv(CAMINHO_DADOS_PADRAO, parse_dates=["Date"]), str(CAMINHO_DADOS_PADRAO)
+        modelo_escanteios = _com_cache(("escanteios", liga, data_corte, xi, chave_padrao), ajustar_modelo_escanteios, df_padrao, liga, data_corte, xi=xi)
         matriz_esc = matriz_escanteios(modelo_escanteios, time_casa, time_fora)
         linhas_mercados += para_linhas_tabela_escanteios(mercado_escanteios(matriz_esc))
 
-        modelo_cartoes = ajustar_modelo_cartoes(df_padrao, liga, data_corte, xi=xi)
+        modelo_cartoes = _com_cache(("cartoes", liga, data_corte, xi, chave_padrao), ajustar_modelo_cartoes, df_padrao, liga, data_corte, xi=xi)
         matriz_cart = matriz_contagem(modelo_cartoes, time_casa, time_fora, arbitro=arbitro, max_valor=10)
         linhas_mercados += para_linhas_tabela_cartoes(mercado_cartoes(matriz_cart))
 
-        modelo_faltas = ajustar_modelo_faltas(df_padrao, liga, data_corte, xi=xi)
+        modelo_faltas = _com_cache(("faltas", liga, data_corte, xi, chave_padrao), ajustar_modelo_faltas, df_padrao, liga, data_corte, xi=xi)
         matriz_falt = matriz_contagem(modelo_faltas, time_casa, time_fora, arbitro=arbitro, max_valor=30)
         linhas_mercados += para_linhas_tabela_faltas(mercado_faltas(matriz_falt))
 

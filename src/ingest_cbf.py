@@ -29,6 +29,27 @@ from playwright.sync_api import sync_playwright
 RAIZ = Path(__file__).resolve().parent.parent
 PASTA_CACHE_SUMULAS = RAIZ / "data" / "raw" / "sumulas_cbf"
 
+
+def _goto_com_retry(page, url: str, tentativas: int = 4, **kwargs):
+    """page.goto com retry -- uma coleta de milhares de jogos rodando por
+    horas vai bater em timeout transitório do site (rede, carga, possível
+    rate-limit suave por volume de requisições) de vez em quando; sem
+    retry, isso derruba o processo inteiro por causa de UM jogo. O
+    checkpoint em disco (cache de súmula/estatística + CSV de saída) já
+    protege o progresso já feito, mas evitar o crash em si poupa a coleta
+    de precisar ser reiniciada manualmente toda vez. Backoff crescente
+    (10s/20s/40s) em vez de fixo -- se for rate-limit, insistir rápido só
+    piora."""
+    ultimo_erro = None
+    for tentativa in range(tentativas):
+        try:
+            return page.goto(url, **kwargs)
+        except Exception as exc:
+            ultimo_erro = exc
+            if tentativa < tentativas - 1:
+                time.sleep(10 * (2 ** tentativa))
+    raise ultimo_erro
+
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
 SERIE_URL = {
@@ -54,7 +75,7 @@ def listar_jogos_temporada(page, liga: str, temporada: int) -> list[dict]:
     fonte alguma pra ela em data/processed/partidas.csv hoje."""
     serie = SERIE_URL[liga]
     url_base = f"https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/{serie}/{temporada}"
-    page.goto(url_base, timeout=30000, wait_until="domcontentloaded")
+    _goto_com_retry(page, url_base, timeout=30000, wait_until="domcontentloaded")
     page.wait_for_timeout(3000)
 
     opcoes = page.eval_on_selector("select", "el => Array.from(el.options).map(o => o.value)")
@@ -99,7 +120,7 @@ def listar_jogos_temporada(page, liga: str, temporada: int) -> list[dict]:
 
 
 def obter_link_sumula(page, url_jogo: str) -> str | None:
-    page.goto(f"{url_jogo}?view=documentos", timeout=25000, wait_until="domcontentloaded")
+    _goto_com_retry(page, f"{url_jogo}?view=documentos", timeout=25000, wait_until="domcontentloaded")
     page.wait_for_timeout(2500)
     links = page.eval_on_selector_all("a", "els => els.map(e => [e.textContent.trim(), e.href])")
     for texto, href in links:
